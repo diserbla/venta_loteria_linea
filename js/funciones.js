@@ -17,8 +17,8 @@ function inicio() {
     $.ajax({
         url: "funciones.php",
         dataType:'text',
-        type: 'post',									
-        data:{ paso: 'evalua_conexion'}, 					
+        type: 'post',
+        data:{ paso: 'evalua_conexion'}, 
         success: function(data) {
             console.log(data);
         }
@@ -29,6 +29,10 @@ window.setInterval("inicio()",300000);
 
 
 $(document).ready(function(){
+
+    $(document).on('input', '.numeric-input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
 	$('#cedula').mask('00000000000');
 
@@ -132,14 +136,14 @@ $(document).ready(function(){
             url:	"funciones.php",
             dataType:"json",
             type	: 'post',
-            data:  { paso: 'cboPtoventa', cboPto:cboPto, cod_pto:cod_pto},									
+            data:  { paso: 'cboPtoventa', cboPto:cboPto, cod_pto:cod_pto},
             success: function(data){
                 $("#"+lista).html(data.salida);	
             },	
             error: function (request, status, error) 
             {
                 alert(request.responseText);
-            }							
+            }
         });	
     }	
 
@@ -148,14 +152,14 @@ $(document).ready(function(){
             async:	false, 
             url: "funciones.php",
             dataType:"json",
-            data:  { paso: 'cboLoterias'},									
+            data:  { paso: 'cboLoterias'},
             success: function(data){
                 $("#list_loterias").html(data.salida);	
             },	
             error: function (request, status, error) 
             {
                 alert(request.responseText);
-            }							
+            }
         });			
     });
 
@@ -171,8 +175,8 @@ $(document).ready(function(){
 	});	
 
     function fn_consulta_ppal(e){
- 		var cboPtoventa	 		 =	$('#cboPtoventa_con').val();
-		var cboLoterias	 		 =	$('#cboLoterias').val();
+ 		var cboPtoventa			 =	$('#cboPtoventa_con').val();
+		var cboLoterias			 =	$('#cboLoterias').val();
 		var rango_fechas 		 =	$('#rango_fechas_con').val();	
 		var rango_fechas_sorteo  =	$('#rango_fechas_sorteo').val();	
 		var rango_fechas_val_pre =	$('#rango_fechas_val_pre').val();	
@@ -183,7 +187,7 @@ $(document).ready(function(){
 		if (((cboPtoventa != '0' && rango_fechas.length > 0) || cedula.length > 0) || (rango_fechas_sorteo.length > 0) || (num_sor.length > 0) || (rango_fechas_val_pre.length > 0))
         {
             var ajax_data = {
-                "paso"  	  		  : 'consulta_ppal',							
+                "paso"  	  		  : 'consulta_ppal',
                 "cboPtoventa" 		  : cboPtoventa,
                 "cboLoterias" 		  : cboLoterias,
                 "rango_fechas"		  : rango_fechas,
@@ -902,4 +906,3 @@ $(document).ready(function(){
     }
 
 });
-

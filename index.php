@@ -112,10 +112,10 @@
 														<div class="row">
 															<div class="col-xs-8">
 																<div class="row">
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
 																</div>
 															</div>
 															<div class="col-xs-4 number-buttons-container">
