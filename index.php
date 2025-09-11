@@ -152,7 +152,7 @@
 												</tbody>
 											</table>
 
-											<div class="total-row">
+											<div class="datos-sorteo-row">
 												Total: <strong>$0</strong>
 											</div>
 
