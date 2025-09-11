@@ -99,24 +99,49 @@
 														</select>
 													</div>
 												</div>
+
+												<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+													<div class="form-group">
+														<label>Digita el número o genéralo automáticamente</label>
+														<div class="row">
+															<div class="col-xs-8">
+																<div class="row">
+																	<div class="col-xs-3" style="padding: 0;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
+																	<div class="col-xs-3" style="padding: 0;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
+																	<div class="col-xs-3" style="padding: 0;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
+																	<div class="col-xs-3" style="padding: 0;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
+																</div>
+															</div>
+															<div class="col-xs-4" style="padding-left: 10px;">
+																<div class="row">
+																	<div class="col-xs-6" style="padding-right: 5px;">
+																		<button class="btn btn-info btn-lg btn-block"><i class="fa fa-random"></i></button>
+																	</div>
+																	<div class="col-xs-6" style="padding-left: 5px;">
+																		<button class="btn btn-danger btn-lg btn-block"><i class="fa fa-times"></i></button>
+																	</div>
+																</div>
+															</div>																												
+														</div>
+														<!-- <div class="row"> -->
+															<!-- <div class="col-md-12">
+																<div style="text-align: center; margin: 10px 0;">
+																	<span>Digita el número o genéralo automáticamente</span>
+																	<button class="btn btn-sm btn-info"><i class="fa fa-random"></i></button>
+																	<button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+																</div>
+															</div> -->
+														<!-- </div> -->
+													</div>
+												</div>
+
+
 												<!-- <div class="col-xs-5 col-sm-5 col-md-5">
 													<div class="form-group">
 														<label>Cédula</label>
 														<input type="text" class="form-control" id="cedula" value="323-284-1619" readonly>
 													</div>
 												</div> -->
-											</div>
-
-											<div class="form-group">
-												<div class="row">
-													<div class="col-md-12">
-														<div style="text-align: center; margin: 10px 0;">
-															<span>Digita el número o genéralo automáticamente</span>
-															<button class="btn btn-sm btn-info"><i class="fa fa-random"></i></button>
-															<button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
-														</div>
-													</div>
-												</div>
 											</div>
 
 											<table class="table table-bordered table-condensed table-striped table-hover">
