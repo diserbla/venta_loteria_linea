@@ -156,10 +156,9 @@
 												Total: <strong>$0</strong>
 											</div>
 
-											<div class="footer-buttons">
-												<button type="button" class="btn btn-success">CONFIRME LOS NÚMEROS SELECCIONADOS</button>
-												<button type="button" class="btn btn-primary">Registrar</button>
+											<div class="footer-buttons" style="text-align: right;">
 												<button type="button" class="btn btn-danger">Cancelar</button>
+												<button type="button" class="btn btn-primary">Registrar</button>
 											</div>
 										</div>
 									</div>	
