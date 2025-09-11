@@ -115,10 +115,10 @@
 														<div class="row">
 															<div class="col-xs-8">
 																<div class="row">
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr1" name="cfr1" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr2" name="cfr2" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr3" name="cfr3" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr4" name="cfr4" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
 																</div>
 															</div>
 															<div class="col-xs-4 number-buttons-container">
