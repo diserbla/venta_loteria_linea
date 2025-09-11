@@ -60,3 +60,31 @@
     padding-top: 0;
     padding-bottom: 0;
 }
+
+.resumen-venta .fila-resumen {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 15px;
+    font-size: 1.1em;
+}
+
+.resumen-venta .total-final {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #337ab7; /* Primary color */
+}
+
+.resumen-venta hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.resumen-venta .form-group {
+    padding: 0 15px;
+}
+
+#ingrese-efectivo {
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bold;
+}

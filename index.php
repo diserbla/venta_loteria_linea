@@ -171,6 +171,25 @@
 										<h4 class="panel-title">Totales</h4>
 									</div>
 									<div class="panel-body">
+										<div class="resumen-venta">
+											<div class="fila-resumen">
+												<span>Total Venta:</span>
+												<strong id="total-venta-valor">$0</strong>
+											</div>
+											<div class="fila-resumen">
+												<span>Total Premios:</span>
+												<strong id="total-premios-valor">$0</strong>
+											</div>
+											<hr>
+											<div class="fila-resumen total-final">
+												<span>Valor a Pagar:</span>
+												<strong id="valor-pagar-valor">$0</strong>
+											</div>
+											<div class="form-group">
+												<label for="ingrese-efectivo">Ingrese Efectivo:</label>
+												<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0">
+											</div>
+										</div>
 									</div>
 								</div> 
 							</div>
