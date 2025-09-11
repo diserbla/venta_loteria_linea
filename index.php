@@ -87,9 +87,9 @@
 								<div class="panel panel-primary">
 									<div class="panel-body" >
 										<div class="venta-header">LOTERIA EN LINEA</div>
-										<div style="padding: 20px; margin-left: 0; margin-right: 0;">
+										<div style="padding: 20px;">
 											<div class="row">
-												<div class="col-xs-7 col-sm-7 col-md-7">
+												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 													<div class="form-group">
 														<label>Lotería</label>
 														<select class="form-control" id="loteria">
@@ -99,12 +99,12 @@
 														</select>
 													</div>
 												</div>
-												<div class="col-xs-5 col-sm-5 col-md-5">
+												<!-- <div class="col-xs-5 col-sm-5 col-md-5">
 													<div class="form-group">
 														<label>Cédula</label>
 														<input type="text" class="form-control" id="cedula" value="323-284-1619" readonly>
 													</div>
-												</div>
+												</div> -->
 											</div>
 
 											<div class="form-group">
@@ -119,26 +119,21 @@
 												</div>
 											</div>
 
-											<div class="table-responsive">
-												<table class="table table-bordered">
-													<thead>
-														<tr>
-															<th>Lotería</th>
-															<th>Sorteo</th>
-															<th>Número</th>
-															<th>Serie</th>
-															<th>Fracc</th>
-															<th>Valor</th>
-															<th>Borrar</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td colspan="7" style="text-align: center;">No hay números seleccionados</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
+											<table class="table table-bordered table-condensed table-striped table-hover">
+												<thead>
+													<tr>
+														<th>Lotería</th>
+														<th>Sorteo</th>
+														<th>Número</th>
+														<th>Serie</th>
+														<th>Fracc</th>
+														<th>Valor</th>
+														<th>Borrar</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
 
 											<div class="total-row">
 												Total: <strong>$0</strong>

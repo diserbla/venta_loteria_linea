@@ -5,7 +5,7 @@
 }
 
 /* Asegurar que el contendor principal no tenga márgenes */
-.venta-container-left-full {
+.venta-container-left-full123 {
     margin: 20px 0 20px 0;
     width: 100%;
     max-width: none;
@@ -34,49 +34,59 @@
     margin-right: 0;
 }
 
-.form-row {
+.form-row123 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 }
 
-.form-group {
+.form-group123 {
     margin-bottom: 10px;
 }
 
-.form-control {
+.form-control123 {
     height: 35px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.btn-small {
+.btn-small123 {
     padding: 5px 10px;
     font-size: 12px;
 }
 
-.btn-primary {
+.btn-primary123 {
     background-color: #337CBB;
     border-color: #337CBB;
 }
 
-.btn-success {
+.btn-success123 {
     background-color: #5cb85c;
     border-color: #4cae49;
 }
 
-.btn-danger {
+.btn-danger123 {
     background-color: #d9534f;
     border-color: #d43f8d;
 }
 
-.table {
+.table123 {
     width: 100%;
     margin-top: 10px;
     border-collapse: collapse;
 }
 
+.total-row {
+    background-color: #ffeb3b;
+    font-weight: bold;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+/*
 .table th {
     background-color: #337CBB;
     color: white;
@@ -106,7 +116,6 @@
     margin-left: 10px;
 }
 
-/* Estilos para la parte superior del formulario de ventas */
 .top-form-container {
     display: flex;
     justify-content: space-between;
@@ -201,7 +210,6 @@
     border-radius: 4px;
 }
 
-/* css/otros_estilos.css */
 .datos-iniciales {
     display: flex;
     justify-content: space-between;
@@ -210,8 +218,8 @@
 }
 
 .loteria-select {
-    flex: 2; /* Más ancho */
-    margin-right: 10px; /* Menor espacio entre ambos campos */
+    flex: 2; 
+    margin-right: 10px; 
 }
 
 .loteria-select label {
@@ -231,7 +239,7 @@
 
 .cedula-display {
     flex: 1;
-    margin-left: 5px; /* Ajuste para acercar los campos */
+    margin-left: 5px; 
 }
 
 .cedula-display label {
@@ -250,3 +258,4 @@
     background-color: #f9f9f9;
     font-weight: bold;
 }
+*/
