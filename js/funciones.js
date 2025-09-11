@@ -905,4 +905,13 @@ $(document).ready(function(){
         }
     }
 
+    // Auto-focus on the first input on page load
+    $('#cfr1').focus();
+
+    // Auto-tab to next number input
+    $('.number-input-digit').on('keyup', function(e) {
+        if (this.value.length === this.maxLength) {
+            $(this).closest('.number-input-digit-wrapper').next().find('input').focus();
+        }
+    });
 });
