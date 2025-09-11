@@ -166,7 +166,7 @@
 							</div>	
 
 							<div class="col-lg-4 col-md-4 col-sm-4">
-								<div class="panel panel-info">
+								<div class="panel panel-success">
 									<div class="panel-heading">
 										<h4 class="panel-title">Totales</h4>
 									</div>
