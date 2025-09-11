@@ -34,12 +34,6 @@
     margin-right: 0;
 }
 
-.venta-body {
-    padding: 20px;
-    margin-left: 0;
-    margin-right: 0;
-}
-
 .form-row {
     display: flex;
     justify-content: space-between;

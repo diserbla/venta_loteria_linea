@@ -82,87 +82,84 @@
 			<!-- Tab panes -->
 			<div class="tab-content">
 				<div class="tab-pane fade active in" id="nuevo">
-					<div class="container">
-						<form id="frm_procesar" method="" action="" autocomplete="off">
-							<div class="col-lg-12	col-md-12 col-sm-12">
+					<div class="row"> 
+							<div class="col-lg-7 col-md-7 col-sm-7">
 								<div class="panel panel-primary">
-									<div class="panel-heading text-center"><h4>VENTAS</h4></div>
-									
-									<div class="panel-body" style="padding: 0;">
-										<!-- Nueva sección de ventas -->
-										<div class="venta-container-left-full">
-											<div class="venta-header">LOTERIA EN LINEA</div>
-											<div class="venta-body">
+									<div class="panel-body" >
+										<div class="venta-header">LOTERIA EN LINEA</div>
+										<div style="padding: 20px; margin-left: 0; margin-right: 0;">
+											<div class="row">
+												<div class="col-xs-7 col-sm-7 col-md-7">
+													<div class="form-group">
+														<label>Lotería</label>
+														<select class="form-control" id="loteria">
+															<option value="MEDELLIN">MEDELLIN</option>
+															<option value="BOGOTA">BOGOTA</option>
+															<option value="CALI">CALI</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<label>Cédula</label>
+														<input type="text" class="form-control" id="cedula" value="323-284-1619" readonly>
+													</div>
+												</div>
+											</div>
 
+											<div class="form-group">
 												<div class="row">
-													<div class="col-xs-7 col-sm-7 col-md-7">
-														<div class="form-group">
-															<label>Lotería</label>
-															<select class="form-control" id="loteria">
-																<option value="MEDELLIN">MEDELLIN</option>
-																<option value="BOGOTA">BOGOTA</option>
-																<option value="CALI">CALI</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-xs-5 col-sm-5 col-md-5">
-														<div class="form-group">
-															<label>Cédula</label>
-															<input type="text" class="form-control" id="cedula" value="323-284-1619" readonly>
+													<div class="col-md-12">
+														<div style="text-align: center; margin: 10px 0;">
+															<span>Digita el número o genéralo automáticamente</span>
+															<button class="btn btn-sm btn-info"><i class="fa fa-random"></i></button>
+															<button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
 														</div>
 													</div>
 												</div>
+											</div>
 
-												<div class="form-group">
-													<div class="row">
-														<div class="col-md-12">
-															<div style="text-align: center; margin: 10px 0;">
-																<span>Digita el número o genéralo automáticamente</span>
-																<button class="btn btn-sm btn-info"><i class="fa fa-random"></i></button>
-																<button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
-															</div>
-														</div>
-													</div>
-												</div>
+											<div class="table-responsive">
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>Lotería</th>
+															<th>Sorteo</th>
+															<th>Número</th>
+															<th>Serie</th>
+															<th>Fracc</th>
+															<th>Valor</th>
+															<th>Borrar</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td colspan="7" style="text-align: center;">No hay números seleccionados</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
 
-												<div class="table-responsive">
-													<table class="table table-bordered">
-														<thead>
-															<tr>
-																<th>Lotería</th>
-																<th>Sorteo</th>
-																<th>Número</th>
-																<th>Serie</th>
-																<th>Fracc</th>
-																<th>Valor</th>
-																<th>Borrar</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td colspan="7" style="text-align: center;">No hay números seleccionados</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
+											<div class="total-row">
+												Total: <strong>$0</strong>
+											</div>
 
-												<div class="total-row">
-													Total: <strong>$0</strong>
-												</div>
-
-												<div class="footer-buttons">
-													<button type="button" class="btn btn-success">CONFIRME LOS NÚMEROS SELECCIONADOS</button>
-													<button type="button" class="btn btn-primary">Registrar</button>
-													<button type="button" class="btn btn-danger">Cancelar</button>
-												</div>
+											<div class="footer-buttons">
+												<button type="button" class="btn btn-success">CONFIRME LOS NÚMEROS SELECCIONADOS</button>
+												<button type="button" class="btn btn-primary">Registrar</button>
+												<button type="button" class="btn btn-danger">Cancelar</button>
 											</div>
 										</div>
 									</div>	
-
 								</div>	
 							</div>	
-						</form>	
-					</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5">
+								<div class="panel panel-primary">
+
+								</div>	
+							</div>
+					</div> 
 				</div>
 			</div>
 		</div>

@@ -23,16 +23,9 @@
 	padding: 10px;
 }
 
-.container {
-	margin: 0px auto;
-	padding-right: 24px;
-	padding-left: 24px;
-}
-
-.panel {
-	margin-bottom: 5px;
-}				
-
-.panel-heading {
-	padding: 0px;
+body {
+	background-image: url(../../../fondo.jpg);	
+	font-family: "Comic Sans MS", cursive;
+	font-size: 15px;
+	color: #232323;
 }
