@@ -86,7 +86,7 @@
 			<div class="tab-content">
 				<div class="tab-pane fade active in" id="nuevo">
 					<div class="row"> 
-							<div class="col-lg-7 col-md-7 col-sm-7">
+							<div class="col-lg-8 col-md-8 col-sm-8">
 								<div class="panel panel-primary">
 									<div class="panel-body" >
 										<div class="venta-header">LOTERIA EN LINEA</div>
@@ -165,10 +165,14 @@
 								</div>	
 							</div>	
 
-							<div class="col-lg-5 col-md-5 col-sm-5">
-								<div class="panel panel-primary">
-
-								</div>	
+							<div class="col-lg-4 col-md-4 col-sm-4">
+								<div class="panel panel-info">
+									<div class="panel-heading">
+										<h4 class="panel-title">Totales</h4>
+									</div>
+									<div class="panel-body">
+									</div>
+								</div> 
 							</div>
 					</div> 
 				</div>
