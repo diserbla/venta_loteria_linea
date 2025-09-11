@@ -46,6 +46,9 @@
 			include($_SESSION['funciones']."include.php");
 		?>	
 
+		<!-- Google Fonts -->
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 		<!-- Estilos principales -->
 		<link rel="stylesheet" href="css/estilos.css?v=<?php echo filemtime('css/estilos.css'); ?>" type="text/css" />
 		<link rel="stylesheet" href="css/otros_estilos.css?v=<?php echo filemtime('css/otros_estilos.css'); ?>" type="text/css" />
