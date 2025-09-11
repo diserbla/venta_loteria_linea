@@ -127,7 +127,7 @@
 																		<button class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
 																	</div>
 																	<div class="col-xs-6 number-button-wrapper-clear">
-																		<button class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>
+																		<button id="limpiar-numero-btn" class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>
 																	</div>
 																</div>
 															</div>

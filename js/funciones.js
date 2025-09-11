@@ -905,6 +905,14 @@ $(document).ready(function(){
         }
     }
 
+    $('#limpiar-numero-btn').on('click', function() {
+        $('#cfr1').val('');
+        $('#cfr2').val('');
+        $('#cfr3').val('');
+        $('#cfr4').val('');
+        $('#cfr1').focus();
+    });
+
     // Auto-focus on the first input on page load
     $('#cfr1').focus();
 
