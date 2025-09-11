@@ -186,7 +186,7 @@
 												<strong id="valor-pagar-valor">$0</strong>
 											</div>
 											<div class="fila-resumen" style="padding-top: 10px;">
-												<label for="ingrese-efectivo" style="flex-grow: 1;">Ingrese Efectivo:</label>
+												<label for="ingrese-efectivo">Ingrese Efectivo:</label>
 												<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
 											</div>
 										</div>

@@ -83,3 +83,9 @@
 #ingrese-efectivo {
     font-size: 1.2em;
 }
+
+.resumen-venta .fila-resumen > label,
+.resumen-venta .fila-resumen > span {
+    width: 150px; /* Adjust as needed */
+    text-align: left;
+}
