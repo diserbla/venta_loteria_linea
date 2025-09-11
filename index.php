@@ -87,7 +87,7 @@
 								<div class="panel panel-primary">
 									<div class="panel-body" >
 										<div class="venta-header">LOTERIA EN LINEA</div>
-										<div style="padding: 20px;">
+										<div class="number-input-container">
 											<div class="row">
 												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 													<div class="form-group">
@@ -112,19 +112,19 @@
 														<div class="row">
 															<div class="col-xs-8">
 																<div class="row">
-																	<div class="col-xs-3" style="padding: 2px;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
-																	<div class="col-xs-3" style="padding: 2px;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
-																	<div class="col-xs-3" style="padding: 2px;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
-																	<div class="col-xs-3" style="padding: 2px;"><input type="text" class="form-control input-lg" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 2em; font-weight: bold;" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
+																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" class="form-control input-lg number-input-digit" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="1"></div>
 																</div>
 															</div>
-															<div class="col-xs-4" style="padding-left: 10px; margin-top: 1px;">
+															<div class="col-xs-4 number-buttons-container">
 																<div class="row">
-																	<div class="col-xs-6" style="padding-right: 5px;">
-																		<button class="btn btn-info btn-lg btn-block" style="height: 35px; line-height: 35px; padding-top: 0; padding-bottom: 0;"><i class="fa fa-random"></i></button>
+																	<div class="col-xs-6 number-button-wrapper-generate">
+																		<button class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
 																	</div>
-																	<div class="col-xs-6" style="padding-left: 5px;">
-																		<button class="btn btn-danger btn-lg btn-block" style="height: 35px; line-height: 35px; padding-top: 0; padding-bottom: 0;"><i class="fa fa-times"></i></button>
+																	<div class="col-xs-6 number-button-wrapper-clear">
+																		<button class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>
 																	</div>
 																</div>
 															</div>
