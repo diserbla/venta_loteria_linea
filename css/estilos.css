@@ -1,10 +1,10 @@
 /* css/estilos.css */
 
 body {
+	background-image: url(../../../fondo.jpg);	
 	font-family: 'Roboto', sans-serif;
 	font-size: 15px;
 	color: #232323;
-    background-color: #f8f9fa; /* A light grey background */
 }
 
 .nav-tabs {
