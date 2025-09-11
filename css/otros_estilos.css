@@ -89,3 +89,14 @@
     width: 150px; /* Adjust as needed */
     text-align: left;
 }
+
+/* Ajustes para el encabezado del panel de Totales */
+.panel-success > .panel-heading {
+    padding: 12px 15px; /* Ajusta el padding para que sea similar al venta-header */
+}
+
+.panel-success > .panel-heading > .panel-title {
+    font-size: 18px; /* Ajusta el tamaño de la fuente */
+    font-weight: bold; /* Asegura que esté en negrita */
+    text-align: center; /* Centra el texto */
+}
