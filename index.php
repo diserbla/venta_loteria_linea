@@ -88,113 +88,119 @@
 			<div class="tab-content">
 				<div class="tab-pane fade active in" id="nuevo">
 					<div class="row"> 
-							<div class="col-lg-8 col-md-8 col-sm-8">
-								<div class="panel panel-primary">
-									<div class="panel-body" >
-										<div class="venta-header">LOTERIA EN LINEA</div>
-										<div class="number-input-container">
-											<div class="row">
-												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-													<div class="form-group">
-														<label>Lotería</label>
-														<select class="form-control" id="loteria">
-															<option value="MEDELLIN">MEDELLIN</option>
-															<option value="BOGOTA">BOGOTA</option>
-															<option value="CALI">CALI</option>
-														</select>
-													</div>
-												</div>
-
-												<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
-													<div class="form-group">
-
-														<div class="row">
-															<div class="col-xs-12">
-																<label>Digita el número o genéralo automáticamente</label>
-															</div>
-														</div>
-
-														<div class="row">
-															<div class="col-xs-8">
-																<div class="row">
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr1" name="cfr1" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr2" name="cfr2" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr3" name="cfr3" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																	<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr4" name="cfr4" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
-																</div>
-															</div>
-															<div class="col-xs-4 number-buttons-container">
-																<div class="row">
-																	<div class="col-xs-6 number-button-wrapper-generate">
-																		<button class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
-																	</div>
-																	<div class="col-xs-6 number-button-wrapper-clear">
-																		<button id="limpiar-numero-btn" class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
+						<div class="col-lg-8 col-md-8 col-sm-8">
+							<div class="panel panel-primary">
+								<div class="panel-body" >
+									<div class="venta-header">LOTERIA EN LINEA</div>
+									<div class="number-input-container">
+										<div class="row">
+											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+												<div class="form-group">
+													<label>Lotería</label>
+													<select class="form-control" id="loteria">
+														<option value="MEDELLIN">MEDELLIN</option>
+														<option value="BOGOTA">BOGOTA</option>
+														<option value="CALI">CALI</option>
+													</select>
 												</div>
 											</div>
 
-											<table class="table table-bordered table-condensed table-striped table-hover">
-												<thead>
-													<tr>
-														<th>Lotería</th>
-														<th>Sorteo</th>
-														<th>Número</th>
-														<th>Serie</th>
-														<th>Fracc</th>
-														<th>Valor</th>
-														<th>Borrar</th>
-													</tr>
-												</thead>
-												<tbody>
-												</tbody>
-											</table>
+											<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+												<div class="form-group">
 
-											<div class="datos-sorteo-row">
-												Total: <strong>$0</strong>
-											</div>
+													<div class="row">
+														<div class="col-xs-12">
+															<label>Digita el número o genéralo automáticamente</label>
+														</div>
+													</div>
 
-											<div class="footer-buttons" style="text-align: right;">
-												<button type="button" class="btn btn-danger">Cancelar</button>
-												<button type="button" class="btn btn-primary">Registrar</button>
+													<div class="row">
+														<div class="col-xs-8">
+															<div class="row">
+																<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr1" name="cfr1" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr2" name="cfr2" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr3" name="cfr3" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+																<div class="col-xs-3 number-input-digit-wrapper"><input type="text" id="cfr4" name="cfr4" class="form-control input-lg number-input-digit numeric-input" maxlength="1"></div>
+															</div>
+														</div>
+														<div class="col-xs-4 number-buttons-container">
+															<div class="row">
+																<div class="col-xs-6 number-button-wrapper-generate">
+																	<button class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
+																</div>
+																<div class="col-xs-6 number-button-wrapper-clear">
+																	<button id="limpiar-numero-btn" class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>	
+
+										<table class="table table-bordered table-condensed table-striped table-hover">
+											<thead>
+												<tr>
+													<th>Lotería</th>
+													<th>Sorteo</th>
+													<th>Número</th>
+													<th>Serie</th>
+													<th>Fracc</th>
+													<th>Valor</th>
+													<th>Borrar</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+
+										<div class="datos-sorteo-row">
+											Total: <strong>$0</strong>
+										</div>
+
+										<div class="footer-buttons" style="text-align: right;">
+											<button type="button" class="btn btn-danger">Cancelar</button>
+											<button type="button" class="btn btn-primary">Registrar</button>
+										</div>
+									</div>
+
+									<!-- Panel de Premios de Lotería -->
+									<div class="premio-header">PREMIOS LOTERIA</div>
+									<div class="panel-body">
+										<!-- El contenido para los premios irá aquí -->
+									</div>
 								</div>	
 							</div>	
+						</div>	
 
-							<div class="col-lg-4 col-md-4 col-sm-4">
-								<div class="panel panel-success">
-									<div class="panel-heading">
-										<h4 class="panel-title">TOTALES</h4>
-									</div>
-									<div class="panel-body">
-										<div class="resumen-venta">
-											<div class="fila-resumen">
-												<span>Total Venta:</span>
-												<strong id="total-venta-valor">$0</strong>
-											</div>
-											<div class="fila-resumen">
-												<span>Total Premios:</span>
-												<strong id="total-premios-valor">$0</strong>
-											</div>
-											<hr>
-											<div class="fila-resumen total-final">
-												<span>Valor a Pagar:</span>
-												<strong id="valor-pagar-valor">$0</strong>
-											</div>
-											<div class="fila-resumen" style="padding-top: 10px;">
-												<label for="ingrese-efectivo">Ingrese Efectivo:</label>
-												<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
-											</div>
+						<div class="col-lg-4 col-md-4 col-sm-4">
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<h4 class="panel-title">TOTALES</h4>
+								</div>
+								<div class="panel-body">
+									<div class="resumen-venta">
+										<div class="fila-resumen">
+											<span>Total Venta:</span>
+											<strong id="total-venta-valor">$0</strong>
+										</div>
+										<div class="fila-resumen">
+											<span>Total Premios:</span>
+											<strong id="total-premios-valor">$0</strong>
+										</div>
+										<hr>
+										<div class="fila-resumen total-final">
+											<span>Valor a Pagar:</span>
+											<strong id="valor-pagar-valor">$0</strong>
+										</div>
+										<div class="fila-resumen" style="padding-top: 10px;">
+											<label for="ingrese-efectivo">Ingrese Efectivo:</label>
+											<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
 										</div>
 									</div>
-								</div> 
-							</div>
+								</div>
+							</div> 
+						</div>
 					</div> 
 				</div>
 			</div>

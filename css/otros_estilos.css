@@ -17,6 +17,17 @@
     margin-right: 0;
 }
 
+.premio-header {
+    background-color: #d9534f; /* Bootstrap's danger color */
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .datos-sorteo-row {
     background-color: #ffeb3b;
     font-weight: bold;
