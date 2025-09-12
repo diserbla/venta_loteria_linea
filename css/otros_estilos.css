@@ -139,3 +139,11 @@
     margin-right: 0;
     margin-bottom: 10px;
 }
+
+/* Contenedor para tablas con scroll vertical */
+.table-container-scroll {
+    max-height: 250px; /* Altura máxima antes de que aparezca el scroll. Ajústala según necesites. */
+    overflow-y: auto;  /* Muestra el scroll vertical solo cuando es necesario. */
+    border: 1px solid #ddd;
+    border-top: none;
+}

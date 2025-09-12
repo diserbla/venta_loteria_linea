@@ -138,21 +138,23 @@
 											</div>
 										</div>
 
-										<table class="table table-bordered table-condensed table-striped table-hover">
-											<thead>
-												<tr>
-													<th>Lotería</th>
-													<th>Sorteo</th>
-													<th>Número</th>
-													<th>Serie</th>
-													<th>Fracc</th>
-													<th>Valor</th>
-													<th class="text-center"><i class="fa fa-trash"></i></th>
-												</tr>
-											</thead>
-											<tbody>
-											</tbody>
-										</table>
+										<div class="table-container-scroll">
+											<table class="table table-bordered table-condensed table-striped table-hover">
+												<thead>
+													<tr>
+														<th>Lotería</th>
+														<th>Sorteo</th>
+														<th>Número</th>
+														<th>Serie</th>
+														<th>Fracc</th>
+														<th>Valor</th>
+														<th class="text-center"><i class="fa fa-trash"></i></th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
 
 										<div class="datos-sorteo-row">
 											Total: <strong>$0</strong>
@@ -189,22 +191,24 @@
 										</div>
 									</div>
 
-									<div style="padding: 0 20px 20px 20px;">
-										<table class="table table-bordered table-condensed table-striped table-hover">
-											<thead>
-												<tr>
-													<th>Sorteo</th>
-													<th>Billete</th>
-													<th>Serie</th>
-													<th style="width: 40%;">Premio</th>
-													<th>Valor</th>
-													<th class="text-center"><i class="fa fa-trash"></i></th>
-												</tr>
-											</thead>
-											<tbody>
-												<!-- Las filas de premios se agregarán aquí dinámicamente -->
-											</tbody>
-										</table>
+									<div class="table-container-scroll" style="padding: 0 20px 20px 20px;">
+										<div class="table-container-scroll">
+											<table class="table table-bordered table-condensed table-striped table-hover">
+												<thead>
+													<tr>
+														<th>Sorteo</th>
+														<th>Billete</th>
+														<th>Serie</th>
+														<th style="width: 40%;">Premio</th>
+														<th>Valor</th>
+														<th class="text-center"><i class="fa fa-trash"></i></th>
+													</tr>
+												</thead>
+												<tbody>
+													<!-- Las filas de premios se agregarán aquí dinámicamente -->
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
 							</div>
