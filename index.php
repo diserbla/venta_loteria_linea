@@ -152,6 +152,28 @@
 													</tr>
 												</thead>
 												<tbody>
+													<tr>
+														<td>MEDELLIN</td>
+														<td>4701</td>
+														<td>1234</td>
+														<td>050</td>
+														<td>1/3</td>
+														<td>$5.000</td>
+														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+													</tr>
+													<tr>
+														<td>BOGOTA</td>
+														<td>3250</td>
+														<td>5678</td>
+														<td>120</td>
+														<td>2/3</td>
+														<td>$10.000</td>
+														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+													</tr>
+													<!-- Repetir para 5 filas en total -->
+													<tr><td>VALLE</td><td>2489</td><td>9876</td><td>088</td><td>3/3</td><td>$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td>CRUZ ROJA</td><td>2999</td><td>4321</td><td>010</td><td>1/3</td><td>$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td>QUINDIO</td><td>2876</td><td>1122</td><td>045</td><td>2/3</td><td>$10.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
 												</tbody>
 											</table>
 										</div>
@@ -191,24 +213,42 @@
 										</div>
 									</div>
 
-									<div class="table-container-scroll" style="padding: 0 20px 20px 20px;">
-										<div class="table-container-scroll">
-											<table class="table table-bordered table-condensed table-striped table-hover">
-												<thead>
-													<tr>
-														<th>Sorteo</th>
-														<th>Billete</th>
-														<th>Serie</th>
-														<th style="width: 40%;">Premio</th>
-														<th>Valor</th>
-														<th class="text-center"><i class="fa fa-trash"></i></th>
-													</tr>
-												</thead>
-												<tbody>
-													<!-- Las filas de premios se agregarán aquí dinámicamente -->
-												</tbody>
-											</table>
-										</div>
+									<div class="table-container-scroll" style="margin: 0 20px 20px 20px;">
+										<table class="table table-bordered table-condensed table-striped table-hover">
+											<thead>
+												<tr>
+													<th>Sorteo</th>
+													<th>Billete</th>
+													<th>Serie</th>
+													<th style="width: 40%;">Premio</th>
+													<th>Valor</th>
+													<th class="text-center"><i class="fa fa-trash"></i></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>4700</td>
+													<td>98765</td>
+													<td>123</td>
+													<td>APROXIMACION ULTIMA CIFRA</td>
+													<td>$50.000</td>
+													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+												</tr>
+												<tr>
+													<td>3249</td>
+													<td>54321</td>
+													<td>050</td>
+													<td>SECO $10 MILLONES</td>
+													<td>$10.000.000</td>
+													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+												</tr>
+												<!-- Repetir para 5 filas en total -->
+												<tr><td>2488</td><td>11223</td><td>088</td><td>APROXIMACION DOS PRIMERAS</td><td>$25.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<tr><td>2998</td><td>33445</td><td>010</td><td>SECO $20 MILLONES</td><td>$20.000.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<tr><td>2875</td><td>55667</td><td>045</td><td>APROXIMACION ULTIMA CIFRA</td><td>$50.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<!-- Las filas de premios se agregarán aquí dinámicamente -->
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>
