@@ -38,3 +38,26 @@ function actualizarTotales() {
     }   
 }
 
+$(document).ready(function(){
+
+    // Restringe la entrada solo a números para los campos con la clase .numeric-input
+    $(document).on('input', '.numeric-input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Limpia los campos de entrada del número
+    $('#limpiar-numero-btn').on('click', function() {
+        $('.number-input-digit').val('');
+        $('#cfr1').focus();
+    });
+
+    // Auto-focus en el primer campo de entrada al cargar la página
+    $('#cfr1').focus();
+
+    // Auto-tab al siguiente campo de entrada de número
+    $('.number-input-digit').on('keyup', function(e) {
+        if (this.value.length === this.maxLength) {
+            $(this).closest('.number-input-digit-wrapper').next().find('input').focus();
+        }
+    });
+});
