@@ -160,6 +160,54 @@
 									</div>
 								</div>	
 							</div>	
+
+							<!-- Panel de Premios de Lotería -->
+							<div class="panel panel-default" style="margin-top: 20px;">
+								<div class="premio-header">PREMIOS LOTERIA</div>
+								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
+									<div class="row" style="padding: 20px;">
+										<div class="col-md-4">
+											<label for="premio-cedula">Cédula</label>
+											<div class="input-group">
+												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
+												<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
+													<i class="fa fa-search"></i>
+												</span>
+											</div>
+										</div>
+										<div class="col-md-5">
+											<div class="form-group">
+												<label for="premio-nombre-cliente">Nombre</label>
+												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label for="premio-codigo">Código</label>
+												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
+											</div>
+										</div>
+									</div>
+
+									<div style="padding: 0 20px 20px 20px;">
+										<table class="table table-bordered table-condensed table-striped table-hover">
+											<thead>
+												<tr>
+													<th>Sorteo</th>
+													<th>Billete</th>
+													<th>Serie</th>
+													<th style="width: 40%;">Premio</th>
+													<th>Valor</th>
+													<th class="text-center"><i class="fa fa-trash"></i></th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- Las filas de premios se agregarán aquí dinámicamente -->
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
 						</div>	
 
 						<div class="col-lg-4 col-md-4 col-sm-4">
@@ -231,56 +279,7 @@
 						</div>
 					</div>
 					
-					<!-- Nueva fila para el panel de premios -->
-					<div class="row">
-						<div class="col-lg-8 col-md-8 col-sm-8">
-							<div class="panel panel-default">
-								<div class="premio-header">PREMIOS LOTERIA</div>
-								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
-									<div class="row" style="padding: 20px;">
-										<div class="col-md-4">
-											<label for="premio-cedula">Cédula</label>
-											<div class="input-group">
-												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
-												<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
-													<i class="fa fa-search"></i>
-												</span>
-											</div>
-										</div>
-										<div class="col-md-5">
-											<div class="form-group">
-												<label for="premio-nombre-cliente">Nombre</label>
-												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
-											</div>
-										</div>
-										<div class="col-md-3">
-											<div class="form-group">
-												<label for="premio-codigo">Código</label>
-												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
-											</div>
-										</div>
-									</div>
-
-									<div style="padding: 0 20px 20px 20px;">
-										<table class="table table-bordered table-condensed table-striped table-hover">
-											<thead>
-												<tr>
-													<th>Sorteo</th>
-													<th>Billete</th>
-													<th>Serie</th>
-													<th style="width: 40%;">Premio</th>
-													<th>Valor</th>
-													<th class="text-center"><i class="fa fa-trash"></i></th>
-												</tr>
-											</thead>
-											<tbody>
-												<!-- Las filas de premios se agregarán aquí dinámicamente -->
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>	
-						</div>	
+					<!-- La tabla de premios que estaba aquí se movió al panel de arriba -->
 				</div>
 			</div>
 		</div>
