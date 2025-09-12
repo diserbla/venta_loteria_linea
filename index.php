@@ -273,6 +273,12 @@
 												<input type="text" id="cliente-direccion" class="form-control">
 											</div>
 										</div>
+										<div class="form-group">
+											<label for="cliente-email" class="col-sm-3 control-label">Email</label>
+											<div class="col-sm-9">
+												<input type="email" id="cliente-email" class="form-control">
+											</div>
+										</div>
 									</form>
 								</div>
 							</div>
