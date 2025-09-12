@@ -215,35 +215,8 @@
 						</div>	
 
 						<div class="col-lg-4 col-md-4 col-sm-4">
-							<div class="panel panel-success">
-								<div class="panel-heading">
-									<h4 class="panel-title">TOTALES</h4>
-								</div>
-								<div class="panel-body">
-									<div class="resumen-venta">
-										<div class="fila-resumen">
-											<span>Total Venta:</span>
-											<strong id="total-venta-valor">$0</strong>
-										</div>
-										<div class="fila-resumen">
-											<span>Total Premios:</span>
-											<strong id="total-premios-valor">$0</strong>
-										</div>
-										<hr>
-										<div class="fila-resumen total-final">
-											<span>Valor a Pagar:</span>
-											<strong id="valor-pagar-valor">$0</strong>
-										</div>
-										<div class="fila-resumen" style="padding-top: 10px;">
-											<label for="ingrese-efectivo">Ingrese Efectivo:</label>
-											<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
-										</div>
-									</div>
-								</div>
-							</div> 
-
 							<!-- Panel de Datos del Cliente -->
-							<div class="panel panel-default" style="margin-top: 20px;">
+							<div class="panel panel-default">
 								<div class="cliente-header">DATOS DEL CLIENTE</div>
 								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0; padding: 15px;">
 									<form class="form-horizontal">
@@ -286,6 +259,33 @@
 									</form>
 								</div>
 							</div>
+
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<h4 class="panel-title">TOTALES</h4>
+								</div>
+								<div class="panel-body">
+									<div class="resumen-venta">
+										<div class="fila-resumen">
+											<span>Total Venta:</span>
+											<strong id="total-venta-valor">$0</strong>
+										</div>
+										<div class="fila-resumen">
+											<span>Total Premios:</span>
+											<strong id="total-premios-valor">$0</strong>
+										</div>
+										<hr>
+										<div class="fila-resumen total-final">
+											<span>Valor a Pagar:</span>
+											<strong id="valor-pagar-valor">$0</strong>
+										</div>
+										<div class="fila-resumen" style="padding-top: 10px;">
+											<label for="ingrese-efectivo">Ingrese Efectivo:</label>
+											<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
+										</div>
+									</div>
+								</div>
+							</div> 
 						</div>
 					</div>
 					
