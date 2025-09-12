@@ -88,7 +88,7 @@
 			<div class="tab-content">
 				<div class="tab-pane fade active in" id="nuevo">
 					<div class="row"> 
-							<div class="col-lg-9 col-md-9 col-sm-9">
+							<div class="col-lg-8 col-md-8 col-sm-8">
 								<div class="panel panel-primary">
 									<div class="panel-body" >
 										<div class="venta-header">LOTERIA EN LINEA</div>
@@ -167,7 +167,7 @@
 								</div>	
 							</div>	
 
-							<div class="col-lg-3 col-md-3 col-sm-3">
+							<div class="col-lg-4 col-md-4 col-sm-4">
 								<div class="panel panel-success">
 									<div class="panel-heading">
 										<h4 class="panel-title">TOTALES</h4>
