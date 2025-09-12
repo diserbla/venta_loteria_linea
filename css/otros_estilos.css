@@ -30,6 +30,19 @@
     border-top-right-radius: 8px;
 }
 
+.cliente-header {
+    background-color: #f0ad4e; /* Bootstrap's warning color (orange) */
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
 .datos-sorteo-row {
     background-color: #ffeb3b;
     font-weight: bold;
@@ -118,4 +131,11 @@
 #premio-cedula, #premio-codigo {
     font-size: 1.2em;
     font-weight: bold;
+}
+
+/* Ajustes para el formulario horizontal de cliente */
+.form-horizontal .form-group {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 10px;
 }

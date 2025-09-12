@@ -189,6 +189,45 @@
 									</div>
 								</div>
 							</div> 
+
+							<!-- Panel de Datos del Cliente -->
+							<div class="panel panel-default" style="margin-top: 20px;">
+								<div class="cliente-header">DATOS DEL CLIENTE</div>
+								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0; padding: 15px;">
+									<form class="form-horizontal">
+										<div class="form-group">
+											<label for="cliente-cedula" class="col-sm-3 control-label">Cédula</label>
+											<div class="col-sm-9">
+												<input type="text" id="cliente-cedula" class="form-control numeric-input" maxlength="10">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="cliente-nombres" class="col-sm-3 control-label">Nombres</label>
+											<div class="col-sm-9">
+												<input type="text" id="cliente-nombres" class="form-control">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="cliente-apellidos" class="col-sm-3 control-label">Apellidos</label>
+											<div class="col-sm-9">
+												<input type="text" id="cliente-apellidos" class="form-control">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="cliente-celular" class="col-sm-3 control-label">Celular</label>
+											<div class="col-sm-9">
+												<input type="text" id="cliente-celular" class="form-control numeric-input" maxlength="10">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="cliente-direccion" class="col-sm-3 control-label">Dirección</label>
+											<div class="col-sm-9">
+												<input type="text" id="cliente-direccion" class="form-control">
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
 						</div>
 					</div>
 					
@@ -242,7 +281,6 @@
 								</div>
 							</div>	
 						</div>	
-					</div> 
 				</div>
 			</div>
 		</div>
