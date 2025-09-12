@@ -142,38 +142,38 @@
 											<table class="table table-bordered table-condensed table-striped table-hover">
 												<thead>
 													<tr>
-														<th>Lotería</th>
-														<th>Sorteo</th>
-														<th>Número</th>
-														<th>Serie</th>
-														<th>Fracc</th>
-														<th>Valor</th>
+														<th style="text-align: left; width: 40%;">Lotería</th>
+														<th class="text-center">Sorteo</th>
+														<th class="text-center">Número</th>
+														<th class="text-center">Serie</th>
+														<th class="text-center">Fracc</th>
+														<th class="text-right" style="width: 20%;">Valor</th>
 														<th class="text-center"><i class="fa fa-trash"></i></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td>MEDELLIN</td>
-														<td>4701</td>
-														<td>1234</td>
-														<td>050</td>
-														<td>1/3</td>
-														<td>$5.000</td>
+														<td style="text-align: left;">MEDELLIN</td>
+														<td class="text-center">4701</td>
+														<td class="text-center">1234</td>
+														<td class="text-center">050</td>
+														<td class="text-center">1</td>
+														<td class="text-right">$5.000</td>
 														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 													</tr>
 													<tr>
-														<td>BOGOTA</td>
-														<td>3250</td>
-														<td>5678</td>
-														<td>120</td>
-														<td>2/3</td>
-														<td>$10.000</td>
+														<td style="text-align: left;">BOGOTA</td>
+														<td class="text-center">3250</td>
+														<td class="text-center">5678</td>
+														<td class="text-center">120</td>
+														<td class="text-center">2</td>
+														<td class="text-right">$10.000</td>
 														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 													</tr>
 													<!-- Repetir para 5 filas en total -->
-													<tr><td>VALLE</td><td>2489</td><td>9876</td><td>088</td><td>3/3</td><td>$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td>CRUZ ROJA</td><td>2999</td><td>4321</td><td>010</td><td>1/3</td><td>$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td>QUINDIO</td><td>2876</td><td>1122</td><td>045</td><td>2/3</td><td>$10.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
 												</tbody>
 											</table>
 										</div>
@@ -217,11 +217,11 @@
 										<table class="table table-bordered table-condensed table-striped table-hover">
 											<thead>
 												<tr>
-													<th>Sorteo</th>
-													<th>Billete</th>
-													<th>Serie</th>
-													<th style="width: 40%;">Premio</th>
-													<th>Valor</th>
+													<th class="text-center">Sorteo</th>
+													<th class="text-center">Numero</th>
+													<th class="text-center">Serie</th>
+													<th style="width: 55%; text-align: left;">Premio</th>
+													<th class="text-right" style="width: 20%;">Valor</th>
 													<th class="text-center"><i class="fa fa-trash"></i></th>
 												</tr>
 											</thead>
@@ -229,23 +229,23 @@
 												<tr>
 													<td>4700</td>
 													<td>98765</td>
-													<td>123</td>
-													<td>APROXIMACION ULTIMA CIFRA</td>
-													<td>$50.000</td>
+													<td class="text-center">123</td>
+													<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
+													<td class="text-right">$50.000</td>
 													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 												</tr>
 												<tr>
 													<td>3249</td>
 													<td>54321</td>
-													<td>050</td>
-													<td>SECO $10 MILLONES</td>
-													<td>$10.000.000</td>
+													<td class="text-center">050</td>
+													<td style="text-align: left;">SECO $10 MILLONES</td>
+													<td class="text-right">$10.000.000</td>
 													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 												</tr>
 												<!-- Repetir para 5 filas en total -->
-												<tr><td>2488</td><td>11223</td><td>088</td><td>APROXIMACION DOS PRIMERAS</td><td>$25.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-												<tr><td>2998</td><td>33445</td><td>010</td><td>SECO $20 MILLONES</td><td>$20.000.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-												<tr><td>2875</td><td>55667</td><td>045</td><td>APROXIMACION ULTIMA CIFRA</td><td>$50.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<tr><td class="text-center">2488</td><td class="text-center">11223</td><td class="text-center">088</td><td style="text-align: left;">APROXIMACION DOS PRIMERAS</td><td class="text-right">$25.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<tr><td class="text-center">2998</td><td class="text-center">33445</td><td class="text-center">010</td><td style="text-align: left;">SECO $20 MILLONES</td><td class="text-right">$20.000.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+												<tr><td class="text-center">2875</td><td class="text-center">55667</td><td class="text-center">045</td><td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td><td class="text-right">$50.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
 												<!-- Las filas de premios se agregarán aquí dinámicamente -->
 											</tbody>
 										</table>

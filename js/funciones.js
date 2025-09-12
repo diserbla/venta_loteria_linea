@@ -44,6 +44,21 @@ function actualizarTotales() {
     }   
 }
 
+function gestionarScrollTablas() {
+    // Selecciona todos los contenedores de tablas que deben tener scroll condicional
+    $('.table-container-scroll').each(function() {
+        var container = $(this);
+        var table = container.find('table');
+        var rowCount = table.find('tbody tr').length;
+
+        if (rowCount > 5) {
+            container.addClass('scroll-active');
+        } else {
+            container.removeClass('scroll-active');
+        }
+    });
+}
+
 $(document).ready(function(){
 
     // Restringe la entrada solo a números para los campos con la clase .numeric-input
@@ -66,4 +81,7 @@ $(document).ready(function(){
             $(this).closest('.number-input-digit-wrapper').next().find('input').focus();
         }
     });
+
+    // Llama a la función para gestionar el scroll al cargar la página
+    gestionarScrollTablas();
 });

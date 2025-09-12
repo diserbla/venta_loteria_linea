@@ -142,8 +142,12 @@
 
 /* Contenedor para tablas con scroll vertical */
 .table-container-scroll {
-    max-height: 250px; /* Altura máxima ajustada para visualizar más filas. */
-    overflow-y: auto;  /* Muestra el scroll vertical solo cuando es necesario. */
     border: 1px solid #ddd;
     border-top: none;
+    /* Se elimina max-height y overflow-y para que se controle por JS */
+}
+
+.scroll-active {
+    max-height: 250px; /* Altura máxima para cuando el scroll es necesario. */
+    overflow-y: auto;  /* Muestra el scroll vertical solo cuando es necesario. */
 }
