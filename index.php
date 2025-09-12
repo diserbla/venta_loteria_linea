@@ -147,7 +147,7 @@
 													<th>Serie</th>
 													<th>Fracc</th>
 													<th>Valor</th>
-													<th>Borrar</th>
+													<th class="text-center"><i class="fa fa-trash"></i></th>
 												</tr>
 											</thead>
 											<tbody>
@@ -156,11 +156,6 @@
 
 										<div class="datos-sorteo-row">
 											Total: <strong>$0</strong>
-										</div>
-
-										<div class="footer-buttons" style="text-align: right;">
-											<button type="button" class="btn btn-danger">Cancelar</button>
-											<button type="button" class="btn btn-primary">Registrar</button>
 										</div>
 									</div>
 								</div>	
@@ -225,6 +220,24 @@
 												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
 											</div>
 										</div>
+									</div>
+
+									<div style="padding: 0 20px 20px 20px;">
+										<table class="table table-bordered table-condensed table-striped table-hover">
+											<thead>
+												<tr>
+													<th>Sorteo</th>
+													<th>Billete</th>
+													<th>Serie</th>
+													<th style="width: 40%;">Premio</th>
+													<th>Valor</th>
+													<th class="text-center"><i class="fa fa-trash"></i></th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- Las filas de premios se agregarán aquí dinámicamente -->
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>	
