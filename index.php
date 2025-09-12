@@ -204,13 +204,19 @@
 								<div class="premio-header">PREMIOS LOTERIA</div>
 								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
 									<div class="row" style="padding: 20px;">
-										<div class="col-md-5">
+										<div class="col-md-3">
 											<div class="form-group">
 												<label for="premio-cedula">Cédula</label>
 												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
 											</div>
 										</div>
-										<div class="col-md-7">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="premio-nombre-cliente">Nombre</label>
+												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
+											</div>
+										</div>
+										<div class="col-md-3">
 											<div class="form-group">
 												<label for="premio-codigo">Código</label>
 												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">

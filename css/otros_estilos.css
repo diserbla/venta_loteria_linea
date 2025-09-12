@@ -113,3 +113,9 @@
     font-weight: bold; /* Asegura que esté en negrita */
     text-align: center; /* Centra el texto */
 }
+
+/* Aumenta el tamaño de la fuente para los campos de cédula y código en premios */
+#premio-cedula, #premio-codigo {
+    font-size: 1.2em;
+    font-weight: bold;
+}
