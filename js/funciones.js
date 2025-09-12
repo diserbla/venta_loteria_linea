@@ -24,8 +24,12 @@ function actualizarTotales() {
 
     var valorAPagar = totalVenta - totalPremios;
 
+    // Obtener el campo de efectivo
+    var efectivoInput = $('#ingrese-efectivo');
+
     if (valorAPagar < 0) {
         $('#valor-pagar-valor').text('$0');
+        efectivoInput.prop('disabled', true).val(''); // Deshabilitar y limpiar
         // Muestra alerta informativa con swal v1
         swal(
             'Saldo a Favor',
@@ -33,8 +37,10 @@ function actualizarTotales() {
             'info'
         );
     } else {
-        // Formatea el número a estilo de moneda local (ej. 1.234.567)
-        $('#valor-pagar-valor').text('');
+        // Formatea el número a estilo de moneda local (COP)
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        $('#valor-pagar-valor').text(formatoMoneda.format(valorAPagar));
+        efectivoInput.prop('disabled', false); // Habilitar el campo
     }   
 }
 
