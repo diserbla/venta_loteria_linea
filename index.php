@@ -204,13 +204,16 @@
 								<div class="premio-header">PREMIOS LOTERIA</div>
 								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
 									<div class="row" style="padding: 20px;">
-										<div class="col-md-3">
-											<div class="form-group">
-												<label for="premio-cedula">Cédula</label>
+										<div class="col-md-4">
+											<label for="premio-cedula">Cédula</label>
+											<div class="input-group">
 												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
+												<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
+													<i class="fa fa-search"></i>
+												</span>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-5">
 											<div class="form-group">
 												<label for="premio-nombre-cliente">Nombre</label>
 												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
