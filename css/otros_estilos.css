@@ -26,6 +26,8 @@
     text-align: center;
     margin-left: 0;
     margin-right: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .datos-sorteo-row {

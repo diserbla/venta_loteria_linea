@@ -163,12 +163,6 @@
 											<button type="button" class="btn btn-primary">Registrar</button>
 										</div>
 									</div>
-
-									<!-- Panel de Premios de Lotería -->
-									<div class="premio-header">PREMIOS LOTERIA</div>
-									<div class="panel-body">
-										<!-- El contenido para los premios irá aquí -->
-									</div>
 								</div>	
 							</div>	
 						</div>	
@@ -201,6 +195,18 @@
 								</div>
 							</div> 
 						</div>
+					</div>
+					
+					<!-- Nueva fila para el panel de premios -->
+					<div class="row">
+						<div class="col-lg-8 col-md-8 col-sm-8">
+							<div class="panel panel-default">
+								<div class="premio-header">PREMIOS LOTERIA</div>
+								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
+									<!-- El contenido para los premios irá aquí -->
+								</div>
+							</div>	
+						</div>	
 					</div> 
 				</div>
 			</div>
