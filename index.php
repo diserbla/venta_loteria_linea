@@ -329,6 +329,10 @@
 											<label for="ingrese-efectivo">Ingrese Efectivo:</label>
 											<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
 										</div>
+										<div class="totales-actions" style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: center;">
+											<button type="button" id="btn-cancelar-venta" class="btn btn-danger btn-lg pull-left" style="margin-right: 20px;"><i class="fa fa-times"></i> Cancelar</button>
+											<button type="button" id="btn-grabar-venta" class="btn btn-success btn-lg pull-right"><i class="fa fa-check"></i> Grabar</button>
+										</div>
 									</div>
 								</div>
 							</div> 
