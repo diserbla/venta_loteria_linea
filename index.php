@@ -298,8 +298,8 @@
 										</div>
 										<div class="form-group">
 											<div class="col-sm-12 clearfix" style="margin-top: 20px;">
-												<button type="button" id="btn-grabar" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Grabar</button>
-												<button type="button" id="btn-cancelar" class="btn btn-danger pull-left" onclick="limpiarCliente()"><i class="fa fa-times"></i> Cancelar</button>
+												<button type="button" id="btn-grabar-cliente" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Grabar</button>
+												<button type="button" id="btn-cancelar-cliente" class="btn btn-danger pull-left" onclick="limpiarCliente()"><i class="fa fa-times"></i> Cancelar</button>
 											</div>
 										</div>
 									</form>

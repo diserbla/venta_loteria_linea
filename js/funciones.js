@@ -229,7 +229,7 @@ $(document).ready(function(){
     gestionarScrollTablas();
 
     // Evento click para el botón Grabar: valida y procesa si OK
-    $(document).on('click', '#btn-grabar', function(e) {
+    $(document).on('click', '#btn-grabar-cliente', function(e) {
         e.preventDefault();
         if (validarCliente()) {
             // Aquí implementar lógica real de grabado, ej. AJAX a funciones.php
