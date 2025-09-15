@@ -269,31 +269,37 @@
 										<div class="form-group">
 											<label for="cliente-nombres" class="col-sm-3 control-label">Nombres</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-nombres" class="form-control">
+												<input type="text" id="cliente-nombres" class="form-control alpha-input">
 											</div>
 										</div>
 										<div class="form-group">
 											<label for="cliente-apellidos" class="col-sm-3 control-label">Apellidos</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-apellidos" class="form-control">
+												<input type="text" id="cliente-apellidos" class="form-control alpha-input">
 											</div>
 										</div>
 										<div class="form-group">
 											<label for="cliente-celular" class="col-sm-3 control-label">Celular</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-celular" class="form-control numeric-input" maxlength="10">
+												<input type="text" id="cliente-celular" class="form-control numeric-input phone-input" maxlength="12">
 											</div>
 										</div>
 										<div class="form-group">
 											<label for="cliente-direccion" class="col-sm-3 control-label">Dirección</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-direccion" class="form-control">
+												<input type="text" id="cliente-direccion" class="form-control address-input">
 											</div>
 										</div>
 										<div class="form-group">
 											<label for="cliente-email" class="col-sm-3 control-label">Email</label>
 											<div class="col-sm-9">
-												<input type="email" id="cliente-email" class="form-control">
+												<input type="email" id="cliente-email" class="form-control email-input">
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-12 clearfix" style="margin-top: 20px;">
+												<button type="button" id="btn-grabar" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Grabar</button>
+												<button type="button" id="btn-cancelar" class="btn btn-danger pull-left" onclick="limpiarCliente()"><i class="fa fa-times"></i> Cancelar</button>
 											</div>
 										</div>
 									</form>
