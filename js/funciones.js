@@ -101,114 +101,6 @@ $(document).ready(function(){
         this.value = value;
     });
 
-    $(document).on('blur', '.email-input', function() {
-        const email = this.value.trim();
-        if (email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                swal({
-                    title: 'Email Inválido',
-                    text: 'Por favor, ingrese un correo electrónico válido (ej. usuario@dominio.com)',
-                    type: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                this.value = '';
-                this.focus();
-            }
-        }
-    });
-
-    // Función para validar campos requeridos del cliente al grabar
-    function validarCliente() {
-        const camposRequeridos = [
-            { id: 'cliente-cedula', label: 'Cédula' },
-            { id: 'cliente-nombres', label: 'Nombres' },
-            { id: 'cliente-apellidos', label: 'Apellidos' },
-            { id: 'cliente-celular', label: 'Celular' }
-        ];
-
-        let esValido = true;
-        let primerCampoInvalido = null;
-
-        camposRequeridos.forEach(campo => {
-            const elemento = document.getElementById(campo.id);
-            const valor = elemento.value.trim();
-
-            if (!valor) {
-                esValido = false;
-                if (!primerCampoInvalido) {
-                    primerCampoInvalido = elemento;
-                }
-                return;
-            }
-
-            // Validación específica para cédula: mínimo 5 dígitos
-            if (campo.id === 'cliente-cedula') {
-                const soloDigitos = valor.replace(/\D/g, '');
-                if (soloDigitos.length < 5) {
-                    esValido = false;
-                    if (!primerCampoInvalido) {
-                        primerCampoInvalido = elemento;
-                    }
-                    swal({
-                        title: 'Cédula Inválida',
-                        text: 'La cédula debe tener al menos 5 dígitos.',
-                        type: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
-
-            // Para celular, verificar que tenga al menos 10 dígitos raw (ignorando guiones)
-            if (campo.id === 'cliente-celular') {
-                const soloDigitos = valor.replace(/\D/g, '');
-                if (soloDigitos.length < 10) {
-                    esValido = false;
-                    if (!primerCampoInvalido) {
-                        primerCampoInvalido = elemento;
-                    }
-                    swal({
-                        title: 'Celular Inválido',
-                        text: 'El celular debe tener 10 dígitos.',
-                        type: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
-        });
-
-        if (!esValido && primerCampoInvalido) {
-            primerCampoInvalido.focus();
-        }
-        return esValido;
-
-        // Si es válido, aquí puedes agregar lógica para grabar (ej. AJAX a funciones.php)
-        // swal de éxito se puede mover al handler del botón si se necesita
-        // TODO: Implementar lógica de grabado real, ej. enviar form via AJAX
-    }
-
-    // Valida el formato de email en tiempo real para el campo con clase .email-input
-    $(document).on('input blur', '.email-input', function() {
-        const email = this.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (email && !emailRegex.test(email)) {
-            // Si es inválido en blur, mostrar alerta suave o limpiar (aquí usamos alert simple; puedes cambiar a tooltip)
-            if (this === document.activeElement) { // Solo en input si está activo
-                return; // No interrumpir mientras escribe
-            } else {
-                swal({
-                    title: 'Formato Inválido',
-                    text: 'Por favor ingrese un email válido (ej. usuario@dominio.com)',
-                    type: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                this.value = ''; // Limpiar si inválido al salir
-                this.focus(); // Re-enfocar para corregir
-            }
-        }
-    });
-
     // Limpia los campos de entrada del número
     $('#limpiar-numero-btn').on('click', function() {
         $('.number-input-digit').val('');
@@ -216,7 +108,7 @@ $(document).ready(function(){
     });
 
     // Auto-focus en el primer campo de entrada al cargar la página
-    $('#cfr1').focus();
+    $('#cliente-cedula').focus();
 
     // Auto-tab al siguiente campo de entrada de número
     $('.number-input-digit').on('keyup', function(e) {
@@ -229,11 +121,75 @@ $(document).ready(function(){
     gestionarScrollTablas();
 
     // Evento click para el botón grabar_cliente
-    $('#grabar_cliente').click(function(e) {
+    $('#btn-grabar-cliente').click(function(e) {
         e.preventDefault();
         fn_graba_cliente();
     });
 });
+
+function validarCliente() {
+    const camposRequeridos = [
+        { id: 'cliente-cedula', label: 'Cédula' },
+        { id: 'cliente-nombres', label: 'Nombres' },
+        { id: 'cliente-apellidos', label: 'Apellidos' },
+        { id: 'cliente-celular', label: 'Celular' }
+    ];
+
+    let esValido = true;
+    let primerCampoInvalido = null;
+
+    camposRequeridos.forEach(campo => {
+        const elemento = document.getElementById(campo.id);
+        const valor = elemento.value.trim();
+
+        if (!valor) {
+            esValido = false;
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = elemento;
+            }
+            return;
+        }
+
+        // Validación específica para cédula: mínimo 5 dígitos
+        if (campo.id === 'cliente-cedula') {
+            const soloDigitos = valor.replace(/\D/g, '');
+            if (soloDigitos.length < 5) {
+                esValido = false;
+                if (!primerCampoInvalido) {
+                    primerCampoInvalido = elemento;
+                }
+                swal({
+                    title: 'Cédula Inválida',
+                    text: 'La cédula debe tener al menos 5 dígitos.',
+                    type: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Para celular, verificar que tenga al menos 10 dígitos raw (ignorando guiones)
+        if (campo.id === 'cliente-celular') {
+            const soloDigitos = valor.replace(/\D/g, '');
+            if (soloDigitos.length < 10) {
+                esValido = false;
+                if (!primerCampoInvalido) {
+                    primerCampoInvalido = elemento;
+                }
+                swal({
+                    title: 'Celular Inválido',
+                    text: 'El celular debe tener 10 dígitos.',
+                    type: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    });
+
+    if (!esValido && primerCampoInvalido) {
+        primerCampoInvalido.focus();
+    }
+    return esValido;
+}
 
 function fn_graba_cliente(){
     
@@ -263,7 +219,7 @@ function fn_graba_cliente(){
 
     $.ajax({
         async:	false,
-        url 		: 'funciones.php',
+        url 		: '../clientes/funciones.php',
         type		: 'post',
         dataType 	: "json",
         data:  ajax_data,
@@ -281,36 +237,11 @@ function fn_graba_cliente(){
                 swal({
                     title: msg,
                     text: "",
-                    icon: "success",
-                    type: "warning",
-                    timer: 2000
-                }).then(function () {
-                    limpiarCliente();
-                    
+                    type: "success",
+                    timer: 5000,
+                    showConfirmButton: false
+                }).then(function() {
                     $('#cfr1').focus();
-
-                    //2023-ago-15: asigna el celular al campo ltr_telefono para el registro de lottired
-                    if ($('#ltr_telefono').length) {
-                        $('#ltr_telefono').val(celular);
-                    }
-                    //FIN //2023-ago-15: asigna el celular al campo ltr_telefono para el registro de lottired
-                    
-                    //2024-mar-18: coloca el valor de cedula en el campo de cedula para reimpresion
-                    if ($('#ltr_cedula_reimp').length) {
-                        $('#ltr_cedula_reimp').val(cedula);
-                    }
-                    //FIN 2024-mar-18
-
-                    if ($('#chk_domicilio').length && $('#chk_domicilio').prop('checked') && $('#din_efectivo').length)
-                    {
-                        $('#din_efectivo').focus();
-                    }
-                    
-                    // Verificar si el tbody de tbl_lot_items no está vacío y el tbody de tbl_ltr está vacío
-                    if ($('#tbl_lot_items tbody').length && $('#tbl_lot_items tbody').children().length > 0 && $('#tbl_ltr tbody').length && $('#tbl_ltr tbody').children().length == 0 && $('#din_efectivo').length) {
-                        $('#din_efectivo').focus();
-                    }
-
                 });
             }
         },

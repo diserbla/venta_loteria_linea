@@ -10,7 +10,6 @@
 	if($paso == 'evalua_conexion')
 	{
 		echo 'merca';
-	}			
-
+	}
 	
 ?>
