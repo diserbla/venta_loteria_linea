@@ -97,10 +97,10 @@
 											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 												<div class="form-group">
 													<label>Lotería</label>
-													<select class="form-control" id="loteria">
-														<option value="MEDELLIN">MEDELLIN</option>
-														<option value="BOGOTA">BOGOTA</option>
-														<option value="CALI">CALI</option>
+													<select class="form-control" id="cboLoterias">
+														<option value="16">MEDELLIN</option>
+														<option value="02">BOGOTA</option>
+														<option value="24">VALLE</option>
 													</select>
 												</div>
 											</div>

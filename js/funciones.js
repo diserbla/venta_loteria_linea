@@ -101,6 +101,21 @@ $(document).ready(function(){
         this.value = value;
     });
 
+    // Consulta cliente al salir del campo cédula (blur)
+    $('#cliente-cedula').blur(function(){
+        fn_consulta_cliente();
+    });
+
+    // Consulta cliente al presionar Enter o Tab en cédula
+    $("#cliente-cedula").keypress(function(event){
+        if ((event.keyCode == 13) || (event.keyCode == 9))
+        {
+            fn_consulta_cliente();
+            event.preventDefault();
+            $('#cliente-nombres').focus();
+        }
+    });
+
     // Limpia los campos de entrada del número
     $('#limpiar-numero-btn').on('click', function() {
         $('.number-input-digit').val('');
@@ -117,6 +132,16 @@ $(document).ready(function(){
         }
     });
 
+    // Auto-tab en blur para #cfr1 si tiene valor
+    $('#cfr1').blur(function() {
+        if (this.value.length === 1) {
+            var cod_lot = $('#cboLoterias').val(); 
+            console.log('blur con valor'+cod_lot);
+
+        }
+    });
+
+
     // Llama a la función para gestionar el scroll al cargar la página
     gestionarScrollTablas();
 
@@ -126,6 +151,63 @@ $(document).ready(function(){
         fn_graba_cliente();
     });
 });
+
+function fn_consulta_cliente(){
+
+    var cedula = $('#cliente-cedula').val();
+    
+    if (!cedula) {
+        //debe tener un valor, sino no hace nada
+        return;
+    }
+    else
+    {
+        var ajax_data = {
+                "paso"      : 'consultar',
+                "cedula"    : cedula,
+            }
+
+        $.ajax({
+            async:	false,
+            url 		: '../clientes/funciones.php', // the url where we want to POST
+            type		: 'post',
+            dataType 	: "json",
+            data:  ajax_data,
+            success: function(data)
+            {
+                error = data.error;
+                
+                if (error.length > 0)
+                {
+                    swal(error, "", "error");
+                }
+                else
+                {
+                    var arreglo = data.arreglo;
+
+                    if (arreglo.length > 0) {
+                        $.each(arreglo, function(j,data2){
+
+                            $('#cliente-nombres').val(data2.nombres);
+                            $('#cliente-apellidos').val(data2.apellidos);
+                            $('#cliente-celular').val(data2.celular);
+                            $('#cliente-direccion').val(data2.direccion);
+                            $('#cliente-email').val(data2.correo);
+
+                        });
+                    } else {
+                        swal('Cliente no encontrado', 'No se encontró un cliente con esta cédula.', 'warning');
+                    }
+                }
+            },
+            error: function (request, status, error)
+            {
+                alert(request.responseText);
+            }
+            
+        });
+    }
+}
 
 function validarCliente() {
     const camposRequeridos = [

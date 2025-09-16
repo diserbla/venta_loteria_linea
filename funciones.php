@@ -3,6 +3,9 @@
 	include($_SESSION['bd']."conexion.php");	
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);	
 
+	require_once '../ventas/funciones.php';
+	require_once '../ventas/funciones_lottired.php';
+
     $id_usu = $_SESSION['id_usu'];	
 	
 	$paso     =$_REQUEST['paso'];
@@ -11,5 +14,4 @@
 	{
 		echo 'merca';
 	}
-	
 ?>
