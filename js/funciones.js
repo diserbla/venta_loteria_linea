@@ -136,7 +136,30 @@ $(document).ready(function(){
     $('#cfr1').blur(function() {
         if (this.value.length === 1) {
             var cod_lot = $('#cboLoterias').val(); 
-            console.log('blur con valor'+cod_lot);
+            //console.log('blur con valor'+cod_lot);
+            $.ajax({
+                url: "../ventas/funciones.php",
+                dataType: "json",
+                type: "post",
+                data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
+                success: function (data) {
+                    var error = data.error;
+
+                    if (error.length > 0) {
+                        swal(error, "", "error");
+                    } else {
+                        var arreglo = data.arreglo;
+
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+                complete: function() {
+                // Ocultar el spinner cuando la solicitud se complete
+                    $('#spinner_lr_num_bil1').hide();
+                    }						
+            });
 
         }
     });
