@@ -228,16 +228,99 @@ $(document).ready(function(){
     // Llama a la función para gestionar el scroll al cargar la página
     gestionarScrollTablas();
 
-    // Evento click para el botón Grabar: valida y procesa si OK
-    $(document).on('click', '#btn-grabar-cliente', function(e) {
+    // Evento click para el botón grabar_cliente
+    $('#grabar_cliente').click(function(e) {
         e.preventDefault();
-        if (validarCliente()) {
-            // Aquí implementar lógica real de grabado, ej. AJAX a funciones.php
-            console.log('Datos del cliente válidos y grabados.');
-            // Ejemplo: swal de éxito ya está en validarCliente()
-        }
+        fn_graba_cliente();
     });
 });
+
+function fn_graba_cliente(){
+    
+    var sw = 0;
+    
+    if (!validarCliente()) {
+        sw = 1;
+        return;
+    }
+    
+    var cedula    = $('#cliente-cedula').val();
+    var nombres   = $('#cliente-nombres').val();
+    var apellidos = $('#cliente-apellidos').val();
+    var celular   = $('#cliente-celular').val();
+    var direccion = $('#cliente-direccion').val();
+    var correo    = $('#cliente-email').val();
+    
+    var ajax_data = {
+        "paso"      : 'grabar',
+        "cedula"    : cedula,
+        "nombres"   : nombres,
+        "apellidos" : apellidos,
+        "celular"   : celular,
+        "direccion" : direccion,
+        "correo"    : correo,
+    }
+
+    $.ajax({
+        async:	false,
+        url 		: 'funciones.php',
+        type		: 'post',
+        dataType 	: "json",
+        data:  ajax_data,
+        success: function(data)
+        {
+            error = data.error;
+            msg   = data.msg;
+            
+            if (error.length > 0)
+            {
+                swal(error, "", "error");
+            }
+            else
+            {
+                swal({
+                    title: msg,
+                    text: "",
+                    icon: "success",
+                    type: "warning",
+                    timer: 2000
+                }).then(function () {
+                    limpiarCliente();
+                    
+                    $('#cfr1').focus();
+
+                    //2023-ago-15: asigna el celular al campo ltr_telefono para el registro de lottired
+                    if ($('#ltr_telefono').length) {
+                        $('#ltr_telefono').val(celular);
+                    }
+                    //FIN //2023-ago-15: asigna el celular al campo ltr_telefono para el registro de lottired
+                    
+                    //2024-mar-18: coloca el valor de cedula en el campo de cedula para reimpresion
+                    if ($('#ltr_cedula_reimp').length) {
+                        $('#ltr_cedula_reimp').val(cedula);
+                    }
+                    //FIN 2024-mar-18
+
+                    if ($('#chk_domicilio').length && $('#chk_domicilio').prop('checked') && $('#din_efectivo').length)
+                    {
+                        $('#din_efectivo').focus();
+                    }
+                    
+                    // Verificar si el tbody de tbl_lot_items no está vacío y el tbody de tbl_ltr está vacío
+                    if ($('#tbl_lot_items tbody').length && $('#tbl_lot_items tbody').children().length > 0 && $('#tbl_ltr tbody').length && $('#tbl_ltr tbody').children().length == 0 && $('#din_efectivo').length) {
+                        $('#din_efectivo').focus();
+                    }
+
+                });
+            }
+        },
+        error: function (request, status, error)
+        {
+            alert(request.responseText);
+        }
+        
+    });
+}
 
 function limpiarCliente() {
     $('#cliente-cedula').val('');
