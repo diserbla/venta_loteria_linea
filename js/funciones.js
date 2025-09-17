@@ -149,7 +149,27 @@ $(document).ready(function(){
                         swal(error, "", "error");
                     } else {
                         var arreglo = data.arreglo;
-
+    
+                        console.log(arreglo);
+ 
+                        // Actualizar el div con datos del sorteo
+                        var datosSorteo = $('.datos-sorteo-row');
+                        var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
+                        var premioMayorFormateado = premioMayorValor + ' Millones';
+                        datosSorteo.html(`
+                            <div class="sorteo-line">
+                                Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong>
+                            </div>
+                            <div class="precios-line">
+                                <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
+                                <span class="precios-item">Billete: <strong>$${arreglo.vlr_billete.toLocaleString()}</strong></span>
+                                <span class="precios-item">Fracción: <strong>$${arreglo.vlr_fraccion.toLocaleString()}</strong></span>
+                                <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
+                            </div>
+                        `);
+    
+                        // Opcional: Actualizar totales en la interfaz si es necesario
+                        actualizarTotales();
                     }
                 },
                 error: function (request, status, error) {

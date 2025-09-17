@@ -126,7 +126,7 @@
 														<div class="col-xs-4 number-buttons-container">
 															<div class="row">
 																<div class="col-xs-6 number-button-wrapper-generate">
-																	<button class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
+																	<button id="genera_numero" class="btn btn-info btn-lg btn-block number-button"><i class="fa fa-random"></i></button>
 																</div>
 																<div class="col-xs-6 number-button-wrapper-clear">
 																	<button id="limpiar-numero-btn" class="btn btn-danger btn-lg btn-block number-button"><i class="fa fa-times"></i></button>

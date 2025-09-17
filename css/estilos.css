@@ -41,3 +41,67 @@ body {
     border: 1px solid #dee2e6;
     border-top: 0;
 }
+
+.datos-sorteo-row {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+    text-align: left;
+    font-size: 14px;
+}
+
+.sorteo-line {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.precios-line {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.precios-item {
+    flex: 1;
+    text-align: center;
+    padding: 5px 10px;
+    min-width: 120px;
+}
+
+.precios-item strong {
+    color: #28a745;
+    display: block;
+    font-size: 16px;
+}
+
+.incentivo-item strong {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+.incentivo-line {
+    text-align: right;
+    font-weight: bold;
+    color: #dc3545;
+    background-color: #fff3cd;
+    padding: 8px;
+    border-left: 4px solid #ffc107;
+    border-radius: 3px;
+}
+
+.incentivo-line strong {
+    font-size: 16px;
+}
