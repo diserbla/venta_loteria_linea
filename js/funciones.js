@@ -318,6 +318,10 @@ $(document).ready(function(){
         $('input[type="radio"]', '#div_series_disponibles').prop('checked', false); // Desmarcar radios
         $('#cfr1').focus();
         swal('Registro agregado', 'Se ha adicionado un registro de prueba a la tabla.', 'success');
+
+        // Ocultar el bloque de series después de adicionar exitoso
+        $('#div_series_disponibles').hide();
+        $('.datos-sorteo-row').hide();
     });
 
     // Evento para eliminar filas de la tabla (clic en ícono trash)
