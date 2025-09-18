@@ -267,12 +267,17 @@ $(document).ready(function(){
         var loteria = $('#cboLoterias_ltr option:selected').text();
         var sorteo = $('.sorteo-line strong').eq(0).text() || '0000'; // Sorteo del DOM
         var numero = $('#cfr1').val() + $('#cfr2').val() + $('#cfr3').val() + $('#cfr4').val();
-        var serie = $('#ltr_serie_ingresada').val() || '000';
+        var serie = $('input[type="radio"]:checked', '#div_series_disponibles').val() || '000';
         var fracc = $('#current-frac').text() || '1';
         var valor = '$5.000'; // Valor fijo para prueba
 
         if (!numero || numero.length !== 4) {
             swal('Número incompleto', 'Ingrese un número completo de 4 dígitos.', 'warning');
+            return;
+        }
+
+        if (!serie || serie === '') {
+            swal('Serie no seleccionada', 'Seleccione una serie disponible.', 'warning');
             return;
         }
 
@@ -302,6 +307,8 @@ $(document).ready(function(){
 
         // Limpiar inputs para nueva entrada
         $('.number-input-digit').val('');
+        $('#ltr_serie_ingresada').val(''); // Limpiar input si existe
+        $('input[type="radio"]', '#div_series_disponibles').prop('checked', false); // Desmarcar radios
         $('#cfr1').focus();
         swal('Registro agregado', 'Se ha adicionado un registro de prueba a la tabla.', 'success');
     });
