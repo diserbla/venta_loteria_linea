@@ -301,6 +301,43 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
 
             $("#div_series_disponibles").html(data.salida);
 
+            // Mejora la presentación del input y título solo si hay salida
+            if (data.salida && data.salida.trim() !== '') {
+                // Estilo para el input de serie
+                $('#ltr_serie_ingresada').css({
+                    'border': '2px solid #007bff',
+                    'border-radius': '5px',
+                    'padding': '10px',
+                    'font-size': '1.2em',
+                    'text-align': 'center',
+                    'background-color': '#f8f9fa',
+                    'width': '60px',
+                    'margin-left': '10px'
+                }).parent().css({
+                    'display': 'flex',
+                    'justify-content': 'flex-end',
+                    'margin-left': 'auto'
+                });
+
+                // Estilo para el título
+                $('#div_series_disponibles p').css({
+                    'background-color': '#e7f3ff',
+                    'color': '#0c5460',
+                    'font-weight': 'bold',
+                    'padding': '8px',
+                    'border-radius': '4px',
+                    'text-align': 'center',
+                    'font-size': '1.1em'
+                });
+
+                // Restringir input a solo 3 números
+                $('#ltr_serie_ingresada').on('input', function() {
+                    let value = $(this).val().replace(/[^0-9]/g, ''); // Solo números
+                    if (value.length > 3) value = value.substring(0, 3); // Máximo 3 dígitos
+                    $(this).val(value);
+                });
+            }
+
             //var fracciones = data.fracciones;
             var error = data.error;
 
