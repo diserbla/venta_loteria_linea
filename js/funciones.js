@@ -201,7 +201,6 @@ $(document).ready(function(){
 
                         // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
                         $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
-                        $('.datos-sorteo-row').css('margin-top', '-20px');
         
                         // Opcional: Actualizar totales en la interfaz si es necesario
                         actualizarTotales();
