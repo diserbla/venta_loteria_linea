@@ -146,7 +146,7 @@
 											</div>
 
 											<div class="table-container-scroll">
-												<table class="table table-bordered table-condensed table-striped table-hover">
+												<table id="tbl_ltr" class="table table-bordered table-condensed table-striped table-hover">
 												<thead>
 													<tr>
 														<th style="text-align: left; width: 40%;">Lotería</th>
@@ -178,9 +178,9 @@
 														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 													</tr>
 													<!-- Repetir para 5 filas en total -->
-													<tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<!-- <tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
+													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
+													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> -->
 												</tbody>
 											</table>
 										</div>

@@ -261,6 +261,69 @@ $(document).ready(function(){
 
         fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
     });
+
+    // Evento click para btn-adicionar: agregar registro de prueba a tbl_ltr
+    $(document).on('click', '#btn-adicionar', function() {
+        var loteria = $('#cboLoterias_ltr option:selected').text();
+        var sorteo = $('.sorteo-line strong').eq(0).text() || '0000'; // Sorteo del DOM
+        var numero = $('#cfr1').val() + $('#cfr2').val() + $('#cfr3').val() + $('#cfr4').val();
+        var serie = $('#ltr_serie_ingresada').val() || '000';
+        var fracc = $('#current-frac').text() || '1';
+        var valor = '$5.000'; // Valor fijo para prueba
+
+        if (!numero || numero.length !== 4) {
+            swal('Número incompleto', 'Ingrese un número completo de 4 dígitos.', 'warning');
+            return;
+        }
+
+        var nuevaFila = `
+            <tr>
+                <td style="text-align: left;">${loteria}</td>
+                <td class="text-center">${sorteo}</td>
+                <td class="text-center">${numero}</td>
+                <td class="text-center">${serie}</td>
+                <td class="text-center">${fracc}</td>
+                <td class="text-right">${valor}</td>
+                <td class="text-center eliminar-fila" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+            </tr>
+        `;
+
+        $('#tbl_ltr tbody').append(nuevaFila);
+
+        // Actualizar total de venta (sumar 5000 para esta prueba)
+        var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
+        var currentTotal = parseFloat(currentTotalText) || 0;
+        currentTotal += 5000;
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        $('#total-venta-valor').text(formatoMoneda.format(currentTotal));
+
+        actualizarTotales();
+        gestionarScrollTablas();
+
+        // Limpiar inputs para nueva entrada
+        $('.number-input-digit').val('');
+        $('#cfr1').focus();
+        swal('Registro agregado', 'Se ha adicionado un registro de prueba a la tabla.', 'success');
+    });
+
+    // Evento para eliminar filas de la tabla (clic en ícono trash)
+    $(document).on('click', '.eliminar-fila i', function() {
+        var fila = $(this).closest('tr');
+        var valorFilaText = fila.find('td:nth-child(6)').text().replace(/[$.]/g, '').replace(',', '');
+        var valorFila = parseFloat(valorFilaText) || 0;
+
+        // Restar del total
+        var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
+        var currentTotal = parseFloat(currentTotalText) || 0;
+        currentTotal = Math.max(0, currentTotal - valorFila);
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        $('#total-venta-valor').text(formatoMoneda.format(currentTotal));
+
+        fila.remove();
+        actualizarTotales();
+        gestionarScrollTablas();
+        swal('Fila eliminada', 'El registro ha sido removido de la tabla.', 'info');
+    });
 });
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
