@@ -138,14 +138,15 @@
 													</div>
 												</div>
 
-												<div class="form-group">
-													<div id="div_series_disponibles"></div>
-												<div>
+												</div>
 											</div>
-										</div>
 
-										<div class="table-container-scroll">
-											<table class="table table-bordered table-condensed table-striped table-hover">
+											<div class="form-group">
+												<div id="div_series_disponibles"></div>
+											</div>
+
+											<div class="table-container-scroll">
+												<table class="table table-bordered table-condensed table-striped table-hover">
 												<thead>
 													<tr>
 														<th style="text-align: left; width: 40%;">Lotería</th>

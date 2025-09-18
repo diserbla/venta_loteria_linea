@@ -258,6 +258,7 @@ $(document).ready(function(){
 });
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
+    /*
     // Función para manejar series disponibles con los parámetros proporcionados
     console.log('fn_series_disponibles llamada con:');
     console.log('cboLoterias_ltr:', cboLoterias_ltr);
@@ -266,7 +267,15 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
     console.log('cfr3:', cfr3);
     console.log('cfr4:', cfr4);
     console.log('numFracciones:', numFracciones);
+    */
     
+    // Validación previa: asegurar que todos los cfrx no estén vacíos y numFracciones sea válido
+    if (!cboLoterias_ltr || cfr1 === '' || cfr2 === '' || cfr3 === '' || cfr4 === '' || !numFracciones || numFracciones <= 0) {
+        console.log('Parámetros inválidos para fn_series_disponibles');
+        return;
+    }
+    
+    // Concatenación optimizada de num_bil solo si todos los cfrx son válidos
     var num_bil = cfr1 + cfr2 + cfr3 + cfr4;
     
 	$.ajax({
@@ -274,7 +283,7 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
         url: "funciones.php",
         dataType: "json",
         type: 'post',
-        data: { paso: 'ltr_series_disponibles', cod_lot: cod_lot, num_bil: num_bil, fracciones: numFracciones },
+        data: { paso: 'ltr_series_disponibles', cod_lot: cboLoterias_ltr, num_bil: num_bil, fracciones: numFracciones },
         beforeSend: function () {
             $("#spinner").show();
         },
