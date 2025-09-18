@@ -268,8 +268,7 @@ $(document).ready(function(){
         var sorteo = $('.sorteo-line strong').eq(0).text() || '0000'; // Sorteo del DOM
         var numero = $('#cfr1').val() + $('#cfr2').val() + $('#cfr3').val() + $('#cfr4').val();
         var serie = $('input[type="radio"]:checked', '#div_series_disponibles').val() || '000';
-        var fracc = $('#current-frac').text() || '1';
-        var valor = '$5.000'; // Valor fijo para prueba
+        var fracc = parseInt($('#current-frac').text()) || 1;
 
         if (!numero || numero.length !== 4) {
             swal('Número incompleto', 'Ingrese un número completo de 4 dígitos.', 'warning');
@@ -280,6 +279,15 @@ $(document).ready(function(){
             swal('Serie no seleccionada', 'Seleccione una serie disponible.', 'warning');
             return;
         }
+
+        // Extraer valor de la fracción del DOM
+        var preciosLine = $('.precios-line').text();
+        var matchFraccion = preciosLine.match(/Fracción:\s*\$?([\d.,]+)/);
+        var valorFraccionStr = matchFraccion ? matchFraccion[1].replace(/[.,]/g, '') : '0';
+        var valorFraccion = parseFloat(valorFraccionStr) || 0;
+        var valorTotal = fracc * valorFraccion;
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        var valor = formatoMoneda.format(valorTotal);
 
         var nuevaFila = `
             <tr>
@@ -295,11 +303,10 @@ $(document).ready(function(){
 
         $('#tbl_ltr tbody').append(nuevaFila);
 
-        // Actualizar total de venta (sumar 5000 para esta prueba)
+        // Actualizar total de venta (sumar valorTotal calculado)
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
         var currentTotal = parseFloat(currentTotalText) || 0;
-        currentTotal += 5000;
-        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        currentTotal += valorTotal;
         $('#total-venta-valor').text(formatoMoneda.format(currentTotal));
 
         actualizarTotales();
