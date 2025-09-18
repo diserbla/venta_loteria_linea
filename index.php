@@ -159,7 +159,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
+													<!-- <tr>
 														<td style="text-align: left;">MEDELLIN</td>
 														<td class="text-center">4701</td>
 														<td class="text-center">1234</td>
@@ -176,7 +176,7 @@
 														<td class="text-center">2</td>
 														<td class="text-right">$10.000</td>
 														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-													</tr>
+													</tr> -->
 													<!-- Repetir para 5 filas en total -->
 													<!-- <tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
 													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
