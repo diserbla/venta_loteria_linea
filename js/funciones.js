@@ -182,6 +182,9 @@ $(document).ready(function(){
                         var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
                         
                         datosSorteo.html(`
+                            <div class="adicionar-line" style="text-align: center; margin-bottom: 10px;">
+                                <button type="button" id="btn-adicionar" style="background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">Adicionar</button>
+                            </div>
                             <div class="sorteo-line">
                                 Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
                                 <button type="button" id="frac-minus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">-</button>
@@ -195,6 +198,9 @@ $(document).ready(function(){
                                 <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
                             </div>
                         `);
+
+                        // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
+                        $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
         
                         // Opcional: Actualizar totales en la interfaz si es necesario
                         actualizarTotales();
