@@ -94,14 +94,16 @@
 									<div class="venta-header">LOTERIA EN LINEA</div>
 									<div class="number-input-container">
 										<div class="row">
-											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-												<div class="form-group">
-													<label>Lotería</label>
-													<select class="form-control" id="cboLoterias">
-														<option value="16">MEDELLIN</option>
-														<option value="02">BOGOTA</option>
-														<option value="24">VALLE</option>
-													</select>
+											<div id="list_loterias_ltr">
+												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+													<div class="form-group">
+														<label>Lotería</label>
+														<select class="form-control" id="cboLoterias_ltr">
+															<option value="16">MEDELLIN</option>
+															<option value="02">BOGOTA</option>
+															<option value="24">VALLE</option>
+														</select>
+													</div>
 												</div>
 											</div>
 

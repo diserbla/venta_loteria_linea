@@ -61,6 +61,24 @@ function gestionarScrollTablas() {
 
 $(document).ready(function(){
 
+    $('#cboLoterias_ltr').click(function(){		
+
+        $.ajax({
+            async:	false, 
+            url:	"../ventas/funciones.php",
+            dataType:"json",
+            type	: 'post',
+            data:  { paso: 'cboLoterias_ltr'},									
+            success: function(data){
+                $("#list_loterias_ltr").html(data.salida);	
+            },	
+            error: function (request, status, error) 
+            {
+                alert(request.responseText);
+            }							
+        });			
+    });
+
     // Restringe la entrada solo a números para los campos con la clase .numeric-input
     $(document).on('input', '.numeric-input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -135,7 +153,7 @@ $(document).ready(function(){
     // Auto-tab en blur para #cfr1 si tiene valor
     $('#cfr1').blur(function() {
         if (this.value.length === 1) {
-            var cod_lot = $('#cboLoterias').val(); 
+            var cod_lot = $('#cboLoterias_ltr').val(); 
             //console.log('blur con valor'+cod_lot);
             $.ajax({
                 url: "../ventas/funciones.php",
@@ -160,6 +178,9 @@ $(document).ready(function(){
                         var maxFracc = parseInt(arreglo.fracciones);
                         var currentFracc = maxFracc;
                         
+                        var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
+                        var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
+                        
                         datosSorteo.html(`
                             <div class="sorteo-line">
                                 Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
@@ -169,8 +190,8 @@ $(document).ready(function(){
                             </div>
                             <div class="precios-line">
                                 <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
-                                <span class="precios-item">Billete: <strong>$${arreglo.vlr_billete.toLocaleString()}</strong></span>
-                                <span class="precios-item">Fracción: <strong>$${arreglo.vlr_fraccion.toLocaleString()}</strong></span>
+                                <span class="precios-item">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
+                                <span class="precios-item">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
                                 <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
                             </div>
                         `);
