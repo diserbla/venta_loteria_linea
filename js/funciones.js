@@ -153,7 +153,7 @@ $(document).ready(function(){
     // Auto-tab en blur para #cfr1 si tiene valor
     $('#cfr1').blur(function() {
         if (this.value.length === 1) {
-            var cod_lot = $('#cboLoterias_ltr').val(); 
+            var cod_lot = $('#cboLoterias_ltr').val();
             //console.log('blur con valor'+cod_lot);
             $.ajax({
                 url: "../ventas/funciones.php",
@@ -167,9 +167,9 @@ $(document).ready(function(){
                         swal(error, "", "error");
                     } else {
                         var arreglo = data.arreglo;
-    
-                        console.log(arreglo);
         
+                        console.log(arreglo);
+                
                         // Actualizar el div con datos del sorteo
                         var datosSorteo = $('.datos-sorteo-row');
                         var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
@@ -201,7 +201,10 @@ $(document).ready(function(){
 
                         // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
                         $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
-        
+                
+                        // Mostrar .datos-sorteo-row después de generar
+                        $('.datos-sorteo-row').show();
+                        
                         // Opcional: Actualizar totales en la interfaz si es necesario
                         actualizarTotales();
                     }
@@ -212,7 +215,7 @@ $(document).ready(function(){
                 complete: function() {
                 // Ocultar el spinner cuando la solicitud se complete
                     $('#spinner_lr_num_bil1').hide();
-                    }						
+                    }
             });
 
         }
@@ -387,6 +390,9 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
             */
 
             $("#div_series_disponibles").html(data.salida);
+
+            // Mostrar #div_series_disponibles después de generar
+            $('#div_series_disponibles').show();
 
             // Mejora la presentación del input y título solo si hay salida
             if (data.salida && data.salida.trim() !== '') {
