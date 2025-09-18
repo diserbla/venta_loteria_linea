@@ -151,14 +151,21 @@ $(document).ready(function(){
                         var arreglo = data.arreglo;
     
                         console.log(arreglo);
- 
+        
                         // Actualizar el div con datos del sorteo
                         var datosSorteo = $('.datos-sorteo-row');
                         var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
                         var premioMayorFormateado = premioMayorValor + ' Millones';
+                        
+                        var maxFracc = parseInt(arreglo.fracciones);
+                        var currentFracc = maxFracc;
+                        
                         datosSorteo.html(`
                             <div class="sorteo-line">
-                                Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong>
+                                Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
+                                <button type="button" id="frac-minus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">-</button>
+                                <strong id="current-frac" data-max="${maxFracc}" style="margin: 0 5px; color: #ff0000; font-weight: bold;">${currentFracc}</strong>
+                                <button type="button" id="frac-plus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+</button>
                             </div>
                             <div class="precios-line">
                                 <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
@@ -167,7 +174,7 @@ $(document).ready(function(){
                                 <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
                             </div>
                         `);
-    
+        
                         // Opcional: Actualizar totales en la interfaz si es necesario
                         actualizarTotales();
                     }
@@ -192,6 +199,24 @@ $(document).ready(function(){
     $('#btn-grabar-cliente').click(function(e) {
         e.preventDefault();
         fn_graba_cliente();
+    });
+    
+    // Event listeners para botones de fracciones
+    $(document).on('click', '#frac-minus', function() {
+        let $display = $('#current-frac');
+        let current = parseInt($display.text()) || 1;
+        if (current > 1) {
+            $display.text(current - 1);
+        }
+    });
+    
+    $(document).on('click', '#frac-plus', function() {
+        let $display = $('#current-frac');
+        let current = parseInt($display.text()) || 1;
+        let max = parseInt($display.data('max')) || 1;
+        if (current < max) {
+            $display.text(current + 1);
+        }
     });
 });
 
