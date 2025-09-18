@@ -137,6 +137,10 @@
 														</div>
 													</div>
 												</div>
+
+												<div class="form-group">
+													<div id="div_series_disponibles"></div>
+												<div>
 											</div>
 										</div>
 

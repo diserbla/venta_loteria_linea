@@ -239,19 +239,85 @@ $(document).ready(function(){
             $display.text(current + 1);
         }
     });
+
     // Evento input para #cfr4: verifica si cfr1, cfr2 y cfr3 tienen valores no vacíos después de ingresar un número
     $('#cfr4').on('input', function() {
-        var valorCfr1 = $('#cfr1').val().trim();
-        var valorCfr2 = $('#cfr2').val().trim();
-        var valorCfr3 = $('#cfr3').val().trim();
+        var cboLoterias_ltr = $('#cboLoterias_ltr').val();
+        var cfr1 = $('#cfr1').val().trim();
+        var cfr2 = $('#cfr2').val().trim();
+        var cfr3 = $('#cfr3').val().trim();
+        var cfr4 = $(this).val().trim();
+        var numFracciones = parseInt($('#current-frac').text()) || 1;
         
-        if (valorCfr1 !== '' && valorCfr2 !== '' && valorCfr3 !== '') {
+        if (cfr1 !== '' && cfr2 !== '' && cfr3 !== '') {
             console.log('Los inputs cfr1, cfr2 y cfr3 tienen valores no vacíos al ingresar en cfr4');
         }
 
         fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
     });
 });
+
+function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
+    // Función para manejar series disponibles con los parámetros proporcionados
+    console.log('fn_series_disponibles llamada con:');
+    console.log('cboLoterias_ltr:', cboLoterias_ltr);
+    console.log('cfr1:', cfr1);
+    console.log('cfr2:', cfr2);
+    console.log('cfr3:', cfr3);
+    console.log('cfr4:', cfr4);
+    console.log('numFracciones:', numFracciones);
+    
+    var num_bil = cfr1 + cfr2 + cfr3 + cfr4;
+    
+	$.ajax({
+        async: true,
+        url: "funciones.php",
+        dataType: "json",
+        type: 'post',
+        data: { paso: 'ltr_series_disponibles', cod_lot: cod_lot, num_bil: num_bil, fracciones: numFracciones },
+        beforeSend: function () {
+            $("#spinner").show();
+        },
+        success: function (data) {
+
+            //var reservationId = $('#hd_ltr_reservationId').val();
+
+            //$("#spinner").hide();
+
+            /*
+            if (reservationId.length == 1) {
+                $("#div_series_disponibles").html(data.salida);
+            }
+            */
+
+            $("#div_series_disponibles").html(data.salida);
+
+            //var fracciones = data.fracciones;
+            var error = data.error;
+
+            if (error.length > 0) {
+                swal({
+                    title: error,
+                    text: "",
+                    icon: "error",
+                    type: "warning",
+                    timer: 5000
+                }).then(function () {
+                    //fn_limpiar_ltr();
+                });
+            } else {
+                //$('.ocultar_ltr1').show();
+
+                //$("#ltr_nro_fracciones").val(fracciones);
+                //$("#ltr_nro_fracciones").attr('max', fracciones);
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
+    });
+}
+
 
 function fn_consulta_cliente(){
 
@@ -444,18 +510,4 @@ function limpiarCliente() {
     $('#cliente-direccion').val('');
     $('#cliente-email').val('');
     $('#cliente-cedula').focus();
-}
-
-function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
-    // Función para manejar series disponibles con los parámetros proporcionados
-    console.log('fn_series_disponibles llamada con:');
-    console.log('cboLoterias_ltr:', cboLoterias_ltr);
-    console.log('cfr1:', cfr1);
-    console.log('cfr2:', cfr2);
-    console.log('cfr3:', cfr3);
-    console.log('cfr4:', cfr4);
-    console.log('numFracciones:', numFracciones);
-    
-    // Aquí se puede agregar la lógica principal para verificar series disponibles
-    // Por ejemplo, una llamada AJAX a funciones.php con estos datos
 }
