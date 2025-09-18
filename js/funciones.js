@@ -304,7 +304,7 @@ $(document).ready(function(){
             </tr>
         `;
 
-        $('#tbl_ltr tbody').append(nuevaFila);
+        $('#tbl_ltr tbody').prepend(nuevaFila);
 
         // Actualizar total de venta (sumar valorTotal calculado)
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
