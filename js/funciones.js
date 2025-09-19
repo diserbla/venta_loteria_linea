@@ -533,7 +533,7 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
     });
 }
 
-function fn_ltr_fracciones_serie_seleccionada(cod_lot,num_bil,num_ser){
+function fn_ltr_fracciones_serie_seleccionada123(cod_lot,num_bil,num_ser){
     $.ajax({
             async:	false, 
             url:	"../ventas/funciones.php",
@@ -747,4 +747,54 @@ function limpiarCliente() {
     $('#cliente-direccion').val('');
     $('#cliente-email').val('');
     $('#cliente-cedula').focus();
+}
+
+function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
+    // Validaciones básicas antes del AJAX
+    if (!cod_lot || !num_bil || !num_ser) {
+        console.error('Parámetros inválidos:', { cod_lot, num_bil, num_ser });
+        swal('Error', 'Parámetros incompletos para consultar fracciones.', 'warning');
+        return;
+    }
+
+    $.ajax({
+        async: true,  // Cambiado a true para no bloquear (mejor práctica)
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: 'post',	
+        data: { 
+            paso: 'ltr_fracciones_serie_seleccionada', 
+            cod_lot: cod_lot, 
+            num_bil: num_bil, 
+            num_ser: num_ser 
+        },									
+        success: function(data) {
+            // Verificar si hay error en la respuesta
+            if (data.error && data.error.length > 0) {
+                swal('Error', data.error, 'error');
+                return;
+            }
+
+            var fracciones = parseInt(data.fracciones) || 1;  // Asegurar que sea un número válido (default 1)
+            
+            console.log('Fracciones encontradas: ' + fracciones);
+            
+            var $currentFrac = $("#current-frac");
+            if ($currentFrac.length > 0) {  // Verificar que el elemento exista
+                $currentFrac.text(fracciones);  // Cambia el TEXTO visible (en lugar de .val())
+                $currentFrac.data('max', fracciones);  // Actualiza data-max para lógica JS (ej. botones +/-)
+                // Opcional: Actualiza el atributo HTML si lo necesitas para otros fines
+                // $currentFrac.attr('max', fracciones);
+                
+                // Opcional: Actualizar totales o UI relacionada
+                //actualizarTotales();  // Si existe esta función en tu código
+            } else {
+                console.error('Elemento #current-frac no encontrado en el DOM');
+            }
+        },	
+        error: function (request, status, error) {
+            console.error('Error en AJAX:', error);
+            alert('Error al consultar fracciones: ' + request.responseText);
+        }							
+    });	
 }
