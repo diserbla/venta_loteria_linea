@@ -223,6 +223,57 @@ $(document).ready(function(){
         }
     });
 
+	$(document).on("keypress", "#ltr_serie_ingresada", function (e) {
+        if ((e.keyCode == 13) || (e.keyCode == 9)) {
+            
+            var cod_lot = $('#cboLoterias_ltr').val(); 
+            var num_bil =  $('#cfr1').val().trim()+$('#cfr2').val().trim()+$('#cfr3').val().trim()+$('#cfr4').val().trim();
+            var num_ser = $('#ltr_serie_ingresada').val(); 
+            
+            if (num_ser.length == 3)
+            {
+                //console.log('Enter en serie con valor'+cod_lot+num_bil+num_ser);
+							//como es una serie que se ingresa de forma manual, entonces para evitar que tenga que darle click en el boton de
+							//adicionar y demorarse mas, entonces desde aqui validamos si existe:
+                $.ajax({
+                    url: "../ventas/funciones.php",
+                    dataType: 'json',
+                    type: 'post',
+                    data: { 
+                        paso: 'ltr_fractions_count', 
+                        cod_lot: cod_lot, 
+                        num_ser: num_ser, 
+                        num_bil: num_bil,
+                        num_fra: 1    //le enviamos una sola fraccion 
+                    },
+                    success: function (data) {
+                        var error = data.error;
+                        if (error.length > 0) {
+                            swal(error, "", "error").then(function () {
+                                $('#ltr_serie_ingresada').val('');
+                                $('#ltr_serie_ingresada').focus();
+                            });									
+                        }
+                        else {
+                            fn_ltr_fracciones_serie_seleccionada(cod_lot,num_bil,num_ser);
+
+                            var ltr_nro_fracciones = $('#current-frac').val(); 
+
+                            swal('SE ENCONTRARON '+ltr_nro_fracciones+' FRACCIONES DE LA SERIE '+num_ser+' DEL BILLETE '+num_bil, "", "success")
+                            .then((value) => {
+                                    //$('#ltr_nro_fracciones').focus();
+                            });	
+                        }
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    }
+                });
+
+            }
+        }
+    });
+
 
     // Llama a la función para gestionar el scroll al cargar la página
     gestionarScrollTablas();
@@ -247,6 +298,9 @@ $(document).ready(function(){
             var numFracciones = parseInt($display.text()) || 1;
             
             if (cfr1 !== '' && cfr2 !== '' && cfr3 !== '' && cfr4 !== '') {
+
+                console.log(cboLoterias_ltr,cfr1, cfr2, cfr3, cfr4, numFracciones);
+
                 fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
             }
         }
@@ -479,6 +533,28 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
     });
 }
 
+function fn_ltr_fracciones_serie_seleccionada(cod_lot,num_bil,num_ser){
+    $.ajax({
+            async:	false, 
+            url:	"../ventas/funciones.php",
+            dataType:"json",
+            type: 'post',	
+            data:  { paso: 'ltr_fracciones_serie_seleccionada',cod_lot:cod_lot,num_bil:num_bil,num_ser:num_ser},									
+            success: function(data){
+                
+                var fracciones = data.fracciones;
+                
+                console.log('fracciones encontradas: '+fracciones);
+                $("#current-frac").val(fracciones);
+                $("#current-frac").attr('max',fracciones);
+
+            },	
+            error: function (request, status, error) 
+            {
+                alert(request.responseText);
+            }							
+    });	
+}
 
 function fn_consulta_cliente(){
 
