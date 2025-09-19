@@ -184,82 +184,82 @@
 													</tbody>
 												</table>
 											</div>
-									
-										<div class="datos-sorteo-row">
-											Total: <strong>$0</strong>
+										
+											<div class="datos-sorteo-row">
+												Total: <strong>$0</strong>
+											</div>
 										</div>
-									</div>
+									</div>	
 								</div>	
-							</div>	
 
-							<!-- Panel de Premios de Lotería -->
-							<div class="panel panel-default" style="margin-top: 20px;">
-								<div class="premio-header">PREMIOS LOTERIA</div>
-								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
-									<div class="row" style="padding: 20px;">
-										<div class="col-md-4">
-											<label for="premio-cedula">Cédula</label>
-											<div class="input-group">
-												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
-												<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
-													<i class="fa fa-search"></i>
-												</span>
+								<!-- Panel de Premios de Lotería -->
+								<div class="panel panel-default" style="margin-top: 20px;">
+									<div class="premio-header">PREMIOS LOTERIA</div>
+									<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
+										<div class="row" style="padding: 20px;">
+											<div class="col-md-4">
+												<label for="premio-cedula">Cédula</label>
+												<div class="input-group">
+													<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
+													<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
+														<i class="fa fa-search"></i>
+													</span>
+												</div>
+											</div>
+											<div class="col-md-5">
+												<div class="form-group">
+													<label for="premio-nombre-cliente">Nombre</label>
+													<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label for="premio-codigo">Código</label>
+													<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
+												</div>
 											</div>
 										</div>
-										<div class="col-md-5">
-											<div class="form-group">
-												<label for="premio-nombre-cliente">Nombre</label>
-												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
-											</div>
-										</div>
-										<div class="col-md-3">
-											<div class="form-group">
-												<label for="premio-codigo">Código</label>
-												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
-											</div>
-										</div>
-									</div>
 
-									<div class="table-container-scroll" style="margin: 0 20px 20px 20px;">
-										<table class="table table-bordered table-condensed table-striped table-hover">
-											<thead>
-												<tr>
-													<th class="text-center">Sorteo</th>
-													<th class="text-center">Numero</th>
-													<th class="text-center">Serie</th>
-													<th style="width: 55%; text-align: left;">Premio</th>
-													<th class="text-right" style="width: 20%;">Valor</th>
-													<th class="text-center"><i class="fa fa-trash"></i></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>4700</td>
-													<td>98765</td>
-													<td class="text-center">123</td>
-													<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
-													<td class="text-right">$50.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<tr>
-													<td>3249</td>
-													<td>54321</td>
-													<td class="text-center">050</td>
-													<td style="text-align: left;">SECO $10 MILLONES</td>
-													<td class="text-right">$10.000.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<!-- Repetir para 5 filas en total -->
-												<tr><td class="text-center">2488</td><td class="text-center">11223</td><td class="text-center">088</td><td style="text-align: left;">APROXIMACION DOS PRIMERAS</td><td class="text-right">$25.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-												<tr><td class="text-center">2998</td><td class="text-center">33445</td><td class="text-center">010</td><td style="text-align: left;">SECO $20 MILLONES</td><td class="text-right">$20.000.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-												<tr><td class="text-center">2875</td><td class="text-center">55667</td><td class="text-center">045</td><td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td><td class="text-right">$50.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-												<!-- Las filas de premios se agregarán aquí dinámicamente -->
-											</tbody>
-										</table>
+										<div class="table-container-scroll" style="margin: 0 20px 20px 20px;">
+											<table class="table table-bordered table-condensed table-striped table-hover">
+												<thead>
+													<tr>
+														<th class="text-center">Sorteo</th>
+														<th class="text-center">Numero</th>
+														<th class="text-center">Serie</th>
+														<th style="width: 55%; text-align: left;">Premio</th>
+														<th class="text-right" style="width: 20%;">Valor</th>
+														<th class="text-center"><i class="fa fa-trash"></i></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>4700</td>
+														<td>98765</td>
+														<td class="text-center">123</td>
+														<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
+														<td class="text-right">$50.000</td>
+														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+													</tr>
+													<tr>
+														<td>3249</td>
+														<td>54321</td>
+														<td class="text-center">050</td>
+														<td style="text-align: left;">SECO $10 MILLONES</td>
+														<td class="text-right">$10.000.000</td>
+														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+													</tr>
+													<!-- Repetir para 5 filas en total -->
+													<tr><td class="text-center">2488</td><td class="text-center">11223</td><td class="text-center">088</td><td style="text-align: left;">APROXIMACION DOS PRIMERAS</td><td class="text-right">$25.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td class="text-center">2998</td><td class="text-center">33445</td><td class="text-center">010</td><td style="text-align: left;">SECO $20 MILLONES</td><td class="text-right">$20.000.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<tr><td class="text-center">2875</td><td class="text-center">55667</td><td class="text-center">045</td><td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td><td class="text-right">$50.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
+													<!-- Las filas de premios se agregarán aquí dinámicamente -->
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>	
+							</div>	
 
 						<div class="col-lg-4 col-md-4 col-sm-4">
 							<!-- Panel de Datos del Cliente -->
