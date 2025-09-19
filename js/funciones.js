@@ -138,6 +138,8 @@ $(document).ready(function(){
     $('#limpiar-numero-btn').on('click', function() {
         $('.number-input-digit').val('');
         $('#cfr1').focus();
+        $('#div_series_disponibles').hide();
+        $('.datos-sorteo-row').hide();
     });
 
     // Auto-focus en el primer campo de entrada al cargar la página
@@ -237,6 +239,16 @@ $(document).ready(function(){
         let current = parseInt($display.text()) || 1;
         if (current > 1) {
             $display.text(current - 1);
+            var cboLoterias_ltr = $('#cboLoterias_ltr').val();
+            var cfr1 = $('#cfr1').val().trim();
+            var cfr2 = $('#cfr2').val().trim();
+            var cfr3 = $('#cfr3').val().trim();
+            var cfr4 = $('#cfr4').val().trim();
+            var numFracciones = parseInt($display.text()) || 1;
+            
+            if (cfr1 !== '' && cfr2 !== '' && cfr3 !== '' && cfr4 !== '') {
+                fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
+            }
         }
     });
     
@@ -246,6 +258,16 @@ $(document).ready(function(){
         let max = parseInt($display.data('max')) || 1;
         if (current < max) {
             $display.text(current + 1);
+            var cboLoterias_ltr = $('#cboLoterias_ltr').val();
+            var cfr1 = $('#cfr1').val().trim();
+            var cfr2 = $('#cfr2').val().trim();
+            var cfr3 = $('#cfr3').val().trim();
+            var cfr4 = $('#cfr4').val().trim();
+            var numFracciones = parseInt($display.text()) || 1;
+            
+            if (cfr1 !== '' && cfr2 !== '' && cfr3 !== '' && cfr4 !== '') {
+                fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
+            }
         }
     });
 
