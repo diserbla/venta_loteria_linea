@@ -195,9 +195,7 @@
 											</table>
 										</div>
 										
-										<div class="datos-sorteo-row">
-											Total: <strong>$0</strong>
-										</div>
+										<div class="datos-sorteo-row"></div>
 									</div>
 								</div>
 							</div>
