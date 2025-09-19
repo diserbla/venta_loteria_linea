@@ -79,6 +79,9 @@ $(document).ready(function(){
         });			
     });
 
+    $('#cboLoterias_ltr').change(function(){		
+        fn_ltr_sorteo_activo();
+    });
     // Restringe la entrada solo a números para los campos con la clase .numeric-input
     $(document).on('input', '.numeric-input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -155,71 +158,7 @@ $(document).ready(function(){
     // Auto-tab en blur para #cfr1 si tiene valor
     $('#cfr1').blur(function() {
         if (this.value.length === 1) {
-            var cod_lot = $('#cboLoterias_ltr').val();
-            //console.log('blur con valor'+cod_lot);
-            $.ajax({
-                url: "../ventas/funciones.php",
-                dataType: "json",
-                type: "post",
-                data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
-                success: function (data) {
-                    var error = data.error;
-
-                    if (error.length > 0) {
-                        swal(error, "", "error");
-                    } else {
-                        var arreglo = data.arreglo;
-        
-                        console.log(arreglo);
-                
-                        // Actualizar el div con datos del sorteo
-                        var datosSorteo = $('.datos-sorteo-row');
-                        var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
-                        var premioMayorFormateado = premioMayorValor + ' Millones';
-                        
-                        var maxFracc = parseInt(arreglo.fracciones);
-                        var currentFracc = maxFracc;
-                        
-                        var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
-                        var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
-                        
-                        datosSorteo.html(`
-                            <div class="adicionar-line" style="text-align: center; margin-bottom: 10px;">
-                                <button type="button" id="btn-adicionar" style="background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">Adicionar</button>
-                            </div>
-                            <div class="sorteo-line">
-                                Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
-                                <button type="button" id="frac-minus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">-</button>
-                                <strong id="current-frac" data-max="${maxFracc}" style="margin: 0 5px; color: #ff0000; font-weight: bold;">${currentFracc}</strong>
-                                <button type="button" id="frac-plus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+</button>
-                            </div>
-                            <div class="precios-line">
-                                <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
-                                <span class="precios-item">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
-                                <span class="precios-item">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
-                                <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
-                            </div>
-                        `);
-
-                        // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
-                        $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
-                
-                        // Mostrar .datos-sorteo-row después de generar
-                        $('.datos-sorteo-row').show();
-                        
-                        // Opcional: Actualizar totales en la interfaz si es necesario
-                        actualizarTotales();
-                    }
-                },
-                error: function (request, status, error) {
-                    alert(request.responseText);
-                },
-                complete: function() {
-                // Ocultar el spinner cuando la solicitud se complete
-                    $('#spinner_lr_num_bil1').hide();
-                    }
-            });
-
+            fn_ltr_sorteo_activo();
         }
     });
 
@@ -421,6 +360,11 @@ $(document).ready(function(){
         actualizarTotales();
         gestionarScrollTablas();
         swal('Fila eliminada', 'El registro ha sido removido de la tabla.', 'info');
+    });
+
+    // Evento click para el botón genera_numero
+    $('#genera_numero').click(function() {
+        fn_ltr_sorteo_activo();
     });
 });
 
@@ -775,4 +719,71 @@ function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
             alert('Error al consultar fracciones: ' + request.responseText);
         }							
     });	
+}
+
+function fn_ltr_sorteo_activo() {
+    var cod_lot = $('#cboLoterias_ltr').val();
+    //console.log('blur con valor'+cod_lot);
+    $.ajax({
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: "post",
+        data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
+        success: function (data) {
+            var error = data.error;
+
+            if (error.length > 0) {
+                swal(error, "", "error");
+            } else {
+                var arreglo = data.arreglo;
+
+                console.log(arreglo);
+
+                // Actualizar el div con datos del sorteo
+                var datosSorteo = $('.datos-sorteo-row');
+                var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
+                var premioMayorFormateado = premioMayorValor + ' Millones';
+
+                var maxFracc = parseInt(arreglo.fracciones);
+                var currentFracc = maxFracc;
+
+                var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
+                var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
+
+                datosSorteo.html(`
+                    <div class="adicionar-line" style="text-align: center; margin-bottom: 10px;">
+                        <button type="button" id="btn-adicionar" style="background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">Adicionar</button>
+                    </div>
+                    <div class="sorteo-line">
+                        Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
+                        <button type="button" id="frac-minus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">-</button>
+                        <strong id="current-frac" data-max="${maxFracc}" style="margin: 0 5px; color: #ff0000; font-weight: bold;">${currentFracc}</strong>
+                        <button type="button" id="frac-plus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+</button>
+                    </div>
+                    <div class="precios-line">
+                        <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
+                        <span class="precios-item">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
+                        <span class="precios-item">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
+                        <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
+                    </div>
+                `);
+
+                // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
+                $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
+
+                // Mostrar .datos-sorteo-row después de generar
+                $('.datos-sorteo-row').show();
+
+                // Opcional: Actualizar totales en la interfaz si es necesario
+                actualizarTotales();
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        },
+        complete: function() {
+        // Ocultar el spinner cuando la solicitud se complete
+            $('#spinner_lr_num_bil1').hide();
+        }
+    });
 }
