@@ -257,12 +257,12 @@ $(document).ready(function(){
                         else {
                             fn_ltr_fracciones_serie_seleccionada(cod_lot,num_bil,num_ser);
 
-                            var ltr_nro_fracciones = $('#current-frac').val(); 
+                            var ltr_nro_fracciones = parseInt($('#current-frac').text()) || 1;  // Captura el valor PREVIO antes de la llamada
 
                             swal('SE ENCONTRARON '+ltr_nro_fracciones+' FRACCIONES DE LA SERIE '+num_ser+' DEL BILLETE '+num_bil, "", "success")
                             .then((value) => {
                                     //$('#ltr_nro_fracciones').focus();
-                            });	
+                            });
                         }
                     },
                     error: function (request, status, error) {
@@ -346,7 +346,8 @@ $(document).ready(function(){
         var loteria = $('#cboLoterias_ltr option:selected').text();
         var sorteo = $('.sorteo-line strong').eq(0).text() || '0000'; // Sorteo del DOM
         var numero = $('#cfr1').val() + $('#cfr2').val() + $('#cfr3').val() + $('#cfr4').val();
-        var serie = $('input[type="radio"]:checked', '#div_series_disponibles').val() || '000';
+        var serie_input = $('#ltr_serie_ingresada').val().trim();
+        var serie = serie_input || $('input[type="radio"]:checked', '#div_series_disponibles').val() || '000';
         var fracc = parseInt($('#current-frac').text()) || 1;
 
         if (!numero || numero.length !== 4) {
@@ -531,29 +532,6 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
             alert(request.responseText);
         }
     });
-}
-
-function fn_ltr_fracciones_serie_seleccionada123(cod_lot,num_bil,num_ser){
-    $.ajax({
-            async:	false, 
-            url:	"../ventas/funciones.php",
-            dataType:"json",
-            type: 'post',	
-            data:  { paso: 'ltr_fracciones_serie_seleccionada',cod_lot:cod_lot,num_bil:num_bil,num_ser:num_ser},									
-            success: function(data){
-                
-                var fracciones = data.fracciones;
-                
-                console.log('fracciones encontradas: '+fracciones);
-                $("#current-frac").val(fracciones);
-                $("#current-frac").attr('max',fracciones);
-
-            },	
-            error: function (request, status, error) 
-            {
-                alert(request.responseText);
-            }							
-    });	
 }
 
 function fn_consulta_cliente(){
@@ -758,7 +736,7 @@ function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
     }
 
     $.ajax({
-        async: true,  // Cambiado a true para no bloquear (mejor práctica)
+        async: false,  // Cambiado a true para no bloquear (mejor práctica)
         url: "../ventas/funciones.php",
         dataType: "json",
         type: 'post',	
@@ -778,14 +756,14 @@ function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
             var fracciones = parseInt(data.fracciones) || 1;  // Asegurar que sea un número válido (default 1)
             
             console.log('Fracciones encontradas: ' + fracciones);
-            
+            //$("#current-frac").val(fracciones);
+
             var $currentFrac = $("#current-frac");
             if ($currentFrac.length > 0) {  // Verificar que el elemento exista
                 $currentFrac.text(fracciones);  // Cambia el TEXTO visible (en lugar de .val())
                 $currentFrac.data('max', fracciones);  // Actualiza data-max para lógica JS (ej. botones +/-)
                 // Opcional: Actualiza el atributo HTML si lo necesitas para otros fines
                 // $currentFrac.attr('max', fracciones);
-                
                 // Opcional: Actualizar totales o UI relacionada
                 //actualizarTotales();  // Si existe esta función en tu código
             } else {
