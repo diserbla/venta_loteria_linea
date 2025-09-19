@@ -94,17 +94,17 @@
 									<div class="venta-header">LOTERIA EN LINEA</div>
 									<div class="number-input-container">
 										<div class="row">
-											<div id="list_loterias_ltr">
-												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 													<div class="form-group">
 														<label>Lotería</label>
+														<div id="list_loterias_ltr">
 														<select class="form-control" id="cboLoterias_ltr">
 															<option value="16">MEDELLIN</option>
 															<option value="02">BOGOTA</option>
 															<option value="24">VALLE</option>
 														</select>
+														</div>
 													</div>
-												</div>
 											</div>
 
 											<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
@@ -147,44 +147,44 @@
 
 											<div class="table-container-scroll">
 												<table id="tbl_ltr" class="table table-bordered table-condensed table-striped table-hover">
-												<thead>
-													<tr>
-														<th style="text-align: left; width: 40%;">Lotería</th>
-														<th class="text-center">Sorteo</th>
-														<th class="text-center">Número</th>
-														<th class="text-center">Serie</th>
-														<th class="text-center">Fracc</th>
-														<th class="text-right" style="width: 20%;">Valor</th>
-														<th class="text-center"><i class="fa fa-trash"></i></th>
-													</tr>
-												</thead>
-												<tbody>
-													<!-- <tr>
-														<td style="text-align: left;">MEDELLIN</td>
-														<td class="text-center">4701</td>
-														<td class="text-center">1234</td>
-														<td class="text-center">050</td>
-														<td class="text-center">1</td>
-														<td class="text-right">$5.000</td>
-														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-													</tr>
-													<tr>
-														<td style="text-align: left;">BOGOTA</td>
-														<td class="text-center">3250</td>
-														<td class="text-center">5678</td>
-														<td class="text-center">120</td>
-														<td class="text-center">2</td>
-														<td class="text-right">$10.000</td>
-														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-													</tr> -->
-													<!-- Repetir para 5 filas en total -->
-													<!-- <tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
-													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
-													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> -->
-												</tbody>
-											</table>
-										</div>
-
+													<thead>
+														<tr>
+															<th style="text-align: left; width: 40%;">Lotería</th>
+															<th class="text-center">Sorteo</th>
+															<th class="text-center">Número</th>
+															<th class="text-center">Serie</th>
+															<th class="text-center">Fracc</th>
+															<th class="text-right" style="width: 20%;">Valor</th>
+															<th class="text-center"><i class="fa fa-trash"></i></th>
+														</tr>
+													</thead>
+													<tbody>
+														<!-- <tr>
+															<td style="text-align: left;">MEDELLIN</td>
+															<td class="text-center">4701</td>
+															<td class="text-center">1234</td>
+															<td class="text-center">050</td>
+															<td class="text-center">1</td>
+															<td class="text-right">$5.000</td>
+															<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+														</tr>
+														<tr>
+															<td style="text-align: left;">BOGOTA</td>
+															<td class="text-center">3250</td>
+															<td class="text-center">5678</td>
+															<td class="text-center">120</td>
+															<td class="text-center">2</td>
+															<td class="text-right">$10.000</td>
+															<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+														</tr> -->
+														<!-- Repetir para 5 filas en total -->
+														<!-- <tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
+														<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> 
+														<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> -->
+													</tbody>
+												</table>
+											</div>
+									
 										<div class="datos-sorteo-row">
 											Total: <strong>$0</strong>
 										</div>
