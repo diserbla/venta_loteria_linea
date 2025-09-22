@@ -213,6 +213,18 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on("change", "#ltr_serie", function (e) {
+        if ($(this).is(':checked')) {					
+            var cod_lot = $('#cboLoterias_ltr').val(); 
+            var num_bil = $('#cfr1').val()+$('#cfr2').val()+$('#cfr3').val()+$('#cfr4').val();
+            var num_ser = $(this).val();
+
+            //console.log('Cambio en serie con valor'+cod_lot+num_bil+num_ser);   
+            fn_ltr_fracciones_serie_seleccionada(cod_lot,num_bil,num_ser);
+            
+        }
+        e.preventDefault();	
+    });
 
     // Llama a la función para gestionar el scroll al cargar la página
     gestionarScrollTablas();
@@ -220,7 +232,26 @@ $(document).ready(function(){
     // Evento click para el botón grabar_cliente
     $('#btn-grabar-cliente').click(function(e) {
         e.preventDefault();
+        // Deshabilitar los campos de datos del cliente
+        $('#cliente-cedula').prop('disabled', true);
+        $('#cliente-nombres').prop('disabled', true);
+        $('#cliente-apellidos').prop('disabled', true);
+        $('#cliente-celular').prop('disabled', true);
+        $('#cliente-direccion').prop('disabled', true);
+        $('#cliente-email').prop('disabled', true);
         fn_graba_cliente();
+    });
+
+    // Evento click para el botón cancelar_cliente: habilita los campos de datos del cliente
+    $('#btn-cancelar-cliente').click(function(e) {
+        e.preventDefault();
+        $('#cliente-cedula').prop('disabled', false);
+        $('#cliente-nombres').prop('disabled', false);
+        $('#cliente-apellidos').prop('disabled', false);
+        $('#cliente-celular').prop('disabled', false);
+        $('#cliente-direccion').prop('disabled', false);
+        $('#cliente-email').prop('disabled', false);
+        $('#cliente-cedula').focus();
     });
     
     // Event listeners para botones de fracciones
@@ -272,10 +303,6 @@ $(document).ready(function(){
         var cfr3 = $('#cfr3').val().trim();
         var cfr4 = $(this).val().trim();
         var numFracciones = parseInt($('#current-frac').text()) || 1;
-        
-        if (cfr1 !== '' && cfr2 !== '' && cfr3 !== '') {
-            console.log('Los inputs cfr1, cfr2 y cfr3 tienen valores no vacíos al ingresar en cfr4');
-        }
 
         fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
     });
@@ -365,21 +392,46 @@ $(document).ready(function(){
     // Evento click para el botón genera_numero
     $('#genera_numero').click(function() {
         fn_ltr_sorteo_activo();
+
+        var cboLoterias_ltr = $('#cboLoterias_ltr').val();
+        var numFracciones = parseInt($('#current-frac').text()) || 1;
+
+        $.ajax({
+            async: true,
+            url: "../ventas/funciones.php",
+            dataType: "json",
+            type: "post",
+            data: { paso: "ltr_genera_numero", cod_lot: cboLoterias_ltr, nro_fracciones: numFracciones },
+            beforeSend: function () {
+                $("#spinner").show();
+            },
+            success: function (data) {
+                var error = data.error;
+                var fracciones 			   = data.fracciones;
+
+                if (error.length > 0) {
+                    swal(error, "", "error");
+                } else {
+                    var arreglo = data.arreglo;
+
+                    $('#cfr1').val(arreglo.lr_num_bil1);
+                    $('#cfr2').val(arreglo.lr_num_bil2);
+                    $('#cfr3').val(arreglo.lr_num_bil3);
+                    $('#cfr4').val(arreglo.lr_num_bil4);
+
+                    fn_series_disponibles(cboLoterias_ltr, arreglo.lr_num_bil1, arreglo.lr_num_bil2, arreglo.lr_num_bil3,arreglo.lr_num_bil4, fracciones);
+                    
+                }
+            },
+            error: function (request, status, error) {
+                alert(request.responseText);
+            }
+        });
+
     });
 });
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
-    /*
-    // Función para manejar series disponibles con los parámetros proporcionados
-    console.log('fn_series_disponibles llamada con:');
-    console.log('cboLoterias_ltr:', cboLoterias_ltr);
-    console.log('cfr1:', cfr1);
-    console.log('cfr2:', cfr2);
-    console.log('cfr3:', cfr3);
-    console.log('cfr4:', cfr4);
-    console.log('numFracciones:', numFracciones);
-    */
-    
     // Validación previa: asegurar que todos los cfrx no estén vacíos y numFracciones sea válido
     if (!cboLoterias_ltr || cfr1 === '' || cfr2 === '' || cfr3 === '' || cfr4 === '' || !numFracciones || numFracciones <= 0) {
         console.log('Parámetros inválidos para fn_series_disponibles');
@@ -399,16 +451,6 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
             $("#spinner").show();
         },
         success: function (data) {
-
-            //var reservationId = $('#hd_ltr_reservationId').val();
-
-            //$("#spinner").hide();
-
-            /*
-            if (reservationId.length == 1) {
-                $("#div_series_disponibles").html(data.salida);
-            }
-            */
 
             $("#div_series_disponibles").html(data.salida);
 
@@ -466,10 +508,6 @@ function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracc
                     //fn_limpiar_ltr();
                 });
             } else {
-                //$('.ocultar_ltr1').show();
-
-                //$("#ltr_nro_fracciones").val(fracciones);
-                //$("#ltr_nro_fracciones").attr('max', fracciones);
             }
         },
         error: function (request, status, error) {
