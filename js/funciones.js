@@ -522,7 +522,10 @@ function fn_consulta_cliente(){
 
                         });
                     } else {
-                        swal('Cliente no encontrado', 'No se encontró un cliente con esta cédula.', 'warning');
+                        swal('Cliente no encontrado', 'No se encontró un cliente con esta cédula.', 'warning')
+                        .then(function() {
+                            $('#cliente-nombres').focus();
+                        });
                     }
                 }
             },
