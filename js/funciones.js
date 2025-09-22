@@ -743,6 +743,7 @@ function fn_ltr_sorteo_activo() {
                 var datosSorteo = $('.datos-sorteo-row');
                 var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
                 var premioMayorFormateado = premioMayorValor + ' Millones';
+                var fechaSorteo = arreglo.fec_sor ? `<span style=\"color:#007bff;font-size:16px;font-weight:bold;margin-left:10px;\">F.Sorteo: ${arreglo.fec_sor}</span>` : '';
 
                 var maxFracc = parseInt(arreglo.fracciones);
                 var currentFracc = maxFracc;
@@ -751,20 +752,20 @@ function fn_ltr_sorteo_activo() {
                 var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
 
                 datosSorteo.html(`
-                    <div class="adicionar-line" style="text-align: center; margin-bottom: 10px;">
-                        <button type="button" id="btn-adicionar" style="background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">Adicionar</button>
+                    <div class=\"adicionar-line\" style=\"text-align: center; margin-bottom: 10px;\">
+                        <button type=\"button\" id=\"btn-adicionar\" style=\"background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">Adicionar</button>
                     </div>
-                    <div class="sorteo-line">
-                        Sorteo: <strong>${arreglo.num_sor}</strong> - Premio Mayor: <strong class="premio-mayor-valor">$${premioMayorFormateado}</strong> Fracciones:
-                        <button type="button" id="frac-minus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">-</button>
-                        <strong id="current-frac" data-max="${maxFracc}" style="margin: 0 5px; color: #ff0000; font-weight: bold;">${currentFracc}</strong>
-                        <button type="button" id="frac-plus" style="width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+</button>
+                    <div class=\"sorteo-line\">
+                        Sorteo: <strong>${arreglo.num_sor}</strong> ${fechaSorteo} - Mayor: <strong class=\"premio-mayor-valor\">$${premioMayorFormateado}</strong>
+                        <button type=\"button\" id=\"frac-minus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">-</button>
+                        <strong id=\"current-frac\" data-max=\"${maxFracc}\" style=\"margin: 0 5px; color: #ff0000; font-weight: bold;\">${currentFracc}</strong>
+                        <button type=\"button\" id=\"frac-plus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">+</button>
                     </div>
-                    <div class="precios-line">
-                        <span class="precios-item">Fracciones: <strong>${arreglo.fracciones}</strong></span>
-                        <span class="precios-item">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
-                        <span class="precios-item">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
-                        <span class="precios-item incentivo-item">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
+                    <div class=\"precios-line\">
+                        <span class=\"precios-item\">Fracciones: <strong>${arreglo.fracciones}</strong></span>
+                        <span class=\"precios-item\">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
+                        <span class=\"precios-item\">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
+                        <span class=\"precios-item incentivo-item\">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
                     </div>
                 `);
 
