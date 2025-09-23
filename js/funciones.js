@@ -373,9 +373,11 @@ $(document).ready(function(){
                     // Calcular el nuevo valor de la fracción: (valorFraccion + valorIncentivo) * fracc
                     var nuevoValorFraccion = (valorFraccion + valorIncentivo) * fracc;
 
+                    /*
                     if (reservacion.length > 1) {
                         fn_inserta_reserva(cod_lot, nom_lot, num_sor, num_bil, num_ser, num_fra, nuevoValorFraccion, reservacion);
                     }
+                    */
                 }
             },
             error: function (request, status, error) {
@@ -390,7 +392,7 @@ $(document).ready(function(){
                 <td class="text-center">${numero}</td>
                 <td class="text-center">${serie}</td>
                 <td class="text-center">${fracc}</td>
-                <td class="text-right">${valor}</td>
+                <td class="text-right">${nuevoValorFraccion}</td>
                 <td class="text-center eliminar-fila" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
             </tr>
         `;
