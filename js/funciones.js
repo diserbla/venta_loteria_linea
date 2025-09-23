@@ -413,14 +413,8 @@ $(document).ready(function(){
         $('.datos-sorteo-row').hide();
     });
 
-    // Evento para eliminar filas de la tabla (clic en ícono trash)
-    $(document).on('click', '.eliminar-fila i', function() {
-        var fila = $(this).closest('tr');
-        var valorFilaText = fila.find('td:nth-child(6)').text().replace(/[$.]/g, '').replace(',', '');
-        var valorFila = parseFloat(valorFilaText) || 0;
-
-        // Liberar la reserva de esta fila
-        var reservacion = fila.attr('data-reservacion');
+    // Función reutilizable para liberar una reserva
+    function liberarReserva(reservacion) {
         if (reservacion && reservacion.length > 0) {
             $.ajax({
                 async: false,
@@ -430,7 +424,7 @@ $(document).ready(function(){
                 data: { paso: 'ltr_release_reservation', reservacion: reservacion },
                 success: function(data) {
                     var error = data.error;
-                    if (error.length > 0) {
+                    if (error && error.length > 0) {
                         swal(error, "", "error");
                     }
                 },
@@ -439,6 +433,17 @@ $(document).ready(function(){
                 }
             });
         }
+    }
+
+    // Evento para eliminar filas de la tabla (clic en ícono trash)
+    $(document).on('click', '.eliminar-fila i', function() {
+        var fila = $(this).closest('tr');
+        var valorFilaText = fila.find('td:nth-child(6)').text().replace(/[$.]/g, '').replace(',', '');
+        var valorFila = parseFloat(valorFilaText) || 0;
+
+        // Liberar la reserva de esta fila
+        var reservacion = fila.attr('data-reservacion');
+        liberarReserva(reservacion);
 
         // Restar del total
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
@@ -458,24 +463,7 @@ $(document).ready(function(){
         // Liberar todas las reservas de las filas actuales
         $('#tbl_ltr > tbody > tr').each(function() {
             var reservacion = $(this).attr('data-reservacion');
-            if (reservacion && reservacion.length > 0) {
-                $.ajax({
-                    async: false,
-                    url: "../ventas/funciones.php",
-                    dataType: "json",
-                    type: 'post',
-                    data: { paso: 'ltr_release_reservation', reservacion: reservacion },
-                    success: function(data) {
-                        var error = data.error;
-                        if (error.length > 0) {
-                            swal(error, "", "error");
-                        }
-                    },
-                    error: function (request, status, error) {
-                        alert(request.responseText);
-                    }
-                });
-            }
+            liberarReserva(reservacion);
         });
         // Limpiar la tabla
         $('#tbl_ltr tbody').empty();
