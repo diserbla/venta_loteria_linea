@@ -392,7 +392,7 @@ $(document).ready(function(){
             }
         });
 
-        // Actualizar total de venta (sumar nuevoValorFraccion calculado)
+        // Actualizar total de venta (sumar nuevoValorFraccion calculado) ...
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
         var currentTotal = parseFloat(currentTotalText) || 0;
         currentTotal += nuevoValorFraccion;
