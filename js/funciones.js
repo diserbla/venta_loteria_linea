@@ -419,6 +419,27 @@ $(document).ready(function(){
         var valorFilaText = fila.find('td:nth-child(6)').text().replace(/[$.]/g, '').replace(',', '');
         var valorFila = parseFloat(valorFilaText) || 0;
 
+        // Liberar la reserva de esta fila
+        var reservacion = fila.attr('data-reservacion');
+        if (reservacion && reservacion.length > 0) {
+            $.ajax({
+                async: false,
+                url: "../ventas/funciones.php",
+                dataType: "json",
+                type: 'post',
+                data: { paso: 'ltr_release_reservation', reservacion: reservacion },
+                success: function(data) {
+                    var error = data.error;
+                    if (error.length > 0) {
+                        swal(error, "", "error");
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
         // Restar del total
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
         var currentTotal = parseFloat(currentTotalText) || 0;
@@ -430,6 +451,40 @@ $(document).ready(function(){
         actualizarTotales();
         gestionarScrollTablas();
         swal('Fila eliminada', 'El registro ha sido removido de la tabla.', 'info');
+    });
+
+    // Evento para cancelar toda la tabla y liberar todas las reservas
+    $(document).on('click', '#cancelar-tbl-ltr', function() {
+        // Liberar todas las reservas de las filas actuales
+        $('#tbl_ltr > tbody > tr').each(function() {
+            var reservacion = $(this).attr('data-reservacion');
+            if (reservacion && reservacion.length > 0) {
+                $.ajax({
+                    async: false,
+                    url: "../ventas/funciones.php",
+                    dataType: "json",
+                    type: 'post',
+                    data: { paso: 'ltr_release_reservation', reservacion: reservacion },
+                    success: function(data) {
+                        var error = data.error;
+                        if (error.length > 0) {
+                            swal(error, "", "error");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    }
+                });
+            }
+        });
+        // Limpiar la tabla
+        $('#tbl_ltr tbody').empty();
+        // Reiniciar el total de venta
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        $('#total-venta-valor').text(formatoMoneda.format(0));
+        actualizarTotales();
+        gestionarScrollTablas();
+        swal('Reservas liberadas', 'Todos los registros han sido cancelados.', 'info');
     });
 
     // Evento click para el botón genera_numero
