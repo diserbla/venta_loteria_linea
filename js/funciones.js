@@ -336,8 +336,20 @@ $(document).ready(function(){
         var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
         var valor = formatoMoneda.format(valorTotal);
 
-        console.log('Adicionar: ', cod_lot, numero, serie, fracc);
-        return;
+        // Extraer valor del incentivo x fracción
+        var matchIncentivo = preciosLine.match(/Incentivo x Fracción:\s*\$?([\d.,]+)/);
+        var valorIncentivoStr = matchIncentivo ? matchIncentivo[1].replace(/[.,]/g, '') : '0';
+        var valorIncentivo = parseFloat(valorIncentivoStr) || 0;
+
+        console.log('Adicionar:', {
+            cod_lot,
+            numero,
+            serie,
+            fracciones_seleccionadas: fracc,
+            valor_fraccion: valorFraccion,
+            incentivo_x_fraccion: valorIncentivo
+        });
+        //return;
 
         //genera el proceso de reserva:
 		$.ajax({
@@ -358,21 +370,11 @@ $(document).ready(function(){
                 } else {
                     reservacion = data.reservacion;
 
-                    // 2024-may-29 se suma el valor del incentivo en la fracción
-                    var valor_incentivo = $("#hd_ltr_incentive_fractionPrice").val();
-                    valor_incentivo = accounting.unformat(valor_incentivo, ",");
-
-                    // Sumamos la fracción + el incentivo
-                    valor = valor + valor_incentivo;
-                    var vlr_fra = (num_fra * valor);
-                    // FIN 2024-may-29 se suma el valor del incentivo
-
-                    if (valor_incentivo > 0) {
-                        valida_incentivo = 'CON_INCENTIVO';
-                    }
+                    // Calcular el nuevo valor de la fracción: (valorFraccion + valorIncentivo) * fracc
+                    var nuevoValorFraccion = (valorFraccion + valorIncentivo) * fracc;
 
                     if (reservacion.length > 1) {
-                        fn_inserta_reserva(cod_lot, nom_lot, num_sor, num_bil, num_ser, num_fra, vlr_fra, reservacion, celular, valida_incentivo);
+                        fn_inserta_reserva(cod_lot, nom_lot, num_sor, num_bil, num_ser, num_fra, nuevoValorFraccion, reservacion);
                     }
                 }
             },
