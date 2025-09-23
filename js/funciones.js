@@ -309,6 +309,7 @@ $(document).ready(function(){
 
     // Evento click para btn-adicionar: agregar registro de prueba a tbl_ltr
     $(document).on('click', '#btn-adicionar', function() {
+        var cod_lot = $('#cboLoterias_ltr').val();
         var loteria = $('#cboLoterias_ltr option:selected').text();
         var sorteo = $('.sorteo-line strong').eq(0).text() || '0000'; // Sorteo del DOM
         var numero = $('#cfr1').val() + $('#cfr2').val() + $('#cfr3').val() + $('#cfr4').val();
@@ -334,6 +335,51 @@ $(document).ready(function(){
         var valorTotal = fracc * valorFraccion;
         var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
         var valor = formatoMoneda.format(valorTotal);
+
+        console.log('Adicionar: ', cod_lot, numero, serie, fracc);
+        return;
+
+        //genera el proceso de reserva:
+		$.ajax({
+            url: "../ventas/funciones.php",
+            dataType: 'json',
+            type: 'post',
+            data: { 
+                paso: 'ltr_reservation', 
+                cod_lot: cod_lot, 
+                num_ser: serie, 
+                num_bil: numero, 
+                num_fra: fracc 
+            },
+            success: function (data) {
+                var error = data.error;
+                if (error.length > 0) {
+                    swal(error, "", "error");
+                } else {
+                    reservacion = data.reservacion;
+
+                    // 2024-may-29 se suma el valor del incentivo en la fracción
+                    var valor_incentivo = $("#hd_ltr_incentive_fractionPrice").val();
+                    valor_incentivo = accounting.unformat(valor_incentivo, ",");
+
+                    // Sumamos la fracción + el incentivo
+                    valor = valor + valor_incentivo;
+                    var vlr_fra = (num_fra * valor);
+                    // FIN 2024-may-29 se suma el valor del incentivo
+
+                    if (valor_incentivo > 0) {
+                        valida_incentivo = 'CON_INCENTIVO';
+                    }
+
+                    if (reservacion.length > 1) {
+                        fn_inserta_reserva(cod_lot, nom_lot, num_sor, num_bil, num_ser, num_fra, vlr_fra, reservacion, celular, valida_incentivo);
+                    }
+                }
+            },
+            error: function (request, status, error) {
+                alert(request.responseText);
+            }
+        });
 
         var nuevaFila = `
             <tr>
