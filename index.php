@@ -100,8 +100,6 @@
 													<div id="list_loterias_ltr">
 														<select class="form-control" id="cboLoterias_ltr">
 															<option value="16">MEDELLIN</option>
-															<option value="02">BOGOTA</option>
-															<option value="24">VALLE</option>
 														</select>
 													</div>
 												</div>
@@ -169,28 +167,6 @@
 													</tr>
 												</thead>
 												<tbody>
-													<!-- <tr>
-														<td style="text-align: left;">MEDELLIN</td>
-														<td class="text-center">4701</td>
-														<td class="text-center">1234</td>
-														<td class="text-center">050</td>
-														<td class="text-center">1</td>
-														<td class="text-right">$5.000</td>
-														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-													</tr>
-													<tr>
-														<td style="text-align: left;">BOGOTA</td>
-														<td class="text-center">3250</td>
-														<td class="text-center">5678</td>
-														<td class="text-center">120</td>
-														<td class="text-center">2</td>
-														<td class="text-right">$10.000</td>
-														<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-													</tr> -->
-													<!-- Repetir para 5 filas en total -->
-													<!-- <tr><td style="text-align: left;">VALLE</td><td class="text-center">2489</td><td class="text-center">9876</td><td class="text-center">088</td><td class="text-center">3</td><td class="text-right">$15.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
-													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> -->
 												</tbody>
 												<tfoot>
 													<tr>
@@ -202,6 +178,7 @@
 													</tr>
 												</tfoot>
 											</table>
+											<!-- coloca el boton cancelar aqui -->
 										</div>
 										
 										<div class="datos-sorteo-row"></div>
