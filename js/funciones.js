@@ -327,19 +327,18 @@ $(document).ready(function(){
             return;
         }
 
-        // Extraer valor de la fracción del DOM
+
+        // Extraer valor de la fracción y del incentivo del DOM
         var preciosLine = $('.precios-line').text();
         var matchFraccion = preciosLine.match(/Fracción:\s*\$?([\d.,]+)/);
         var valorFraccionStr = matchFraccion ? matchFraccion[1].replace(/[.,]/g, '') : '0';
         var valorFraccion = parseFloat(valorFraccionStr) || 0;
-        var valorTotal = fracc * valorFraccion;
-        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
-        var valor = formatoMoneda.format(valorTotal);
-
-        // Extraer valor del incentivo x fracción
         var matchIncentivo = preciosLine.match(/Incentivo x Fracción:\s*\$?([\d.,]+)/);
         var valorIncentivoStr = matchIncentivo ? matchIncentivo[1].replace(/[.,]/g, '') : '0';
         var valorIncentivo = parseFloat(valorIncentivoStr) || 0;
+        var nuevoValorFraccion = (valorFraccion + valorIncentivo) * fracc;
+        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        var valorFormateado = formatoMoneda.format(nuevoValorFraccion);
 
         console.log('Adicionar:', {
             cod_lot,
@@ -347,20 +346,34 @@ $(document).ready(function(){
             serie,
             fracciones_seleccionadas: fracc,
             valor_fraccion: valorFraccion,
-            incentivo_x_fraccion: valorIncentivo
+            incentivo_x_fraccion: valorIncentivo,
+            total: nuevoValorFraccion
         });
-        //return;
 
-        //genera el proceso de reserva:
-		$.ajax({
+        //genera el proceso de reserva y luego actualiza el data-reservacion en la fila
+        var reservacion = '';
+        var nuevaFila = `
+            <tr data-reservacion="">
+                <td style="text-align: left;">${loteria}</td>
+                <td class="text-center">${sorteo}</td>
+                <td class="text-center">${numero}</td>
+                <td class="text-center">${serie}</td>
+                <td class="text-center">${fracc}</td>
+                <td class="text-right">${valorFormateado}</td>
+                <td class="text-center eliminar-fila" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+            </tr>
+        `;
+        $('#tbl_ltr tbody').prepend(nuevaFila);
+
+        $.ajax({
             url: "../ventas/funciones.php",
             dataType: 'json',
             type: 'post',
             data: { 
                 paso: 'ltr_reservation', 
                 cod_lot: cod_lot, 
-                num_ser: serie, 
                 num_bil: numero, 
+                num_ser: serie, 
                 num_fra: fracc 
             },
             success: function (data) {
@@ -369,15 +382,9 @@ $(document).ready(function(){
                     swal(error, "", "error");
                 } else {
                     reservacion = data.reservacion;
-
-                    // Calcular el nuevo valor de la fracción: (valorFraccion + valorIncentivo) * fracc
-                    var nuevoValorFraccion = (valorFraccion + valorIncentivo) * fracc;
-
-                    /*
-                    if (reservacion.length > 1) {
-                        fn_inserta_reserva(cod_lot, nom_lot, num_sor, num_bil, num_ser, num_fra, nuevoValorFraccion, reservacion);
-                    }
-                    */
+                    // Asigna el data-reservacion al <tr> recién insertado
+                    var $ultimaFila = $('#tbl_ltr tbody tr').first();
+                    $ultimaFila.attr('data-reservacion', reservacion);
                 }
             },
             error: function (request, status, error) {
@@ -385,24 +392,10 @@ $(document).ready(function(){
             }
         });
 
-        var nuevaFila = `
-            <tr>
-                <td style="text-align: left;">${loteria}</td>
-                <td class="text-center">${sorteo}</td>
-                <td class="text-center">${numero}</td>
-                <td class="text-center">${serie}</td>
-                <td class="text-center">${fracc}</td>
-                <td class="text-right">${nuevoValorFraccion}</td>
-                <td class="text-center eliminar-fila" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-            </tr>
-        `;
-
-        $('#tbl_ltr tbody').prepend(nuevaFila);
-
-        // Actualizar total de venta (sumar valorTotal calculado)
+        // Actualizar total de venta (sumar nuevoValorFraccion calculado)
         var currentTotalText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '');
         var currentTotal = parseFloat(currentTotalText) || 0;
-        currentTotal += valorTotal;
+        currentTotal += nuevoValorFraccion;
         $('#total-venta-valor').text(formatoMoneda.format(currentTotal));
 
         actualizarTotales();
