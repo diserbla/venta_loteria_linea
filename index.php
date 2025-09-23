@@ -192,6 +192,15 @@
 													<tr><td style="text-align: left;">CRUZ ROJA</td><td class="text-center">2999</td><td class="text-center">4321</td><td class="text-center">010</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr>
 													<tr><td style="text-align: left;">BOYACA</td><td class="text-center">4455</td><td class="text-center">3344</td><td class="text-center">099</td><td class="text-center">1</td><td class="text-right">$5.000</td><td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td></tr> -->
 												</tbody>
+												<tfoot>
+													<tr>
+														<td colspan="7" style="text-align: right;">
+															<button id="cancelar-tbl-ltr" style="background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 8px 24px; font-size: 16px; font-weight: bold; cursor: pointer; float: right;">
+																Cancelar
+															</button>
+														</td>
+													</tr>
+												</tfoot>
 											</table>
 										</div>
 										
