@@ -208,8 +208,8 @@
 										</div>
 										<div class="col-md-3">
 											<div class="form-group">
-												<label for="premio-codigo">Código</label>
-												<input type="text" id="premio-codigo" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
+												<label for="barcode">Código</label>
+												<input type="text" id="barcode" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
 											</div>
 										</div>
 									</div>

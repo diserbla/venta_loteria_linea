@@ -515,6 +515,38 @@ $(document).ready(function(){
         });
 
     });
+
+    //premios de loteria
+    $(document).on("keypress", "#barcode", function (e) {
+        if ((e.keyCode == 13) || (e.keyCode == 9)) {
+            var barcode = $('#barcode').val();
+
+            $.ajax({
+                url: "../ventas/funciones.php",
+                dataType: "json",
+                type: "post",
+                data: { paso: "busca_premio_ltr", barcode: barcode },
+                success: function (data) {
+                    var error = data.error;
+
+                    if (error.length > 0) {
+                        swal(error, "", "error");
+                    } else {
+                        var arreglo = data.arreglo;
+                        console.log(arreglo);
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+                complete: function() {
+                // Ocultar el spinner cuando la solicitud se complete
+                        $('#barcode').focus();
+                    }						
+            });
+            e.preventDefault(); 
+        } 
+    });
 });
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
