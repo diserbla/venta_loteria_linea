@@ -521,6 +521,14 @@ $(document).ready(function(){
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
             var barcode = $('#barcode').val();
 
+            // Validar longitud de 11 caracteres
+            if (barcode.length !== 11) {
+                $('#barcode').val('');
+                $('#barcode').focus();
+                e.preventDefault();
+                return;
+            }
+
             $.ajax({
                 url: "../ventas/funciones.php",
                 dataType: "json",
@@ -528,12 +536,80 @@ $(document).ready(function(){
                 data: { paso: "busca_premio_ltr", barcode: barcode },
                 success: function (data) {
                     var error = data.error;
+                    var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
 
                     if (error.length > 0) {
                         swal(error, "", "error");
+                    } else if (totalPrizeNetValue > 300000) {
+                        swal("!!VALOR DEL PREMIO ES MAYOR QUE EL MONTO AUTORIZADO POR FAVOR COMUNIQUESE CON LA OFICINA PRINCIPAL PARA COBRARLO!!", "", "error")
+                            .then((value) => {
+                                $("#barcode").val('');
+                                $('#barcode').focus();
+                            });
                     } else {
                         var arreglo = data.arreglo;
                         console.log(arreglo);
+
+                        // Formatear el valor del premio como moneda
+                        var valorFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(totalPrizeNetValue || 0);
+
+                        // Recorrer el arreglo (array de premios)
+                        if (Array.isArray(arreglo)) {
+                            arreglo.forEach(function(premio) {
+                                var nuevaFila = `
+                                    <tr data-barcode="${barcode}">
+                                        <td class="text-center">${premio.lotteryDraw || ''}</td>
+                                        <td class="text-center">${premio.numero || ''}</td>
+                                        <td class="text-center">${premio.serie || ''}</td>
+                                        <td style="text-align: left;">${premio.nombre_premio || ''}</td>
+                                        <td class="text-right">${valorFormateado}</td>
+                                        <td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+                                    </tr>
+                                `;
+                                $('#tbl_premios_ltr tbody').append(nuevaFila);
+                            });
+                        } 
+
+                        swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')            
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                },
+                complete: function() {
+                    $('#barcode').focus();
+                }						
+            });
+            e.preventDefault(); 
+        } 
+    });
+
+    /*
+    $(document).on("keypress", "#barcode", function (e) {
+        if ((e.keyCode == 13) || (e.keyCode == 9)) {
+            var barcode = $('#barcode').val();
+
+            $.ajax({
+                url: "../ventas/funciones.php",
+                dataType: "json",
+                type: "post",
+                data: { paso: "busca_premio_ltr", barcode: barcode },
+                success: function (data) {
+                    var error = data.error;
+                    var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
+
+                    if (error.length > 0) {
+                        swal(error, "", "error");
+                    } else if (totalPrizeNetValue > 10000) {
+                        swal("!!POR FAVOR COMUNIQUESE CON LA OFICINA PPAL PARA COBRAR ESTE PREMIO!!", "", "error")
+                            .then((value) => {
+                                $("#barcode").val('');
+                                $('#barcode').focus();
+                            });
+                    } else {
+                        var arreglo = data.arreglo;
+                        console.log(arreglo);
+                        // Aquí continúa tu flujo normal si el valor es <= 300000
                     }
                 },
                 error: function (request, status, error) {
@@ -547,6 +623,7 @@ $(document).ready(function(){
             e.preventDefault(); 
         } 
     });
+    */
 });
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {

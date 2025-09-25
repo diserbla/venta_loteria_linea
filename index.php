@@ -215,7 +215,7 @@
 									</div>
 
 									<div class="table-container-scroll" style="margin: 0 20px 20px 20px;">
-										<table class="table table-bordered table-condensed table-striped table-hover">
+										<table id= "tbl_premios_ltr" class="table table-bordered table-condensed table-striped table-hover">
 											<thead>
 												<tr>
 													<th class="text-center">Sorteo</th>
@@ -227,7 +227,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr>
+												<!-- <tr>
 													<td>4700</td>
 													<td>98765</td>
 													<td class="text-center">123</td>
@@ -243,7 +243,6 @@
 													<td class="text-right">$10.000.000</td>
 													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
 												</tr>
-												<!-- Repetir para 5 filas en total -->
 												<tr>
 													<td class="text-center">2488</td>
 													<td class="text-center">11223</td>
@@ -267,7 +266,7 @@
 													<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
 													<td class="text-right">$50.000</td>
 													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
+												</tr> -->
 												<!-- Las filas de premios se agregarán aquí dinámicamente -->
 											</tbody>
 										</table>
