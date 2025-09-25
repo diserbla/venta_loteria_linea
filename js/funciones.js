@@ -313,6 +313,20 @@ $(document).ready(function(){
         fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
     });
 
+    // Evento click para el botón grabar venta con confirmación
+    $('#btn-grabar-venta').click(function(e) {
+        e.preventDefault();
+
+        // Validar que haya datos para grabar
+        if (!validarDatosVenta()) {
+            swal('Datos incompletos', 'Debe completar los datos del cliente y agregar al menos un ítem a la venta.', 'warning');
+            return;
+        }
+
+        // Mostrar confirmación con detalles de la venta
+        mostrarConfirmacionVenta();
+    });
+
     // Evento click para btn-adicionar: agregar registro de prueba a tbl_ltr
     $(document).on('click', '#btn-adicionar', function() {
         var cod_lot = $('#cboLoterias_ltr').val();
@@ -599,47 +613,203 @@ $(document).ready(function(){
         swal('Premio eliminado', 'El registro ha sido removido de la tabla de premios.', 'info');
     });
 
-    /*
-    $(document).on("keypress", "#barcode", function (e) {
-        if ((e.keyCode == 13) || (e.keyCode == 9)) {
-            var barcode = $('#barcode').val();
-
-            $.ajax({
-                url: "../ventas/funciones.php",
-                dataType: "json",
-                type: "post",
-                data: { paso: "busca_premio_ltr", barcode: barcode },
-                success: function (data) {
-                    var error = data.error;
-                    var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
-
-                    if (error.length > 0) {
-                        swal(error, "", "error");
-                    } else if (totalPrizeNetValue > 10000) {
-                        swal("!!POR FAVOR COMUNIQUESE CON LA OFICINA PPAL PARA COBRAR ESTE PREMIO!!", "", "error")
-                            .then((value) => {
-                                $("#barcode").val('');
-                                $('#barcode').focus();
-                            });
-                    } else {
-                        var arreglo = data.arreglo;
-                        console.log(arreglo);
-                        // Aquí continúa tu flujo normal si el valor es <= 300000
-                    }
-                },
-                error: function (request, status, error) {
-                    alert(request.responseText);
-                },
-                complete: function() {
-                // Ocultar el spinner cuando la solicitud se complete
-                        $('#barcode').focus();
-                    }						
-            });
-            e.preventDefault(); 
-        } 
-    });
-    */
 });
+
+// Función para validar datos mínimos requeridos
+function validarDatosVenta() {
+    const cedula = $('#cliente-cedula').val().trim();
+    const nombres = $('#cliente-nombres').val().trim();
+    const totalVenta = parseFloat($('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0;
+    const itemsCount = $('#tbl_ltr tbody tr').length;
+
+    return cedula && nombres && totalVenta > 0 && itemsCount > 0;
+}
+
+// Función para mostrar confirmación con detalles
+function mostrarConfirmacionVenta() {
+    const totalVenta = parseFloat($('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0;
+    const totalPremios = parseFloat($('#total-premios-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0;
+    const efectivo = parseFloat($('#ingrese-efectivo').val().replace(/[$.]/g, '').replace(',', '.')) || 0;
+    const valorAPagar = totalVenta - totalPremios;
+    const cambio = efectivo - valorAPagar;
+
+    const formatoMoneda = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+    });
+
+    const clienteNombre = $('#cliente-nombres').val() + ' ' + $('#cliente-apellidos').val();
+    const itemsCount = $('#tbl_ltr tbody tr').length;
+
+    swal({
+        title: '¿Está seguro de grabar la venta?',
+        html: `
+            <div style="text-align: left;">
+                <div class="confirmacion-detalle">
+                    <strong>Cliente:</strong> ${clienteNombre}<br>
+                    <strong>Items:</strong> ${itemsCount} registro(s)<br>
+                    <strong>Total Venta:</strong> ${formatoMoneda.format(totalVenta)}<br>
+                    <strong>Total Premios:</strong> ${formatoMoneda.format(totalPremios)}<br>
+                    <strong>Valor a Pagar:</strong> ${formatoMoneda.format(valorAPagar)}<br>
+                    <strong>Efectivo:</strong> ${formatoMoneda.format(efectivo)}<br>
+                    <strong>Cambio:</strong> ${formatoMoneda.format(Math.max(0, cambio))}
+                </div>
+            </div>
+        `,
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: '<i class="fa fa-check"></i> Sí, Grabar Venta',
+        cancelButtonText: '<i class="fa fa-times"></i> Cancelar',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        customClass: {
+            popup: 'swal-wide',
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        }
+    }).then((result) => {
+        if (result.value) {
+            // Usuario confirmó, proceder con el proceso de venta
+            procesarVenta();
+        } else {
+            // Usuario canceló
+            swal('Operación cancelada', 'La venta no fue grabada.', 'info');
+        }
+    });
+}
+
+// Función principal para procesar la venta
+function procesarVenta() {
+    const $button = $('#btn-grabar-venta');
+    const $btnText = $button.find('.btn-text');
+    const $btnIcon = $button.find('.btn-icon');
+
+    try {
+        // Mostrar estado de procesamiento
+        $button.prop('disabled', true);
+        $btnText.text('Procesando...');
+        $btnIcon.html('<i class="fa fa-spinner fa-spin"></i>');
+
+        // Recopilar datos de la venta
+        const datosVenta = recopilarDatosVenta();
+
+        // Enviar datos al servidor
+        $.ajax({
+            url: '../ventas/funciones.php',
+            method: 'POST',
+            data: {
+                paso: 'grabar_venta',
+                ...datosVenta
+            },
+            timeout: 30000,
+            dataType: 'json'
+        })
+        .done(function(response) {
+            if (response.success) {
+                swal({
+                    title: '¡Venta grabada exitosamente!',
+                    html: `
+                        <div style="text-align: center;">
+                            <i class="fa fa-check-circle" style="color: #28a745; font-size: 48px;"></i><br>
+                            <strong>Factura #${response.factura || 'N/A'}</strong><br>
+                            <small>Total: ${formatoMoneda.format(response.total || 0)}</small>
+                        </div>
+                    `,
+                    type: 'success',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                }).then(() => {
+                    // Recargar página o redirigir
+                    location.reload();
+                });
+            } else {
+                throw new Error(response.message || 'Error al grabar la venta');
+            }
+        })
+        .fail(function(xhr, status, error) {
+            let mensajeError = 'Error desconocido al procesar la venta';
+
+            if (status === 'timeout') {
+                mensajeError = 'Tiempo agotado. Verifique su conexión e intente nuevamente.';
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                mensajeError = xhr.responseJSON.message;
+            } else if (error) {
+                mensajeError = error;
+            }
+
+            swal('Error al grabar venta', mensajeError, 'error');
+        })
+        .always(function() {
+            // Restaurar botón
+            $button.prop('disabled', false);
+            $btnText.text('Grabar Venta');
+            $btnIcon.html('<i class="fa fa-check"></i>');
+        });
+
+    } catch (error) {
+        console.error('Error procesando venta:', error);
+        swal('Error', 'Ha ocurrido un error inesperado: ' + error.message, 'error');
+
+        // Restaurar botón
+        $button.prop('disabled', false);
+        $btnText.text('Grabar Venta');
+        $btnIcon.html('<i class="fa fa-check"></i>');
+    }
+}
+
+// Función para recopilar todos los datos de la venta
+function recopilarDatosVenta() {
+    const datos = {
+        cliente: {
+            cedula: $('#cliente-cedula').val().trim(),
+            nombres: $('#cliente-nombres').val().trim(),
+            apellidos: $('#cliente-apellidos').val().trim(),
+            celular: $('#cliente-celular').val().trim(),
+            direccion: $('#cliente-direccion').val().trim(),
+            email: $('#cliente-email').val().trim()
+        },
+        items: [],
+        premios: [],
+        totales: {
+            venta: parseFloat($('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0,
+            premios: parseFloat($('#total-premios-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0,
+            efectivo: parseFloat($('#ingrese-efectivo').val().replace(/[$.]/g, '').replace(',', '.')) || 0
+        }
+    };
+
+    // Recopilar items de la tabla de lotería
+    $('#tbl_ltr tbody tr').each(function() {
+        const $row = $(this);
+        datos.items.push({
+            loteria: $row.find('td').eq(0).text().trim(),
+            sorteo: $row.find('td').eq(1).text().trim(),
+            numero: $row.find('td').eq(2).text().trim(),
+            serie: $row.find('td').eq(3).text().trim(),
+            fraccion: $row.find('td').eq(4).text().trim(),
+            valor: $row.find('td').eq(5).text().replace(/[$.]/g, '').replace(',', '.'),
+            reservacion: $row.data('reservacion')
+        });
+    });
+
+    // Recopilar premios
+    $('#tbl_premios_ltr tbody tr').each(function() {
+        const $row = $(this);
+        datos.premios.push({
+            sorteo: $row.find('td').eq(0).text().trim(),
+            numero: $row.find('td').eq(1).text().trim(),
+            serie: $row.find('td').eq(2).text().trim(),
+            premio: $row.find('td').eq(3).text().trim(),
+            valor: $row.find('td').eq(4).text().replace(/[$.]/g, '').replace(',', '.'),
+            barcode: $row.data('barcode')
+        });
+    });
+
+    return datos;
+}
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
     // Validación previa: asegurar que todos los cfrx no estén vacíos y numFracciones sea válido
