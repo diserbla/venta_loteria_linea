@@ -17,31 +17,37 @@ function inicio() {
 function actualizarTotales() {
     // Extrae y limpia los valores para convertirlos a números
     var totalVentaText = $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.');
-    var totalPremiosText = $('#total-premios-valor').text().replace(/[$.]/g, '').replace(',', '.');
-
     var totalVenta = parseFloat(totalVentaText) || 0;
-    var totalPremios = parseFloat(totalPremiosText) || 0;
+
+    // Sumar todos los valores de premios en la tabla #tbl_premios_ltr
+    var totalPremios = 0;
+    $('#tbl_premios_ltr tbody tr').each(function () {
+        var valorPremioText = $(this).find('td').eq(4).text().replace(/[$.]/g, '').replace(',', '.');
+        var valorPremio = parseFloat(valorPremioText) || 0;
+        totalPremios += valorPremio;
+    });
+
+    // Actualizar el campo de total premios
+    var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+    $('#total-premios-valor').text(formatoMoneda.format(totalPremios));
 
     var valorAPagar = totalVenta - totalPremios;
+    if (valorAPagar < 0) valorAPagar = 0;
 
     // Obtener el campo de efectivo
     var efectivoInput = $('#ingrese-efectivo');
 
-    if (valorAPagar < 0) {
-        $('#valor-pagar-valor').text('$0');
-        efectivoInput.prop('disabled', true).val(''); // Deshabilitar y limpiar
-        // Muestra alerta informativa con swal v1
+    $('#valor-pagar-valor').text(formatoMoneda.format(valorAPagar));
+    efectivoInput.prop('disabled', valorAPagar === 0).val(valorAPagar === 0 ? '' : efectivoInput.val());
+
+    // Si el valor a pagar es cero, muestra alerta informativa
+    if (totalPremios > totalVenta) {
         swal(
             'Saldo a Favor',
             'El valor de los premios es mayor que la venta. El cliente no debe pagar.',
             'info'
         );
-    } else {
-        // Formatea el número a estilo de moneda local (COP)
-        var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
-        $('#valor-pagar-valor').text(formatoMoneda.format(valorAPagar));
-        efectivoInput.prop('disabled', false); // Habilitar el campo
-    }   
+    }
 }
 
 function gestionarScrollTablas() {
@@ -520,11 +526,14 @@ $(document).ready(function(){
     $(document).on("keypress", "#barcode", function (e) {
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
             var barcode = $('#barcode').val();
+            var limpiarYEnfocar = function() {
+                $('#barcode').val('');
+                $('#barcode').focus();
+            };
 
             // Validar longitud de 11 caracteres
             if (barcode.length !== 11) {
-                $('#barcode').val('');
-                $('#barcode').focus();
+                limpiarYEnfocar();
                 e.preventDefault();
                 return;
             }
@@ -539,13 +548,10 @@ $(document).ready(function(){
                     var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
 
                     if (error.length > 0) {
-                        swal(error, "", "error");
+                        swal(error, "", "error").then(limpiarYEnfocar);
                     } else if (totalPrizeNetValue > 300000) {
                         swal("!!VALOR DEL PREMIO ES MAYOR QUE EL MONTO AUTORIZADO POR FAVOR COMUNIQUESE CON LA OFICINA PRINCIPAL PARA COBRARLO!!", "", "error")
-                            .then((value) => {
-                                $("#barcode").val('');
-                                $('#barcode').focus();
-                            });
+                            .then(limpiarYEnfocar);
                     } else {
                         var arreglo = data.arreglo;
                         console.log(arreglo);
@@ -568,20 +574,29 @@ $(document).ready(function(){
                                 `;
                                 $('#tbl_premios_ltr tbody').append(nuevaFila);
                             });
-                        } 
+                            // Llamar a actualizarTotales después de agregar premios
+                            actualizarTotales();
+                        }
 
-                        swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')            
+                        swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
+                            .then(limpiarYEnfocar);
                     }
                 },
                 error: function (request, status, error) {
                     alert(request.responseText);
-                },
-                complete: function() {
-                    $('#barcode').focus();
-                }						
+                    limpiarYEnfocar();
+                }
             });
             e.preventDefault(); 
         } 
+    });
+
+    // Evento para eliminar filas de la tabla de premios (clic en ícono trash)
+    $(document).on('click', '#tbl_premios_ltr .fa-trash', function() {
+        var fila = $(this).closest('tr');
+        fila.remove();
+        actualizarTotales();
+        swal('Premio eliminado', 'El registro ha sido removido de la tabla de premios.', 'info');
     });
 
     /*
