@@ -613,6 +613,32 @@ $(document).ready(function(){
         swal('Premio eliminado', 'El registro ha sido removido de la tabla de premios.', 'info');
     });
 
+    // Confirmación de venta con swal (ubicado al final del bloque principal)
+    $(document).on('click', '#btn-grabar-venta', function(e) {
+        e.preventDefault();
+        swal({
+            title: '¿Está seguro de grabar la venta?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            buttons: [
+                'Cancelar',
+                {
+                    text: 'Sí, grabar',
+                    value: true,
+                    closeModal: true
+                }
+            ],
+            dangerMode: true
+        }).then(function(result) {
+            if (result) {
+                // Aquí va la lógica para grabar la venta (AJAX o lo que corresponda)
+                swal('Venta grabada', 'La venta ha sido registrada exitosamente.', 'success');
+                // Puedes llamar aquí a tu función real de grabado si la tienes
+            }
+        });
+    });
+
+
 });
 
 // Función para validar datos mínimos requeridos
