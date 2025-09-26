@@ -613,9 +613,16 @@ $(document).ready(function(){
         swal('Premio eliminado', 'El registro ha sido removido de la tabla de premios.', 'info');
     });
 
-    // Confirmación de venta con swal (ubicado al final del bloque principal)
+    // Confirmación de venta con validación de registros en tablas
     $(document).on('click', '#btn-grabar-venta', function(e) {
         e.preventDefault();
+        var tieneVenta = $('#tbl_ltr tbody tr').length > 0;
+        var tienePremio = $('#tbl_premios_ltr tbody tr').length > 0;
+        if (!tieneVenta && !tienePremio) {
+            swal('Sin registros', 'Debe agregar al menos un registro en la tabla de venta o de premios para poder grabar.', 'warning');
+            return;
+        }
+        // Si hay registros, mostrar confirmación
         swal({
             title: '¿Está seguro de grabar la venta?',
             text: 'Esta acción no se puede deshacer.',
