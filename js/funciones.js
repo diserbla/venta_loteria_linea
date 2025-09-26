@@ -655,6 +655,405 @@ $(document).ready(function(){
 
 });
 
+function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
+    // Validación previa: asegurar que todos los cfrx no estén vacíos y numFracciones sea válido
+    if (!cboLoterias_ltr || cfr1 === '' || cfr2 === '' || cfr3 === '' || cfr4 === '' || !numFracciones || numFracciones <= 0) {
+        console.log('Parámetros inválidos para fn_series_disponibles');
+        return;
+    }
+    
+    // Concatenación optimizada de num_bil solo si todos los cfrx son válidos
+    var num_bil = cfr1 + cfr2 + cfr3 + cfr4;
+    
+	$.ajax({
+        async: true,
+        url: "funciones.php",
+        dataType: "json",
+        type: 'post',
+        data: { paso: 'ltr_series_disponibles', cod_lot: cboLoterias_ltr, num_bil: num_bil, fracciones: numFracciones },
+        beforeSend: function () {
+            $("#spinner").show();
+        },
+        success: function (data) {
+
+            $("#div_series_disponibles").html(data.salida);
+
+            // Mostrar #div_series_disponibles después de generar
+            $('#div_series_disponibles').show();
+
+            // Mejora la presentación del input y título solo si hay salida
+            if (data.salida && data.salida.trim() !== '') {
+                // Estilo para el input de serie
+                $('#ltr_serie_ingresada').css({
+                    'border': '2px solid #007bff',
+                    'border-radius': '5px',
+                    'padding': '10px',
+                    'font-size': '1.2em',
+                    'text-align': 'center',
+                    'background-color': '#f8f9fa',
+                    'width': '60px',
+                    'margin-left': '10px'
+                }).parent().css({
+                    'display': 'flex',
+                    'justify-content': 'flex-end',
+                    'margin-left': 'auto'
+                });
+
+                // Estilo para el título
+                $('#div_series_disponibles p').css({
+                    'background-color': '#e7f3ff',
+                    'color': '#0c5460',
+                    'font-weight': 'bold',
+                    'padding': '8px',
+                    'border-radius': '4px',
+                    'text-align': 'center',
+                    'font-size': '1.1em'
+                });
+
+                // Restringir input a solo 3 números
+                $('#ltr_serie_ingresada').on('input', function() {
+                    let value = $(this).val().replace(/[^0-9]/g, ''); // Solo números
+                    if (value.length > 3) value = value.substring(0, 3); // Máximo 3 dígitos
+                    $(this).val(value);
+                });
+            }
+
+            //var fracciones = data.fracciones;
+            var error = data.error;
+
+            if (error.length > 0) {
+                swal({
+                    title: error,
+                    text: "",
+                    icon: "error",
+                    type: "warning",
+                    timer: 5000
+                }).then(function () {
+                    //fn_limpiar_ltr();
+                });
+            } else {
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
+    });
+}
+
+function fn_consulta_cliente(){
+
+    var cedula = $('#cliente-cedula').val();
+    
+    if (!cedula) {
+        //debe tener un valor, sino no hace nada
+        return;
+    }
+    else
+    {
+        var ajax_data = {
+                "paso"      : 'consultar',
+                "cedula"    : cedula,
+            }
+
+        $.ajax({
+            async:	false,
+            url 		: '../clientes/funciones.php', // the url where we want to POST
+            type		: 'post',
+            dataType 	: "json",
+            data:  ajax_data,
+            success: function(data)
+            {
+                error = data.error;
+                
+                if (error.length > 0)
+                {
+                    swal(error, "", "error");
+                }
+                else
+                {
+                    var arreglo = data.arreglo;
+
+                    if (arreglo.length > 0) {
+                        $.each(arreglo, function(j,data2){
+
+                            $('#cliente-nombres').val(data2.nombres);
+                            $('#cliente-apellidos').val(data2.apellidos);
+                            $('#cliente-celular').val(data2.celular);
+                            $('#cliente-direccion').val(data2.direccion);
+                            $('#cliente-email').val(data2.correo);
+
+                        });
+                    } else {
+                        swal('Cliente no encontrado', 'No se encontró un cliente con esta cédula.', 'warning')
+                        .then(function() {
+                            $('#cliente-nombres').focus();
+                        });
+                    }
+                }
+            },
+            error: function (request, status, error)
+            {
+                alert(request.responseText);
+            }
+            
+        });
+    }
+}
+
+function validarCliente() {
+    const camposRequeridos = [
+        { id: 'cliente-cedula', label: 'Cédula' },
+        { id: 'cliente-nombres', label: 'Nombres' },
+        { id: 'cliente-apellidos', label: 'Apellidos' },
+        { id: 'cliente-celular', label: 'Celular' }
+    ];
+
+    let esValido = true;
+    let primerCampoInvalido = null;
+
+    camposRequeridos.forEach(campo => {
+        const elemento = document.getElementById(campo.id);
+        const valor = elemento.value.trim();
+
+        if (!valor) {
+            esValido = false;
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = elemento;
+            }
+            return;
+        }
+
+        // Validación específica para cédula: mínimo 5 dígitos
+        if (campo.id === 'cliente-cedula') {
+            const soloDigitos = valor.replace(/\D/g, '');
+            if (soloDigitos.length < 5) {
+                esValido = false;
+                if (!primerCampoInvalido) {
+                    primerCampoInvalido = elemento;
+                }
+                swal({
+                    title: 'Cédula Inválida',
+                    text: 'La cédula debe tener al menos 5 dígitos.',
+                    type: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Para celular, verificar que tenga al menos 10 dígitos raw (ignorando guiones)
+        if (campo.id === 'cliente-celular') {
+            const soloDigitos = valor.replace(/\D/g, '');
+            if (soloDigitos.length < 10) {
+                esValido = false;
+                if (!primerCampoInvalido) {
+                    primerCampoInvalido = elemento;
+                }
+                swal({
+                    title: 'Celular Inválido',
+                    text: 'El celular debe tener 10 dígitos.',
+                    type: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    });
+
+    if (!esValido && primerCampoInvalido) {
+        primerCampoInvalido.focus();
+    }
+    return esValido;
+}
+
+function fn_graba_cliente(){
+    
+    var sw = 0;
+    
+    if (!validarCliente()) {
+        sw = 1;
+        return;
+    }
+    
+    var cedula    = $('#cliente-cedula').val();
+    var nombres   = $('#cliente-nombres').val();
+    var apellidos = $('#cliente-apellidos').val();
+    var celular   = $('#cliente-celular').val();
+    var direccion = $('#cliente-direccion').val();
+    var correo    = $('#cliente-email').val();
+    
+    var ajax_data = {
+        "paso"      : 'grabar',
+        "cedula"    : cedula,
+        "nombres"   : nombres,
+        "apellidos" : apellidos,
+        "celular"   : celular,
+        "direccion" : direccion,
+        "correo"    : correo,
+    }
+
+    $.ajax({
+        async:	false,
+        url 		: '../clientes/funciones.php',
+        type		: 'post',
+        dataType 	: "json",
+        data:  ajax_data,
+        success: function(data)
+        {
+            error = data.error;
+            msg   = data.msg;
+            
+            if (error.length > 0)
+            {
+                swal(error, "", "error");
+            }
+            else
+            {
+                swal({
+                    title: msg,
+                    text: "",
+                    type: "success",
+                    timer: 5000,
+                    showConfirmButton: false
+                }).then(function() {
+                    $('#cfr1').focus();
+                });
+            }
+        },
+        error: function (request, status, error)
+        {
+            alert(request.responseText);
+        }
+        
+    });
+}
+
+function limpiarCliente() {
+    $('#cliente-cedula').val('');
+    $('#cliente-nombres').val('');
+    $('#cliente-apellidos').val('');
+    $('#cliente-celular').val('');
+    $('#cliente-direccion').val('');
+    $('#cliente-email').val('');
+    $('#cliente-cedula').focus();
+}
+
+function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
+    // Validaciones básicas antes del AJAX
+    if (!cod_lot || !num_bil || !num_ser) {
+        console.error('Parámetros inválidos:', { cod_lot, num_bil, num_ser });
+        swal('Error', 'Parámetros incompletos para consultar fracciones.', 'warning');
+        return;
+    }
+
+    $.ajax({
+        async: false,  // Cambiado a true para no bloquear (mejor práctica)
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: 'post',	
+        data: { 
+            paso: 'ltr_fracciones_serie_seleccionada', 
+            cod_lot: cod_lot, 
+            num_bil: num_bil, 
+            num_ser: num_ser 
+        },									
+        success: function(data) {
+            // Verificar si hay error en la respuesta
+            if (data.error && data.error.length > 0) {
+                swal('Error', data.error, 'error');
+                return;
+            }
+
+            var fracciones = parseInt(data.fracciones) || 1;  // Asegurar que sea un número válido (default 1)
+            
+            console.log('Fracciones encontradas: ' + fracciones);
+            //$("#current-frac").val(fracciones);
+
+            var $currentFrac = $("#current-frac");
+            if ($currentFrac.length > 0) {  // Verificar que el elemento exista
+                $currentFrac.text(fracciones);  // Cambia el TEXTO visible (en lugar de .val())
+                $currentFrac.data('max', fracciones);  // Actualiza data-max para lógica JS (ej. botones +/-)
+                // Opcional: Actualiza el atributo HTML si lo necesitas para otros fines
+                // $currentFrac.attr('max', fracciones);
+                // Opcional: Actualizar totales o UI relacionada
+                //actualizarTotales();  // Si existe esta función en tu código
+            } else {
+                console.error('Elemento #current-frac no encontrado en el DOM');
+            }
+        },	
+        error: function (request, status, error) {
+            console.error('Error en AJAX:', error);
+            alert('Error al consultar fracciones: ' + request.responseText);
+        }							
+    });	
+}
+
+function fn_ltr_sorteo_activo() {
+    var cod_lot = $('#cboLoterias_ltr').val();
+    //console.log('blur con valor'+cod_lot);
+    $.ajax({
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: "post",
+        data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
+        success: function (data) {
+            var error = data.error;
+
+            if (error.length > 0) {
+                swal(error, "", "error");
+            } else {
+                var arreglo = data.arreglo;
+
+                console.log(arreglo);
+
+                // Actualizar el div con datos del sorteo
+                var datosSorteo = $('.datos-sorteo-row');
+                var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
+                var premioMayorFormateado = premioMayorValor + ' Millones';
+                var fechaSorteo = arreglo.fec_sor ? `<span style=\"color:#007bff;font-size:16px;font-weight:bold;margin-left:10px;\">F.Sorteo: ${arreglo.fec_sor}</span>` : '';
+
+                var maxFracc = parseInt(arreglo.fracciones);
+                var currentFracc = maxFracc;
+
+                var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
+                var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
+
+                datosSorteo.html(`
+                    <div class=\"adicionar-line\" style=\"text-align: center; margin-bottom: 10px;\">
+                        <button type=\"button\" id=\"btn-adicionar\" style=\"background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">Adicionar</button>
+                    </div>
+                    <div class=\"sorteo-line\">
+                        Sorteo: <strong>${arreglo.num_sor}</strong> ${fechaSorteo} - Mayor: <strong class=\"premio-mayor-valor\">$${premioMayorFormateado}</strong>
+                        <button type=\"button\" id=\"frac-minus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">-</button>
+                        <strong id=\"current-frac\" data-max=\"${maxFracc}\" style=\"margin: 0 5px; color: #ff0000; font-weight: bold;\">${currentFracc}</strong>
+                        <button type=\"button\" id=\"frac-plus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">+</button>
+                    </div>
+                    <div class=\"precios-line\">
+                        <span class=\"precios-item\">Fracciones: <strong>${arreglo.fracciones}</strong></span>
+                        <span class=\"precios-item\">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
+                        <span class=\"precios-item\">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
+                        <span class=\"precios-item incentivo-item\">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
+                    </div>
+                `);
+
+                // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
+                $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
+
+                // Mostrar .datos-sorteo-row después de generar
+                $('.datos-sorteo-row').show();
+
+                // Opcional: Actualizar totales en la interfaz si es necesario
+                actualizarTotales();
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        },
+        complete: function() {
+        // Ocultar el spinner cuando la solicitud se complete
+            $('#spinner_lr_num_bil1').hide();
+        }
+    });
+}
+
 // Función para validar datos mínimos requeridos
 function validarDatosVenta() {
     const cedula = $('#cliente-cedula').val().trim();
