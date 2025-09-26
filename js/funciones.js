@@ -324,7 +324,7 @@ $(document).ready(function(){
         }
 
         // Mostrar confirmación con detalles de la venta
-        mostrarConfirmacionVenta();
+        //mostrarConfirmacionVenta();
     });
 
     // Evento click para btn-adicionar: agregar registro de prueba a tbl_ltr
@@ -1063,5 +1063,3 @@ function validarDatosVenta() {
 
     return cedula && nombres && totalVenta > 0 && itemsCount > 0;
 }
-
-// Función para mostrar confirmacion
