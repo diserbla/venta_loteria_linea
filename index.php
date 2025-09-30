@@ -186,6 +186,32 @@
 								</div>
 							</div>
 
+							<!-- ====================== MODAL BUSCAR TRANSACCIONES ====================== -->
+							<div id="modal-buscar-transacciones" class="modal fade" tabindex="-1" role="dialog"
+								aria-labelledby="modalBuscarTransaccionesLabel">
+								<div class="modal-dialog" role="document" style="width:43%; height:35%; margin:0; position:fixed; left:17%; top:22%; transform:translateY(-50%);">
+									<div class="modal-content" style="height:100%; border-radius:0;">
+										<!-- Header del modal (azul) -->
+										<div class="modal-header" style="background:#337ab7; color:#fff;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+												<span aria-hidden="true" style="color:#fff;">&times;</span>
+											</button>
+											<h4 class="modal-title" id="modalBuscarTransaccionesLabel">CONSULTA DE VENTAS POR CLIENTE</h4>
+										</div>
+
+										<!-- Body del modal (por ahora sin inputs) -->
+										<div class="modal-body">
+											<p class="text-center">Contenido de búsqueda de transacciones.</p>
+										</div>
+
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- ===================================================================== -->
+
 							<!-- Panel de Premios de Lotería -->
 							<div class="panel panel-default" style="margin-top: 20px;">
 								<div class="premio-header">PREMIOS LOTERIA</div>
@@ -195,7 +221,7 @@
 											<label for="premio-cedula">Cédula</label>
 											<div class="input-group">
 												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
-												<span class="input-group-addon" id="buscar-cliente-btn" style="cursor: pointer;">
+												<span class="input-group-addon" id="buscar-transacciones-btn" style="cursor: pointer;">
 													<i class="fa fa-search"></i>
 												</span>
 											</div>

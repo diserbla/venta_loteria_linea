@@ -105,3 +105,10 @@ body {
 .incentivo-line strong {
     font-size: 16px;
 }
+
+/* --------------------------------------------------------------
+   4️⃣ Asegurar que el modal quede por encima de todo.
+-------------------------------------------------------------- */
+#modal-buscar-transacciones {
+    z-index: 1050;   /* Valor por defecto de Bootstrap, reforzado */
+}
