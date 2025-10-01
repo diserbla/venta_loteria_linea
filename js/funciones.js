@@ -680,7 +680,11 @@ $(document).ready(function(){
     3️⃣ Listener para abrir el modal al hacer click en el nuevo botón.
     -------------------------------------------------------------- */
     $(document).on('click', '#buscar-transacciones-btn', function () {
-        $('#modal-buscar-transacciones').modal('show');
+       $('#modal-buscar-transacciones').modal({
+            show: true,
+            backdrop: 'static',    // No cierra al hacer clic fuera
+            keyboard: false        // No cierra con tecla Escape
+        });
     });
 
 });

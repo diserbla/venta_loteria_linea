@@ -193,9 +193,6 @@
 									<div class="modal-content" style="height:100%; border-radius:0;">
 										<!-- Header del modal (azul) -->
 										<div class="modal-header" style="background:#337ab7; color:#fff;">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-												<span aria-hidden="true" style="color:#fff;">&times;</span>
-											</button>
 											<h4 class="modal-title" id="modalBuscarTransaccionesLabel">CONSULTA DE VENTAS POR CLIENTE</h4>
 										</div>
 
@@ -204,16 +201,16 @@
 
 										<!-- Contenedor para los filtros (separado de la tabla) -->
 										<div class="row" style="margin-bottom: 15px;">
-											<div class="col-xs-4">
+											<div class="col-xs-12 col-sm-6 col-md-4">
 												<div class="form-group">
 													<label for="modal-loteria-select">Loterías</label>
 													<select id="modal-loteria-select" class="form-control">
-														<option value="">Seleccione una lotería</option>
+														<option value="">Lotería</option>
 														<!-- Opciones a cargar dinámicamente o estáticas -->
 													</select>
 												</div>
 											</div>
-											<div class="col-xs-2">
+											<div class="col-xs-12 col-sm-6 col-md-2">
 												<div class="form-group">
 													<label for="modal-sorteo-input">Sorteo</label>
 													<input type="text"
@@ -225,7 +222,7 @@
 														title="Solo se permiten 4 dígitos numéricos">
 												</div>
 											</div>
-											<div class="col-xs-5">
+											<div class="col-xs-12 col-sm-12 col-md-5">
 												<div class="form-group">
 													<label for="con-nombre-cliente">Nombre Cliente</label>
 													<input type="text"
@@ -235,12 +232,12 @@
 												</div>
 											</div>
 											<!-- Botón Buscar (columna extra) -->
-											<div class="col-xs-1" style="text-align: right; margin-top: 24px;">
+											<div class="col-xs-12 col-sm-12 col-md-1" style="margin-top: 24px;">
 												<!-- En Bootstrap 3 no usamos flex‑box; usamos la clase .pull‑right para alinear -->
 												<button type="button"
 														id="btn-buscar-ventas"
 														class="btn btn-primary pull-right"
-														style="width:auto;"
+														style="width:auto;height: 38px; padding: 6px 12px;"
 														>
 													<i class="fa fa-search fa-2x"></i>
 												</button>
@@ -283,7 +280,9 @@
 										</div>
 
 										<div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+											<button type="button" class="btn btn-danger" data-dismiss="modal">
+        										<i class="fa fa-times"></i> Cerrar
+    										</button>
 										</div>
 									</div>
 								</div>
