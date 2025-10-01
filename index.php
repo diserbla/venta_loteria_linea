@@ -187,7 +187,7 @@
 							</div>
 
 							<!-- ====================== MODAL BUSCAR TRANSACCIONES ====================== -->
-							<div id="modal-buscar-transacciones" class="modal fade" tabindex="-1" role="dialog"
+							<div id="modal-buscar-transacciones" class="modal" tabindex="-1" role="dialog"
 								aria-labelledby="modalBuscarTransaccionesLabel">
 								<div class="modal-dialog" role="document" style="width:43%; height:35%; margin:0; position:fixed; left:17%; top:22%; transform:translateY(-50%);">
 									<div class="modal-content" style="height:100%; border-radius:0;">
@@ -201,7 +201,77 @@
 
 										<!-- Body del modal (por ahora sin inputs) -->
 										<div class="modal-body">
-											<p class="text-center">Contenido de búsqueda de transacciones.</p>
+
+										<!-- Contenedor para los filtros (separado de la tabla) -->
+										<div class="row" style="margin-bottom: 15px;">
+											<div class="col-xs-6">
+												<div class="form-group">
+													<label for="modal-loteria-select">Loterías</label>
+													<select id="modal-loteria-select" class="form-control">
+														<option value="">Seleccione una lotería</option>
+														<!-- Opciones a cargar dinámicamente o estáticas -->
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-2">
+												<div class="form-group">
+													<label for="modal-sorteo-input">Sorteo</label>
+													<input type="text"
+														id="modal-sorteo-input"
+														class="form-control numeric-input"
+														maxlength="4"
+														placeholder="0000"
+														pattern="\d{4}"
+														title="Solo se permiten 4 dígitos numéricos">
+												</div>
+											</div>
+
+											<!-- Botón Buscar (columna extra) -->
+											<div class="col-xs-4" style="text-align: right; margin-top: 24px;">
+												<!-- En Bootstrap 3 no usamos flex‑box; usamos la clase .pull‑right para alinear -->
+												<button type="button"
+														id="btn-buscar-ventas"
+														class="btn btn-primary pull-right"
+														style="width:auto;"
+														>
+													<i class="fa fa-search fa-2x"></i>
+												</button>
+											</div>
+
+										</div>
+
+
+										<table class="table table-bordered table-condensed table-striped table-hover tablesorter"
+												id="tbl_consulta_ventas">
+												<thead>
+													<tr>
+														<th class="text-center">Venta</th>
+														<th class="text-center">Fecha</th>
+														<th class="text-center">Lotería</th>
+														<th class="text-center">Sorteo</th>
+														<th class="text-center">F. Sorteo</th>
+														<th class="text-center">Billete</th>
+														<th class="text-center">Serie</th>
+														<th class="text-center">Frac.</th>
+														<th class="text-center">Acción</th>
+													</tr>
+												</thead>
+												<colgroup>
+													<!-- Puedes ajustar anchos si lo deseas -->
+													<col style="width:8%">
+													<col style="width:12%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:12%">
+													<col style="width:12%">
+													<col style="width:8%">
+													<col style="width:8%">
+												</colgroup>
+												<tbody>
+													<!-- Las filas se cargarán dinámicamente vía AJAX -->
+												</tbody>
+											</table>
 										</div>
 
 										<div class="modal-footer">

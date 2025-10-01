@@ -652,6 +652,30 @@ $(document).ready(function(){
         });
     });
 
+   // -----------------------------------------------------------------
+    //  INICIALIZAR tablesorter para la tabla de consulta de ventas
+    // -----------------------------------------------------------------
+    if ($.fn.tablesorter) {
+        $("#tbl_consulta_ventas").tablesorter({
+            theme: "bootstrap",          // usa el tema de Bootstrap 3
+            headerTemplate: '{content} {icon}', // agrega íconos de ordenación
+            widgets: ["zebra"],         // alterna colores de filas
+            widthFixed: true,
+            // **Ordenar por la columna “Venta” (índice 0) en orden descendente**
+            sortList: [[0, 1]]                      // 0 = columna Venta, 1 = DESC        
+        });
+    } else {
+        console.warn("tablesorter no está cargado. Asegúrate de incluir jquery.tablesorter.min.js y su CSS.");
+    }
+
+   // -----------------------------------------------------------------
+    //  RESTRICCIÓN DE INPUT: Sólo números en el campo Sorteo
+    // -----------------------------------------------------------------
+    $(document).on('input', '#modal-sorteo-input', function () {
+        // Elimina cualquier carácter que no sea dígito
+        this.value = this.value.replace(/\D/g, '');
+    });
+
     /* --------------------------------------------------------------
     3️⃣ Listener para abrir el modal al hacer click en el nuevo botón.
     -------------------------------------------------------------- */
