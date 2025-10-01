@@ -657,7 +657,7 @@ $(document).ready(function(){
     // -----------------------------------------------------------------
     if ($.fn.tablesorter) {
         $("#tbl_consulta_ventas").tablesorter({
-            theme: "bootstrap",          // usa el tema de Bootstrap 3
+            theme: "blue",          // usa el tema de Bootstrap 3
             headerTemplate: '{content} {icon}', // agrega íconos de ordenación
             widgets: ["zebra"],         // alterna colores de filas
             widthFixed: true,

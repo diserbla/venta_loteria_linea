@@ -204,7 +204,7 @@
 
 										<!-- Contenedor para los filtros (separado de la tabla) -->
 										<div class="row" style="margin-bottom: 15px;">
-											<div class="col-xs-6">
+											<div class="col-xs-4">
 												<div class="form-group">
 													<label for="modal-loteria-select">Loterías</label>
 													<select id="modal-loteria-select" class="form-control">
@@ -225,9 +225,17 @@
 														title="Solo se permiten 4 dígitos numéricos">
 												</div>
 											</div>
-
+											<div class="col-xs-5">
+												<div class="form-group">
+													<label for="con-nombre-cliente">Nombre Cliente</label>
+													<input type="text"
+														id="con-nombre-cliente"
+														class="form-control"
+														disabled>
+												</div>
+											</div>
 											<!-- Botón Buscar (columna extra) -->
-											<div class="col-xs-4" style="text-align: right; margin-top: 24px;">
+											<div class="col-xs-1" style="text-align: right; margin-top: 24px;">
 												<!-- En Bootstrap 3 no usamos flex‑box; usamos la clase .pull‑right para alinear -->
 												<button type="button"
 														id="btn-buscar-ventas"
