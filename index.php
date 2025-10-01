@@ -295,26 +295,22 @@
 								<div class="panel-body" style="border: 1px solid #ddd; border-top: 0;">
 									<div class="row" style="padding: 20px;">
 										<div class="col-md-4">
-											<label for="premio-cedula">Cédula</label>
-											<div class="input-group">
-												<input type="text" id="premio-cedula" class="form-control numeric-input" maxlength="10">
-												<span class="input-group-addon" id="buscar-transacciones-btn" style="cursor: pointer;">
-													<i class="fa fa-search"></i>
-												</span>
-											</div>
-										</div>
-										<div class="col-md-5">
-											<div class="form-group">
-												<label for="premio-nombre-cliente">Nombre</label>
-												<input type="text" id="premio-nombre-cliente" class="form-control" readonly>
-											</div>
-										</div>
-										<div class="col-md-3">
 											<div class="form-group">
 												<label for="barcode">Código</label>
 												<input type="text" id="barcode" class="form-control numeric-input" maxlength="11" placeholder="00000000000">
 											</div>
 										</div>
+
+										<div class="col-md-8" style="text-align: right; margin-top: 24px;">
+											<button type="button"
+												id="buscar-transacciones-btn"
+												class="btn btn-success btn-lg"
+												style="padding: 8px 16px; font-size: 16px; font-weight: bold;"
+												title="Buscar ventas por cédula del cliente">
+												<i class="fa fa-search"></i> Ventas por Cédula
+											</button>
+										</div>
+
 									</div>
 
 									<div class="table-container-scroll" style="margin: 0 20px 20px 20px;">
@@ -387,7 +383,7 @@
 										<div class="form-group">
 											<label for="cliente-cedula" class="col-sm-3 control-label">Cédula</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-cedula" class="form-control numeric-input" maxlength="10">
+												<input type="text" id="cliente-cedula" class="form-control numeric-input" maxlength="10" value="16640994">
 											</div>
 										</div>
 										<div class="form-group">

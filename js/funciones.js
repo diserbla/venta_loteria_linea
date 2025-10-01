@@ -540,6 +540,8 @@ $(document).ready(function(){
     $(document).on("keypress", "#barcode", function (e) {
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
             var barcode = $('#barcode').val();
+            var clienteCedula = $('#cliente-cedula').val();
+
             var limpiarYEnfocar = function() {
                 $('#barcode').val('');
                 $('#barcode').focus();
@@ -548,6 +550,16 @@ $(document).ready(function(){
             // Validar longitud de 11 caracteres
             if (barcode.length !== 11) {
                 limpiarYEnfocar();
+                e.preventDefault();
+                return;
+            }
+
+            // ✅ VALIDAR QUE LA CEDULA DEL CLIENTE TENGA VALOR
+            if (clienteCedula.length == 0) {
+                swal('DEBE INGRESAR LA INFORMACION  DEL CLIENTE', "", "error")
+                    .then((value) => {
+                        $('#cliente-cedula').focus();
+                    });
                 e.preventDefault();
                 return;
             }
@@ -683,23 +695,25 @@ $(document).ready(function(){
         fn_validar_busqueda_premio();
     });
 
-    // Evento para Enter en campo premio-cedula
-    $(document).on("keypress", "#premio-cedula", function (e) {
+    /*
+    // Evento para Enter en campo cliente-cedula
+    $(document).on("keypress", "#cliente-cedula", function (e) {
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
             e.preventDefault();
             fn_validar_busqueda_premio();
         }
     });
+    */
 
     // Función de validación para búsqueda de premios
     function fn_validar_busqueda_premio() {
-        var cedula = $('#premio-cedula').val(); 
+        var cedula = $('#cliente-cedula').val(); 
         var barcode = $('#barcode').val(); 
 
         if (cedula.length == 0) {
             swal('DEBE INGRESAR EL NUMERO DE CEDULA', "", "error")
                 .then((value) => {
-                    $('#premio-cedula').focus();
+                    $('#cliente-cedula').focus();
                 });									
             return false;
         } else {
