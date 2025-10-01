@@ -680,12 +680,45 @@ $(document).ready(function(){
     3️⃣ Listener para abrir el modal al hacer click en el nuevo botón.
     -------------------------------------------------------------- */
     $(document).on('click', '#buscar-transacciones-btn', function () {
-       $('#modal-buscar-transacciones').modal({
-            show: true,
-            backdrop: 'static',    // No cierra al hacer clic fuera
-            keyboard: false        // No cierra con tecla Escape
-        });
+        fn_validar_busqueda_premio();
     });
+
+    // Evento para Enter en campo premio-cedula
+    $(document).on("keypress", "#premio-cedula", function (e) {
+        if ((e.keyCode == 13) || (e.keyCode == 9)) {
+            e.preventDefault();
+            fn_validar_busqueda_premio();
+        }
+    });
+
+    // Función de validación para búsqueda de premios
+    function fn_validar_busqueda_premio() {
+        var cedula = $('#premio-cedula').val(); 
+        var barcode = $('#barcode').val(); 
+
+        if (cedula.length == 0) {
+            swal('DEBE INGRESAR EL NUMERO DE CEDULA', "", "error")
+                .then((value) => {
+                    $('#premio-cedula').focus();
+                });									
+            return false;
+        } else {
+            if (barcode.length == 0) {
+                //fn_ltr_busca_premio(cedula);
+                // ✅ MOSTRAR MODAL SOLO CUANDO: cédula > 0 Y barcode == 0
+                $('#modal-buscar-transacciones').modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            }
+
+            console.log('Buscar premios para cédula:', cedula, 'y barcode:', barcode);
+
+            return true;
+        }
+        
+    }
 
 });
 
