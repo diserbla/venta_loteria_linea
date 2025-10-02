@@ -190,7 +190,7 @@
 							<div id="modal-buscar-transacciones" class="modal" tabindex="-1" role="dialog"
 								aria-labelledby="modalBuscarTransaccionesLabel">
 								<div class="modal-dialog" role="document" style="width:43%; height:70%; margin:0; position:fixed; left:17%; top:40%; transform:translateY(-50%);">
-									<div class="modal-content" style="height:100%; border-radius:0;">
+									<div class="modal-content" style="height:90%; border-radius:0;">
 										<!-- Header del modal (azul) -->
 										<div class="modal-header" style="background:#337ab7; color:#fff;">
 											<h4 class="modal-title" id="modalBuscarTransaccionesLabel">CONSULTA DE VENTAS POR CLIENTE</h4>
@@ -231,21 +231,17 @@
 															disabled>
 													</div>
 												</div>
-												<!-- Botón Buscar (columna extra) -->
-												<div class="col-xs-12 col-sm-12 col-md-1" style="margin-top: 24px;">
-													<!-- En Bootstrap 3 no usamos flex‑box; usamos la clase .pull‑right para alinear -->
-													<button type="button"
-															id="btn-buscar-ventas"
-															class="btn btn-primary pull-right"
-															style="width:auto;height: 38px; padding: 6px 12px;"
-															>
-														<i class="fa fa-search fa-2x"></i>
+											</div>
+
+											<div class="pager" style="position: relative; overflow: hidden;"> 
+
+												<!-- Botón de buscar a la izquierda -->
+												<div style="float: left;">
+													<button type="button" id="btn-buscar-ventas" class="btn btn-primary"> 
+														<i class="fa fa-search"></i>Buscar
 													</button>
 												</div>
 
-											</div>
-
-											<div class="pager"> 
 												<img src="<?php echo $_SESSION['java'].'css/images/first.png'?>" class="first"/> 
 												<img src="<?php echo $_SESSION['java'].'css/images/prev.png'?>" class="prev"/> 
 												<span class="pagedisplay"></span> <!-- this can be any element, including an input -->

@@ -795,6 +795,17 @@ function fn_ltr_consulta_ventas(cedula) {
                 tablaBody.empty(); // Limpiar contenido previo
                 if (arreglo && arreglo.length > 0) {
                     $.each(arreglo, function (j, data2) {
+
+                        var validationCell;
+                        
+                        if (data2.valida_premio == 'S') {
+                            //validationCell = "<td align='center' title='REGISTRO YA VALIDADO' class='text-danger'><span class='fa fa-times'></span></td>";
+                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-danger'><span class='fa fa-check'></span></a></td>";
+                        } else {
+                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-success'><span class='fa fa-check'></a></td>";
+                        }
+
+
                         var nuevaFila = `
                             <tr>
                                 <td class="text-center">${data2.id_venta || ''}</td>       
