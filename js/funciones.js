@@ -563,7 +563,17 @@ $(document).ready(function(){
     });
 
     //premios de loteria
+
+    //premios de loteria - Modificado para usar la función reutilizable
     $(document).on("keypress", "#barcode", function (e) {
+        if ((e.keyCode == 13) || (e.keyCode == 9)) {
+            var barcode = $('#barcode').val();
+            fn_valida_premio(barcode);
+            e.preventDefault(); 
+        } 
+    });
+
+    $(document).on("keypress", "#barcode123", function (e) {
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
             var barcode = $('#barcode').val();
             var clienteCedula = $('#cliente-cedula').val();
@@ -642,7 +652,7 @@ $(document).ready(function(){
             e.preventDefault(); 
         } 
     });
-
+   
     // Evento para eliminar filas de la tabla de premios (clic en ícono trash)
     $(document).on('click', '#tbl_premios_ltr .fa-trash', function() {
         var fila = $(this).closest('tr');
@@ -724,17 +734,12 @@ $(document).ready(function(){
     });
 
     $(document).on("click", ".cls_busca_premio",function(e) {
-        var barcode = $(this).closest('tr').find('td:eq(9)').text();
+        var fila = $(this).closest('tr');
+        var barcode = fila.data('barcode');
 
-        $('#ltr_idtransaccion_premio').val(barcode);
-        $('#ltr_idtransaccion_premio').focus();
-        $("#modal_ltr_busca_premios").modal('hide');
+        fn_valida_premio(barcode);
+        e.preventDefault();
 
-        //fn_ltr_paga_premio();
-
-        //esta tabla la utilizo para que cuando consultemos por cedula
-        //no aparezcan de nuevo los registros que ya hemos validado
-        $("#tbl_ltr_premios_none").last().append("<tr><td>"+barcode+"</td></tr>");
     });
 
     // Función de validación para búsqueda de premios
@@ -1274,3 +1279,91 @@ function validarDatosVenta() {
 
     return cedula && nombres && totalVenta > 0 && itemsCount > 0;
 }
+
+// Función reutilizable para validar premios por barcode
+function fn_valida_premio(barcode) {
+    var clienteCedula = $('#cliente-cedula').val();
+    var barcodeStr = String(barcode);
+
+    var limpiarYEnfocar = function() {
+        $('#barcode').val('');
+        $('#barcode').focus();
+    };
+
+    // Validar longitud de 11 caracteres
+    if (barcodeStr.length !== 11) {
+        limpiarYEnfocar();
+        return false;
+    }
+
+    // ✅ VALIDAR QUE LA CEDULA DEL CLIENTE TENGA VALOR
+    if (clienteCedula.length == 0) {
+        swal('DEBE INGRESAR LA INFORMACION  DEL CLIENTE', "", "error")
+            .then((value) => {
+                $('#cliente-cedula').focus();
+            });
+        return false;
+    }
+
+    $.ajax({
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: "post",
+        data: { paso: "busca_premio_ltr", barcode: barcode },
+        success: function (data) {
+            var error = data.error;
+            var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
+
+            if (error.length > 0) {
+                swal(error, "", "error").then(limpiarYEnfocar);
+            } else if (totalPrizeNetValue > 300000) {
+                swal("!!VALOR DEL PREMIO ES MAYOR QUE EL MONTO AUTORIZADO POR FAVOR COMUNIQUESE CON LA OFICINA PRINCIPAL PARA COBRARLO!!", "", "error")
+                    .then(limpiarYEnfocar);
+            } else {
+                var arreglo = data.arreglo;
+                //console.log(arreglo);
+
+                // Formatear el valor del premio como moneda
+                var valorFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(totalPrizeNetValue || 0);
+
+                // Recorrer el arreglo (array de premios)
+                if (Array.isArray(arreglo)) {
+                    arreglo.forEach(function(premio) {
+                        var nuevaFila = `
+                            <tr data-barcode="${barcode}">
+                                <td class="text-center">${premio.lotteryDraw || ''}</td>
+                                <td class="text-center">${premio.numero || ''}</td>
+                                <td class="text-center">${premio.serie || ''}</td>
+                                <td style="text-align: left;">${premio.nombre_premio || ''}</td>
+                                <td class="text-right">${valorFormateado}</td>
+                                <td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
+                            </tr>
+                        `;
+                        $('#tbl_premios_ltr tbody').append(nuevaFila);
+                    });
+                    // Llamar a actualizarTotales después de agregar premios
+                    actualizarTotales();
+
+                    // Cerrar modal si fue llamado desde modal-buscar-transacciones
+                    // Probar diferentes formas de detectar el modal
+                    if ($('#modal-buscar-transacciones').is(':visible')) {
+                        $('#modal-buscar-transacciones').modal('hide');
+                    } else if ($('#modal-buscar-transacciones').hasClass('show')) {
+                        $('#modal-buscar-transacciones').modal('hide');
+                    }
+                }
+
+                swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
+                    .then(limpiarYEnfocar);
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+            limpiarYEnfocar();
+        }
+    });
+    
+    return true;
+}
+
+
