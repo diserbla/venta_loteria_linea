@@ -1388,11 +1388,40 @@ function fn_valida_premio(barcode) {
                     } else if ($('#modal-buscar-transacciones').hasClass('show')) {
                         $('#modal-buscar-transacciones').modal('hide');
                     }
+
+                    swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
+                    .then(limpiarYEnfocar);
+
                 }
 
-                swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
-                    .then(limpiarYEnfocar);
+                // swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
+                //     .then(limpiarYEnfocar);
             }
+
+            // ✅ NUEVO AJAX: Consumir funciones.php local con paso valida_premio
+            $.ajax({
+                url: "funciones.php",
+                dataType: "json",
+                type: "post",
+                data: {
+                    paso: "valida_premio",
+                    barcode: barcode,
+                    id_usu: id_usu
+                },
+                success: function(data) {
+                    if (data.error && data.error.length > 0) {
+                        console.error('Error al validar tiquete:', data.error);
+                        swal('Error al validar', 'No se pudo marcar el tiquete como validado: ' + data.error, 'error');
+                    } else {
+                        console.log('Tiquete validado correctamente en la base de datos');
+                    }
+                },
+                error: function (request, status, error) {
+                    console.error('Error en AJAX de validación:', request.responseText);
+                    swal('Error de conexión', 'No se pudo conectar con el servidor para validar el tiquete', 'error');
+                }
+            });
+
         },
         error: function (request, status, error) {
             alert(request.responseText);

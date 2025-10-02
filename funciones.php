@@ -45,10 +45,12 @@
 					$stmt->bindParam(':id_usu', $id_usu, PDO::PARAM_STR);
 					$stmt->execute();
 
+					/*
 					// Verificar si se actualizó algún registro
 					if ($stmt->rowCount() == 0) {
 						$error = "Premio no encontrado o ya fue validado previamente";
 					}
+						*/
 
 					$db->commit();
 				} catch(PDOException $e) {
