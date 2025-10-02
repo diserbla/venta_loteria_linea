@@ -734,6 +734,18 @@ $(document).ready(function(){
     });
 
     $(document).on("click", ".cls_busca_premio",function(e) {
+
+        // Deshabilitar el botón inmediatamente para evitar múltiples clicks
+        var $boton = $(this);
+        $boton.prop('disabled', true);
+
+        // Agregar estilos visuales para mostrar que está deshabilitado
+        $boton.css({
+            'opacity': '0.5',
+            'cursor': 'not-allowed',
+            'pointer-events': 'none'
+        });
+
         var fila = $(this).closest('tr');
         var barcode = fila.data('barcode');
 
@@ -1283,6 +1295,18 @@ function validarDatosVenta() {
 // Función reutilizable para validar premios por barcode
 function fn_valida_premio(barcode) {
     var clienteCedula = $('#cliente-cedula').val();
+    var id_usu        = $('#id_usu').val();
+
+    // Validar que id_usu no sea nulo o vacío
+    if (!id_usu || id_usu.trim() === '') {
+        swal('Error de usuario', 'No se pudo obtener la identificación del usuario. Por favor, recargue la página e intente nuevamente.', 'error')
+            .then((value) => {
+                // Opcional: recargar la página
+                // location.reload();
+            });
+        return false;
+    }
+
     var barcodeStr = String(barcode);
 
     var limpiarYEnfocar = function() {
@@ -1328,6 +1352,19 @@ function fn_valida_premio(barcode) {
 
                 // Recorrer el arreglo (array de premios)
                 if (Array.isArray(arreglo)) {
+
+                    // Validar que el barcode no exista ya en la tabla
+                    if ($('#tbl_premios_ltr tbody tr[data-barcode="' + barcode + '"]').length > 0) {
+                        // Si existe duplicado, solo limpiar y cerrar modal si está abierto
+                        limpiarYEnfocar();
+                        if ($('#modal-buscar-transacciones').is(':visible')) {
+                            $('#modal-buscar-transacciones').modal('hide');
+                        } else if ($('#modal-buscar-transacciones').hasClass('show')) {
+                            $('#modal-buscar-transacciones').modal('hide');
+                        }
+                        return false;
+                    }
+
                     arreglo.forEach(function(premio) {
                         var nuevaFila = `
                             <tr data-barcode="${barcode}">

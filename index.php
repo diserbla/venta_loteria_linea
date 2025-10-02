@@ -487,6 +487,10 @@
 				</div>
 			</div>
 		</div>
+
+		<input type="hidden" name="id_usu" id="id_usu" value="<?php echo $_SESSION['id_usu']?>">	
+		<input type="hidden" name="pto_vta" id="pto_vta" value="<?php echo $pto_vta?>">
+		
 	</body>
 </html>
 <?php
