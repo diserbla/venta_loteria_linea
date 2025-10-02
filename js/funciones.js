@@ -88,6 +88,25 @@ $(document).ready(function(){
     $('#cboLoterias_ltr').change(function(){		
         fn_ltr_sorteo_activo();
     });
+
+    $('#modal-loteria-select').click(function(){		
+
+        $.ajax({
+            async:	false, 
+            url:	"../ventas/funciones.php",
+            dataType:"json",
+            type	: 'post',
+            data:  { paso: 'cboLoterias_ltr'},									
+            success: function(data){
+                $("#list_loterias_ltr").html(data.salida);	
+            },	
+            error: function (request, status, error) 
+            {
+                alert(request.responseText);
+            }							
+        });			
+    });
+
     // Restringe la entrada solo a números para los campos con la clase .numeric-input
     $(document).on('input', '.numeric-input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -800,9 +819,9 @@ function fn_ltr_consulta_ventas(cedula) {
                         
                         if (data2.valida_premio == 'S') {
                             //validationCell = "<td align='center' title='REGISTRO YA VALIDADO' class='text-danger'><span class='fa fa-times'></span></td>";
-                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-danger'><span class='fa fa-check'></span></a></td>";
+                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-danger btn-xs'><span class='fa fa-check'></span></a></td>";
                         } else {
-                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-success'><span class='fa fa-check'></a></td>";
+                            validationCell = "<td align='center'><a type='button' title='VALIDAR PREMIO' class='cls_busca_premio btn btn-success btn-xs'><span class='fa fa-check'></a></td>";
                         }
 
 
@@ -816,6 +835,7 @@ function fn_ltr_consulta_ventas(cedula) {
                                 <td class="text-center">${data2.num_bil || ''}</td>
                                 <td class="text-center">${data2.num_ser || ''}</td>
                                 <td class="text-center">${data2.fracciones || ''}</td>
+                                ${validationCell}
                             </tr>
                         `;
                         tablaBody.append(nuevaFila);      

@@ -204,10 +204,12 @@
 												<div class="col-xs-12 col-sm-6 col-md-4">
 													<div class="form-group">
 														<label for="modal-loteria-select">Loterías</label>
-														<select id="modal-loteria-select" class="form-control">
-															<option value="">Lotería</option>
-															<!-- Opciones a cargar dinámicamente o estáticas -->
-														</select>
+														<div id="list_modal-loteria-select">
+															<select id="modal-loteria-select" class="form-control">
+																<option value="">Lotería</option>
+																<!-- Opciones a cargar dinámicamente o estáticas -->
+															</select>
+														</div>
 													</div>
 												</div>
 												<div class="col-xs-12 col-sm-6 col-md-2">
