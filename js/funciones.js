@@ -675,7 +675,9 @@ $(document).ready(function(){
             widthFixed: true,
             // **Ordenar por la columna “Venta” (índice 0) en orden descendente**
             sortList: [[0, 1]]                      // 0 = columna Venta, 1 = DESC        
-        });
+        }).tablesorterPager({
+			container: $(".pager")
+		});
     } else {
         console.warn("tablesorter no está cargado. Asegúrate de incluir jquery.tablesorter.min.js y su CSS.");
     }
@@ -716,25 +718,111 @@ $(document).ready(function(){
                     $('#cliente-cedula').focus();
                 });									
             return false;
-        } else {
-            if (barcode.length == 0) {
-                //fn_ltr_busca_premio(cedula);
-                // ✅ MOSTRAR MODAL SOLO CUANDO: cédula > 0 Y barcode == 0
-                $('#modal-buscar-transacciones').modal({
-                    show: true,
-                    backdrop: 'static',
-                    keyboard: false
+        } 
+
+        // ✅ VALIDAR NOMBRES Y APELLIDOS
+        var clienteNombres = $('#cliente-nombres').val();
+        var clienteApellidos = $('#cliente-apellidos').val();
+        
+        if (clienteNombres.length == 0 || clienteApellidos.length == 0) {
+            // ✅ SWAL PARA INFORMACIÓN FALTANTE DEL CLIENTE
+            swal('FALTA INFORMACION DEL CLIENTE', 'Debe completar los nombres y apellidos del cliente', "warning")
+                .then((value) => {
+                    if (clienteNombres.length == 0) {
+                        $('#cliente-nombres').focus();
+                    } else {
+                        $('#cliente-apellidos').focus();
+                    }
                 });
-            }
-
-            console.log('Buscar premios para cédula:', cedula, 'y barcode:', barcode);
-
-            return true;
+            return false;
         }
+        
+        // ✅ SI TODO ESTÁ CORRECTO, PROCEDER
+        if (barcode.length == 0) {
+            fn_ltr_consulta_ventas(cedula);
+        }
+        
+        // ✅ CONCATENAR NOMBRES Y APELLIDOS EN EL MODAL
+        var nombreCompleto = clienteNombres.trim();
+        if (clienteApellidos.trim().length > 0) {
+            nombreCompleto += ' ' + clienteApellidos.trim();
+        }
+        
+        // ✅ COLOCAR NOMBRE CONCATENADO EN EL MODAL
+        $('#con-nombre-cliente').val(nombreCompleto);
+        
+        // ✅ MOSTRAR MODAL
+        $('#modal-buscar-transacciones').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+        return true;
         
     }
 
 });
+
+function fn_ltr_consulta_ventas(cedula) {
+    $.ajax({
+        async: false,
+        url: "../ventas/funciones.php",
+        dataType: "json",
+        type: 'post',
+        data: { paso: 'busca_tnx_ltr', cedula: cedula },    
+        beforeSend: function () {
+            $("#spinner").show();
+        },
+        success: function (data) {
+            // ✅ VALIDAR ESTRUCTURA DE LA RESPUESTA
+            if (!data) {
+                swal('ERROR', 'No se recibió respuesta del servidor', "error");
+                return;
+            }
+
+            var error = data.error; 
+            if (error && error.length > 0) {
+                swal(error, "", "error");
+            } else {
+                var arreglo = data.arreglo;
+
+                console.log('Arreglo recibido:', arreglo);
+                console.log('Tipo de arreglo:', typeof arreglo);
+                console.log('¿Es un array?', Array.isArray(arreglo));
+                console.log('Longitud del arreglo:', arreglo ? arreglo.length : 'undefined');
+
+                var tablaBody = $('#tbl_consulta_ventas tbody');
+                tablaBody.empty(); // Limpiar contenido previo
+                if (arreglo && arreglo.length > 0) {
+                    $.each(arreglo, function (j, data2) {
+                        var nuevaFila = `
+                            <tr>
+                                <td class="text-center">${data2.id_venta || ''}</td>       
+                                <td class="text-center">${(data2.fec_venta || '').substring(0, 10)}</td>
+                                <td class="text-center">${data2.loteria || ''}</td>
+                                <td class="text-center">${data2.num_sor || ''}</td>
+                                <td class="text-center">${data2.fec_sor_str || ''}</td>
+                                <td class="text-center">${data2.num_bil || ''}</td>
+                                <td class="text-center">${data2.num_ser || ''}</td>
+                                <td class="text-center">${data2.fracciones || ''}</td>
+                            </tr>
+                        `;
+                        tablaBody.append(nuevaFila);      
+                    });
+                } else {
+                    tablaBody.append('<tr><td colspan="7" class="text-center">No se encontraron transacciones para este cliente.</td></tr>');
+                }   
+                // Actualizar tablesorter después de modificar la tabla
+                if ($.fn.tablesorter) {
+                    $("#tbl_consulta_ventas").trigger("update");
+                }
+            }
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
+    }); 
+}
 
 function fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones) {
     // Validación previa: asegurar que todos los cfrx no estén vacíos y numFracciones sea válido
