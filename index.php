@@ -258,6 +258,14 @@
 													<option value="40">40</option> 
 												</select>
 												<select class="gotoPage" title="Select page number"></select>
+
+												<!-- Botón cerrar al final -->
+												<div style="float: right; margin-left: 15px;">
+													<button type="button" class="btn btn-danger" data-dismiss="modal">
+														<i class="fa fa-times"></i> Cerrar
+													</button>
+												</div>
+
 											</div>
 
 											<table class="table table-bordered table-condensed table-striped table-hover tablesorter"
@@ -294,11 +302,6 @@
 											</table>
 										</div>
 
-										<div class="modal-footer">
-											<button type="button" class="btn btn-danger" data-dismiss="modal">
-        										<i class="fa fa-times"></i> Cerrar
-    										</button>
-										</div>
 									</div>
 								</div>
 							</div>
