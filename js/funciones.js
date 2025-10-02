@@ -98,7 +98,14 @@ $(document).ready(function(){
             type	: 'post',
             data:  { paso: 'cboLoterias_ltr'},									
             success: function(data){
-                $("#list_loterias_ltr").html(data.salida);	
+
+                // Corregir el ID del select devuelto por el backend
+                var selectCorregido = data.salida.replace(
+                    'id="cboLoterias_ltr"',
+                    'id="modal-loteria-select"'
+                );
+
+                $("#list_modal-loteria-select").html(selectCorregido);	
             },	
             error: function (request, status, error) 
             {
@@ -716,15 +723,19 @@ $(document).ready(function(){
         fn_validar_busqueda_premio();
     });
 
-    /*
-    // Evento para Enter en campo cliente-cedula
-    $(document).on("keypress", "#cliente-cedula", function (e) {
-        if ((e.keyCode == 13) || (e.keyCode == 9)) {
-            e.preventDefault();
-            fn_validar_busqueda_premio();
-        }
+    $(document).on("click", ".cls_busca_premio",function(e) {
+        var barcode = $(this).closest('tr').find('td:eq(9)').text();
+
+        $('#ltr_idtransaccion_premio').val(barcode);
+        $('#ltr_idtransaccion_premio').focus();
+        $("#modal_ltr_busca_premios").modal('hide');
+
+        //fn_ltr_paga_premio();
+
+        //esta tabla la utilizo para que cuando consultemos por cedula
+        //no aparezcan de nuevo los registros que ya hemos validado
+        $("#tbl_ltr_premios_none").last().append("<tr><td>"+barcode+"</td></tr>");
     });
-    */
 
     // Función de validación para búsqueda de premios
     function fn_validar_busqueda_premio() {
@@ -826,7 +837,7 @@ function fn_ltr_consulta_ventas(cedula) {
 
 
                         var nuevaFila = `
-                            <tr>
+                            <tr data-barcode="${data2.barcode || ''}">
                                 <td class="text-center">${data2.id_venta || ''}</td>       
                                 <td class="text-center">${(data2.fec_venta || '').substring(0, 10)}</td>
                                 <td class="text-center">${data2.loteria || ''}</td>
