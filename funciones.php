@@ -27,7 +27,7 @@
 			// Validar formato del barcode (debe ser numérico y tener longitud adecuada)
 			if (!is_numeric($barcode)) {
 				$error = "El barcode debe contener solo números";
-			} elseif (strlen($barcode) < 8) {
+			} elseif (strlen($barcode) < 11) {
 				$error = "El barcode debe tener al menos 8 caracteres";
 			} else {
 				try {
@@ -65,4 +65,3 @@
 	}
 ?>
 
-?>
