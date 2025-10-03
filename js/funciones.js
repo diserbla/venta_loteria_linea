@@ -754,61 +754,104 @@ $(document).ready(function(){
 
     });
 
-    // Función de validación para búsqueda de premios
-    function fn_validar_busqueda_premio() {
-        var cedula = $('#cliente-cedula').val(); 
-        var barcode = $('#barcode').val(); 
+    // -----------------------------------------------------------------
+    //  CANCELAR VENTA – liberar reservas, vaciar tablas y reiniciar totales
+    // -----------------------------------------------------------------
+    $(document).on('click', '#btn-cancelar-venta', function (e) {
+        e.preventDefault();
 
-        if (cedula.length == 0) {
-            swal('DEBE INGRESAR EL NUMERO DE CEDULA', "", "error")
-                .then((value) => {
-                    $('#cliente-cedula').focus();
-                });									
-            return false;
-        } 
-
-        // ✅ VALIDAR NOMBRES Y APELLIDOS
-        var clienteNombres = $('#cliente-nombres').val();
-        var clienteApellidos = $('#cliente-apellidos').val();
-        
-        if (clienteNombres.length == 0 || clienteApellidos.length == 0) {
-            // ✅ SWAL PARA INFORMACIÓN FALTANTE DEL CLIENTE
-            swal('FALTA INFORMACION DEL CLIENTE', 'Debe completar los nombres y apellidos del cliente', "warning")
-                .then((value) => {
-                    if (clienteNombres.length == 0) {
-                        $('#cliente-nombres').focus();
-                    } else {
-                        $('#cliente-apellidos').focus();
-                    }
-                });
-            return false;
-        }
-        
-        // ✅ SI TODO ESTÁ CORRECTO, PROCEDER
-        if (barcode.length == 0) {
-            fn_ltr_consulta_ventas(cedula);
-        }
-        
-        // ✅ CONCATENAR NOMBRES Y APELLIDOS EN EL MODAL
-        var nombreCompleto = clienteNombres.trim();
-        if (clienteApellidos.trim().length > 0) {
-            nombreCompleto += ' ' + clienteApellidos.trim();
-        }
-        
-        // ✅ COLOCAR NOMBRE CONCATENADO EN EL MODAL
-        $('#con-nombre-cliente').val(nombreCompleto);
-        
-        // ✅ MOSTRAR MODAL
-        $('#modal-buscar-transacciones').modal({
-            show: true,
-            backdrop: 'static',
-            keyboard: false
+        // 1️⃣  Liberar reservas de la tabla de venta
+        $('#tbl_ltr tbody tr').each(function () {
+            var reservacion = $(this).attr('data-reservacion');
+            liberarReserva(reservacion);
         });
-        return true;
-        
-    }
+
+        // 2️⃣  Vaciar ambas tablas (la de venta y la de premios)
+        $('#tbl_ltr tbody').empty();
+        $('#tbl_premios_ltr tbody').empty();
+
+        // 3️⃣  Reiniciar los totales a $0
+        var formatoMoneda = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
+        });
+        $('#total-venta-valor').text(formatoMoneda.format(0));
+        $('#total-premios-valor').text(formatoMoneda.format(0));
+        $('#valor-pagar-valor').text(formatoMoneda.format(0));
+
+        // 4️⃣  Desactivar y limpiar el campo de efectivo
+        $('#ingrese-efectivo')
+            .val('')
+            .prop('disabled', true);
+
+        // 5️⃣  Limpiar los datos del cliente y habilitarlos nuevamente
+        $('#cliente-cedula').val('').prop('disabled', false).focus();
+        $('#cliente-nombres').val('').prop('disabled', false);
+        $('#cliente-apellidos').val('').prop('disabled', false);
+        $('#cliente-celular').val('').prop('disabled', false);
+        $('#cliente-direccion').val('').prop('disabled', false);
+        $('#cliente-email').val('').prop('disabled', false);
+
+        // 6️⃣  Mensaje informativo
+        swal('Venta cancelada', 'Todas las reservas fueron liberadas y los totales reiniciados.', 'info');
+    });
 
 });
+
+// Función de validación para búsqueda de premios
+function fn_validar_busqueda_premio() {
+    var cedula = $('#cliente-cedula').val(); 
+    var barcode = $('#barcode').val(); 
+
+    if (cedula.length == 0) {
+        swal('DEBE INGRESAR EL NUMERO DE CEDULA', "", "error")
+            .then((value) => {
+                $('#cliente-cedula').focus();
+            });									
+        return false;
+    } 
+
+    // ✅ VALIDAR NOMBRES Y APELLIDOS
+    var clienteNombres = $('#cliente-nombres').val();
+    var clienteApellidos = $('#cliente-apellidos').val();
+    
+    if (clienteNombres.length == 0 || clienteApellidos.length == 0) {
+        // ✅ SWAL PARA INFORMACIÓN FALTANTE DEL CLIENTE
+        swal('FALTA INFORMACION DEL CLIENTE', 'Debe completar los nombres y apellidos del cliente', "warning")
+            .then((value) => {
+                if (clienteNombres.length == 0) {
+                    $('#cliente-nombres').focus();
+                } else {
+                    $('#cliente-apellidos').focus();
+                }
+            });
+        return false;
+    }
+    
+    // ✅ SI TODO ESTÁ CORRECTO, PROCEDER
+    if (barcode.length == 0) {
+        fn_ltr_consulta_ventas(cedula);
+    }
+    
+    // ✅ CONCATENAR NOMBRES Y APELLIDOS EN EL MODAL
+    var nombreCompleto = clienteNombres.trim();
+    if (clienteApellidos.trim().length > 0) {
+        nombreCompleto += ' ' + clienteApellidos.trim();
+    }
+    
+    // ✅ COLOCAR NOMBRE CONCATENADO EN EL MODAL
+    $('#con-nombre-cliente').val(nombreCompleto);
+    
+    // ✅ MOSTRAR MODAL
+    $('#modal-buscar-transacciones').modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false
+    });
+    return true;
+    
+}
 
 function fn_ltr_consulta_ventas(cedula) {
     $.ajax({
