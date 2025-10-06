@@ -718,6 +718,39 @@ $(document).ready(function(){
             return;
         }
 
+        // ---------- 3️⃣  VALIDAR EFECTIVO ----------
+        // Si existen ítems de venta, el campo #ingrese-efectivo no debe estar vacío
+        // ni ser menor al total de la venta.
+        if (tieneVenta) {
+            // Obtener el total de la venta (texto → número)
+            var totalVentaTxt = $('#total-venta-valor')
+                                    .text()
+                                    .replace(/[$.]/g, '')
+                                    .replace(',', '.')
+                                    .trim();
+            var totalVenta = parseFloat(totalVentaTxt) || 0;
+
+            // Valor ingresado por el cliente
+            var efectivoTxt = $('#ingrese-efectivo')
+                                .val()
+                                .replace(/[$.]/g, '')
+                                .replace(',', '.')
+                                .trim();
+            var efectivo = parseFloat(efectivoTxt) || 0;   // 0 si está vacío o no numérico
+
+            if (efectivoTxt === '' || efectivo < totalVenta) {
+                swal('Efectivo insuficiente',
+                    'El valor ingresado en "Efectivo" es nulo o menor al total de la venta.',
+                    'warning')
+                    .then(function () {
+                        $('#ingrese-efectivo')
+                            .focus()
+                            .select();   // resalta el contenido para que el usuario lo sobrescriba
+                    });
+                return;   // <‑‑ NO AVANZAR
+            }
+        }
+
         // -------------------------------------------------------------
         // 3️⃣  MOSTRAR CONFIRMACIÓN Y LLAMAR A grabarVenta()
         // -------------------------------------------------------------
@@ -835,6 +868,27 @@ $(document).ready(function(){
 
         // 6️⃣  Mensaje informativo
         swal('Venta cancelada', 'Todas las reservas fueron liberadas y los totales reiniciados.', 'info');
+    });
+
+    // -----------------------------------------------------------------
+    // 2️⃣  Listener que formatea en tiempo real (evento input)
+    // -----------------------------------------------------------------
+    $('#ingrese-efectivo').on('input', function (e) {
+        const $input = $(this);
+        const rawValue = $input.val();
+
+        // Guardar posición del cursor antes de formatear
+        const selectionStart = this.selectionStart;
+        const selectionEnd   = this.selectionEnd;
+
+        // Formatear y actualizar el valor del input
+        const formatted = formatCurrencyInt(rawValue);
+        $input.val(formatted);
+
+        // Restaurar posición del cursor (aproximada)
+        const diff = formatted.length - rawValue.length;
+        const newPos = Math.max(0, selectionStart + diff);
+        this.setSelectionRange(newPos, newPos);
     });
 
 });
@@ -966,6 +1020,29 @@ function grabarVenta(idUsu, ptoVta) {
                 .html('<i class="fa fa-check"></i> Grabar');
         }
     });
+}
+
+// -----------------------------------------------------------------
+// 1️⃣  Función que formatea un número como moneda **sin decimales**
+// -----------------------------------------------------------------
+function formatCurrencyInt(value, symbol = '$') {
+    // Eliminar todo lo que no sea dígito o signo negativo
+    let clean = value.replace(/[^\d-]/g, '');
+
+    // Convertir a número entero (si falla, devolver 0)
+    let number = parseInt(clean, 10);
+    if (isNaN(number)) number = 0;
+
+    // Formatear con separador de miles y **sin decimales**
+    // Intl.NumberFormat respeta la configuración regional del navegador.
+    // En Colombia (es-CO) el separador de miles es '.' y no se muestra
+    // parte decimal.
+    const formatter = new Intl.NumberFormat('es-CO', {
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0
+    });
+
+    return symbol + formatter.format(number);
 }
 
 // Función de validación para búsqueda de premios
@@ -1498,10 +1575,24 @@ function fn_ltr_sorteo_activo() {
 function validarDatosVenta() {
     const cedula = $('#cliente-cedula').val().trim();
     const nombres = $('#cliente-nombres').val().trim();
+
+    // ---------- 1️⃣  CONDICIÓN PRIMARIA ----------
+    // Si los dos campos están vacíos, retornamos 0 inmediatamente.
+    if (!cedula && !nombres) {
+        return false;   // <-- ahora devuelve booleano
+    }
+
     const totalVenta = parseFloat($('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0;
     const itemsCount = $('#tbl_ltr tbody tr').length;
 
-    return cedula && nombres && totalVenta > 0 && itemsCount > 0;
+    // ---------- 4️⃣  VALIDACIÓN FINAL ----------
+    // La venta es válida solo si:
+    //   • hay cédula y nombres,
+    //   • el total es mayor a 0,
+    //   • existe al menos un ítem en la tabla.
+    const esValida = cedula && nombres && totalVenta > 0 && itemsCount > 0;
+    return !!esValida;   // garantiza que sea booleano (true/false)
+
 }
 
 // Función reutilizable para validar premios por barcode
