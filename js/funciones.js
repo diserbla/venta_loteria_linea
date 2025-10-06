@@ -340,7 +340,7 @@ $(document).ready(function(){
     });
 
     // Evento click para el botón grabar venta con confirmación
-    $('#btn-grabar-venta').click(function(e) {
+    $('#btn-grabar-venta').click(function (e) {
         e.preventDefault();
 
         // Validar que haya datos para grabar
@@ -349,9 +349,44 @@ $(document).ready(function(){
             return;
         }
 
-        // Mostrar confirmación con detalles de la venta
-        //mostrarConfirmacionVenta();
+        // Mostrar confirmación (ya estaba implementada)
+        swal({
+            title: '¿Está seguro de grabar la venta?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            buttons: {
+                cancel: {
+                    text: 'Cancelar',
+                    value: false,
+                    visible: true,
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    text: 'Sí, grabar',
+                    value: true,
+                    visible: true,
+                    className: 'btn btn-success'
+                }
+            }
+        }).then(function (result) {
+            if (result) {
+                // Aquí iría la lógica real de guardado (AJAX, etc.)
+                swal('Venta grabada', 'La venta ha sido registrada exitosamente.', 'success')
+                    .then(function () {
+                        // Opcional: recargar la página o limpiar formularios
+                        location.reload();
+                    });
+            }
+        });
     });
+
+    $(document).on('keypress', '#ingrese-efectivo', function (e) {
+        // 13 = tecla Enter
+        if (e.which === 13) {
+            e.preventDefault();               // evitar envío de formulario implícito
+            $('#btn-grabar-venta').trigger('click'); // reutiliza el mismo código
+        }
+    });    
 
     // Evento click para btn-adicionar: agregar registro de prueba a tbl_ltr
     $(document).on('click', '#btn-adicionar', function() {
@@ -385,16 +420,6 @@ $(document).ready(function(){
         var nuevoValorFraccion = (valorFraccion + valorIncentivo) * fracc;
         var formatoMoneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
         var valorFormateado = formatoMoneda.format(nuevoValorFraccion);
-
-        console.log('Adicionar:', {
-            cod_lot,
-            numero,
-            serie,
-            fracciones_seleccionadas: fracc,
-            valor_fraccion: valorFraccion,
-            incentivo_x_fraccion: valorIncentivo,
-            total: nuevoValorFraccion
-        });
 
         //genera el proceso de reserva y luego actualiza el data-reservacion en la fila
         var reservacion = '';
@@ -451,7 +476,8 @@ $(document).ready(function(){
         $('.number-input-digit').val('');
         $('#ltr_serie_ingresada').val(''); // Limpiar input si existe
         $('input[type="radio"]', '#div_series_disponibles').prop('checked', false); // Desmarcar radios
-        $('#cfr1').focus();
+        //$('#cfr1').focus();
+        $('#ingrese-efectivo').focus();
         swal('Registro agregado', 'Se ha adicionado un registro de prueba a la tabla.', 'success');
 
         // Ocultar el bloque de series después de adicionar exitoso
@@ -664,40 +690,54 @@ $(document).ready(function(){
     // Confirmación de venta con validación de registros en tablas
     $(document).on('click', '#btn-grabar-venta', function(e) {
         e.preventDefault();
-        var tieneVenta = $('#tbl_ltr tbody tr').length > 0;
-        var tienePremio = $('#tbl_premios_ltr tbody tr').length > 0;
-        if (!tieneVenta && !tienePremio) {
-            swal('Sin registros', 'Debe agregar al menos un registro en la tabla de venta o de premios para poder grabar.', 'warning');
+
+        // -------------------------------------------------------------
+        // 1️⃣  VALIDAR CAMPOS OBLIGATORIOS
+        // -------------------------------------------------------------
+        var idUsu   = $('#id_usu').val().trim();   // <-- campo oculto o visible
+        var ptoVta  = $('#pto_vta').val().trim();  // <-- campo oculto o visible
+
+        if (!idUsu) {
+            swal('Falta información', 'El campo "id_usu" es obligatorio para grabar la venta.', 'warning');
+            $('#id_usu').focus();
             return;
         }
-        // Si hay registros, mostrar confirmación
+        if (!ptoVta) {
+            swal('Falta información', 'El campo "pto_vta" es obligatorio para grabar la venta.', 'warning');
+            $('#pto_vta').focus();
+            return;
+        }
+
+        // -------------------------------------------------------------
+        // 2️⃣  VALIDAR QUE HAYA REGISTROS EN LAS TABLAS
+        // -------------------------------------------------------------
+        var tieneVenta  = $('#tbl_ltr tbody tr').length > 0;
+        var tienePremio = $('#tbl_premios_ltr tbody tr').length > 0;
+        if (!tieneVenta && !tienePremio) {
+            swal('Sin registros', 'Debe agregar al menos un ítem en venta o premio.', 'warning');
+            return;
+        }
+
+        // -------------------------------------------------------------
+        // 3️⃣  MOSTRAR CONFIRMACIÓN Y LLAMAR A grabarVenta()
+        // -------------------------------------------------------------
         swal({
             title: '¿Está seguro de grabar la venta?',
             text: 'Esta acción no se puede deshacer.',
             icon: 'warning',
             buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: false,
-                    visible: true,
-                    className: "btn btn-danger",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Sí, grabar",
-                    value: true,
-                    visible: true,
-                    className: "btn btn-success",
-                    closeModal: true,
-                }
+                cancel: { text: 'Cancelar', value: false, visible: true, className: 'btn btn-danger' },
+                confirm: { text: 'Sí, grabar', value: true, visible: true, className: 'btn btn-success' }
             }
-        }).then(function(result) {
+        }).then(function (result) {
             if (result) {
-                // Aquí va la lógica para grabar la venta (AJAX o lo que corresponda)
-                swal('Venta grabada', 'La venta ha sido registrada exitosamente.', 'success');
-                // Puedes llamar aquí a tu función real de grabado si la tienes
+                // Desactivar el botón mientras se procesa
+                $('#btn-grabar-venta').prop('disabled', true);
+                // Pasar los valores al objeto que enviará grabarVenta()
+                grabarVenta(idUsu, ptoVta);
             }
         });
+
     });
 
    // -----------------------------------------------------------------
@@ -798,6 +838,135 @@ $(document).ready(function(){
     });
 
 });
+
+/* -----------------------------------------------------------------
+   FUNCIÓN: grabarVenta()
+   - Valida que exista al menos un registro en alguna de las tablas.
+   - Reúne los datos del cliente, los items de venta y los premios.
+   - Envía todo al backend (paso = "grabar_venta") mediante AJAX.
+   - En caso de éxito: libera reservas, vacía tablas, reinicia totales,
+     muestra mensaje de éxito y recarga la página (o deja la UI lista
+     para una nueva operación).
+   - En caso de error: muestra alerta con el mensaje recibido.
+   ----------------------------------------------------------------- */
+function grabarVenta(idUsu, ptoVta) {
+ 
+    // -------------------------------------------------------------
+    // 2️⃣  RECOLECTAR DATOS DEL CLIENTE
+    // -------------------------------------------------------------
+    var cliente = {
+        cedula    : $('#cliente-cedula').val().trim(),
+     };
+
+    // -------------------------------------------------------------
+    // 3️⃣  DETALLE DE VENTA (tabla #tbl_ltr)
+    // -------------------------------------------------------------
+    var detalleVenta = [];
+    $('#tbl_ltr tbody tr').each(function () {
+        var $fila = $(this);
+        detalleVenta.push({
+            // datos que ya tenías
+            reservacion : $fila.attr('data-reservacion') || '',
+            // <-- NUEVO: obtener el valor de la fila (columna 6, índice 5)
+            valor       : $fila.find('td').eq(5).text()
+                            .replace(/[$.]/g, '')   // quitar símbolos de moneda y separadores de miles
+                            .replace(',', '.')      // usar punto decimal
+                            .trim()
+        });
+    });
+
+    // -------------------------------------------------------------
+    // 4️⃣  DETALLE DE PREMIOS (tabla #tbl_premios_ltr)
+    // -------------------------------------------------------------
+    var detallePremios = [];
+    $('#tbl_premios_ltr tbody tr').each(function () {
+        var $fila = $(this);
+        detallePremios.push({
+            // datos que ya tenías
+            barcode : $fila.attr('data-barcode') || '',
+            // <-- NUEVO: obtener el valor del premio (columna 5, índice 4)
+            valor   : $fila.find('td').eq(4).text()
+                            .replace(/[$.]/g, '')
+                            .replace(',', '.')
+                            .trim()
+        });
+    });
+
+    // -------------------------------------------------------------
+    // 5️⃣  TOTALES Y EFECTIVO
+    // -------------------------------------------------------------
+    var totales = {
+        totalVenta   : $('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.').trim(),
+        totalPremios : $('#total-premios-valor').text().replace(/[$.]/g, '').replace(',', '.').trim(),
+        valorPagar   : $('#valor-pagar-valor').text().replace(/[$.]/g, '').replace(',', '.').trim(),
+        efectivo     : $('#ingrese-efectivo').val().replace(/[$.]/g, '').replace(',', '.').trim()
+    };
+
+    // -------------------------------------------------------------
+    // 6️⃣  ENVIAR LA INFORMACIÓN AL BACKEND
+    // -------------------------------------------------------------
+    $.ajax({
+        url: "funciones.php",
+        type: "post",
+        dataType: "json",
+        data: {
+            paso      : "grabar_venta_ltr",
+            id_usu    : idUsu,          // <-- ahora enviado explícitamente
+            pto_vta   : ptoVta,         // <-- ahora enviado explícitamente
+            cliente   : cliente,
+            venta     : detalleVenta,
+            premios   : detallePremios,
+            totales   : totales        
+        },
+        beforeSend: function () {
+            // Opcional: bloquear UI o mostrar spinner
+            $('#btn-grabar-venta')
+                .prop('disabled', true)
+                .html('<i class="fa fa-spinner fa-spin"></i> Grabando...');
+        },
+        success: function (resp) {
+            // El backend debe devolver { error: "", mensaje: "" }
+
+            console.log('Respuesta grabar_venta:', resp);
+
+            if (resp.error && resp.error.length > 0) {
+                swal('Error al grabar la venta', resp.error, 'error');
+                return;
+            }
+
+            // ---------------------------------------------------------
+            // 7️⃣  OPERACIONES POST‑GRABADO
+            // ---------------------------------------------------------
+            // Vaciar ambas tablas y reiniciar totales
+            $('#tbl_ltr tbody').empty();
+            $('#tbl_premios_ltr tbody').empty();
+
+            var fmt = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+            $('#total-venta-valor').text(fmt.format(0));
+            $('#total-premios-valor').text(fmt.format(0));
+            $('#valor-pagar-valor').text(fmt.format(0));
+            $('#ingrese-efectivo').val('').prop('disabled', true);
+
+			limpiarCliente()
+
+            // Mensaje final de éxito
+            swal('Venta grabada', resp.mensaje || 'La venta se registró correctamente.', 'success')
+                .then(function () {
+                    // Recargar la página o simplemente dejar la UI lista para una nueva venta
+                    //location.reload();   // <-- puedes comentar esta línea si no deseas recargar
+                });
+        },
+        error: function (xhr) {
+            swal('Error de conexión', xhr.responseText, 'error');
+        },
+        complete: function () {
+            // Restaurar el botón
+            $('#btn-grabar-venta')
+                .prop('disabled', false)
+                .html('<i class="fa fa-check"></i> Grabar');
+        }
+    });
+}
 
 // Función de validación para búsqueda de premios
 function fn_validar_busqueda_premio() {
