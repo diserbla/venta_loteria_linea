@@ -103,7 +103,7 @@
 		}
 
 
-		error_log('Mensaje de depuración', 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
+		//error_log('Mensaje de depuración', 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
 
 		/* -------------------------------------------------------------
 		4️⃣  Preparar los totales (todos vienen como strings sin
@@ -117,6 +117,7 @@
 		$dinero_cambio        = $dinero_efectivo - $tot_pagar_cliente;
 		$id_usu_vendedor      = $id_usu;   // mismo usuario que ejecuta la venta
 
+		/*
 		// ---------- 3️⃣  LOG DE DEPURACIÓN ----------
 		$msg = ">>> LOG DE DEPURACIÓN\n";
 		$msg .= "Fecha: " . date('Y-m-d H:i:s') . "\n";
@@ -129,6 +130,7 @@
 		$msg .= "--------------------------\n";
 
 		error_log($msg, 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
+		*/
 
 		/* -------------------------------------------------------------
 		5️⃣  INSERTAR EN LA BASE DE DATOS (transacción)
@@ -187,11 +189,15 @@
 				}
 			}
 
+			//error_log($valor_venta, 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
+
 			if (!empty($premios) && is_array($premios)) {
 				foreach ($premios as $item) {
 					$valor_premios += (float)str_replace(',', '.', $item['valor']);
 				}
 			}
+
+			//error_log($valor_premios, 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
 
 			// --- Preparar sentencia INSERT (PDO) ----------------------------
 			$sqlDetalle = "

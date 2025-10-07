@@ -339,47 +339,6 @@ $(document).ready(function(){
         fn_series_disponibles(cboLoterias_ltr, cfr1, cfr2, cfr3, cfr4, numFracciones);
     });
 
-    // Evento click para el botón grabar venta con confirmación
-    $('#btn-grabar-venta').click(function (e) {
-        e.preventDefault();
-
-        // Validar que haya datos para grabar
-        if (!validarDatosVenta()) {
-            swal('Datos incompletos', 'Debe completar los datos del cliente y agregar al menos un ítem a la venta.', 'warning');
-            return;
-        }
-
-        // Mostrar confirmación (ya estaba implementada)
-        swal({
-            title: '¿Está seguro de grabar la venta?',
-            text: 'Esta acción no se puede deshacer.',
-            icon: 'warning',
-            buttons: {
-                cancel: {
-                    text: 'Cancelar',
-                    value: false,
-                    visible: true,
-                    className: 'btn btn-danger'
-                },
-                confirm: {
-                    text: 'Sí, grabar',
-                    value: true,
-                    visible: true,
-                    className: 'btn btn-success'
-                }
-            }
-        }).then(function (result) {
-            if (result) {
-                // Aquí iría la lógica real de guardado (AJAX, etc.)
-                swal('Venta grabada', 'La venta ha sido registrada exitosamente.', 'success')
-                    .then(function () {
-                        // Opcional: recargar la página o limpiar formularios
-                        location.reload();
-                    });
-            }
-        });
-    });
-
     $(document).on('keypress', '#ingrese-efectivo', function (e) {
         // 13 = tecla Enter
         if (e.which === 13) {
@@ -424,7 +383,7 @@ $(document).ready(function(){
         //genera el proceso de reserva y luego actualiza el data-reservacion en la fila
         var reservacion = '';
         var nuevaFila = `
-            <tr data-reservacion="">
+            <tr data-reservacion="" data-valor-incentivo="${valorIncentivo}">
                 <td style="text-align: left;">${loteria}</td>
                 <td class="text-center">${sorteo}</td>
                 <td class="text-center">${numero}</td>
@@ -692,7 +651,19 @@ $(document).ready(function(){
         e.preventDefault();
 
         // -------------------------------------------------------------
-        // 1️⃣  VALIDAR CAMPOS OBLIGATORIOS
+        // 1️⃣  VALIDACIÓN BÁSICA DE DATOS DEL CLIENTE
+        // -------------------------------------------------------------
+        const cedula = $('#cliente-cedula').val().trim();
+        const nombres = $('#cliente-nombres').val().trim();
+
+        // Si los dos campos están vacíos, mostrar error inmediatamente
+        if (!cedula || !nombres) {
+            swal('Datos del cliente incompletos', 'Debe ingresar los datos del cliente y grabarlos', 'warning');
+            return;
+        }
+
+        // -------------------------------------------------------------
+        // 2  VALIDAR CAMPOS OBLIGATORIOS
         // -------------------------------------------------------------
         var idUsu   = $('#id_usu').val().trim();   // <-- campo oculto o visible
         var ptoVta  = $('#pto_vta').val().trim();  // <-- campo oculto o visible
@@ -709,7 +680,7 @@ $(document).ready(function(){
         }
 
         // -------------------------------------------------------------
-        // 2️⃣  VALIDAR QUE HAYA REGISTROS EN LAS TABLAS
+        // 3  VALIDAR QUE HAYA REGISTROS EN LAS TABLAS
         // -------------------------------------------------------------
         var tieneVenta  = $('#tbl_ltr tbody tr').length > 0;
         var tienePremio = $('#tbl_premios_ltr tbody tr').length > 0;
@@ -730,6 +701,14 @@ $(document).ready(function(){
                                     .trim();
             var totalVenta = parseFloat(totalVentaTxt) || 0;
 
+            // **Nuevo: obtener el valor a pagar (valor‑pagar‑valor)**
+            var valorPagarTxt = $('#valor-pagar-valor')
+                                    .text()
+                                    .replace(/[$.]/g, '')
+                                    .replace(',', '.')
+                                    .trim();
+            var valorPagar = parseFloat(valorPagarTxt) || 0;
+
             // Valor ingresado por el cliente
             var efectivoTxt = $('#ingrese-efectivo')
                                 .val()
@@ -738,7 +717,13 @@ $(document).ready(function(){
                                 .trim();
             var efectivo = parseFloat(efectivoTxt) || 0;   // 0 si está vacío o no numérico
 
-            if (efectivoTxt === '' || efectivo < totalVenta) {
+            /*
+            console.log('Total venta:', totalVenta,
+                            'Valor a pagar:', valorPagar,
+                            'Efectivo ingresado:', efectivo);
+            */
+
+            if (efectivoTxt === '' || efectivo < valorPagar) {
                 swal('Efectivo insuficiente',
                     'El valor ingresado en "Efectivo" es nulo o menor al total de la venta.',
                     'warning')
@@ -1519,7 +1504,7 @@ function fn_ltr_sorteo_activo() {
             } else {
                 var arreglo = data.arreglo;
 
-                console.log(arreglo);
+                //console.log(arreglo);
 
                 // Actualizar el div con datos del sorteo
                 var datosSorteo = $('.datos-sorteo-row');
@@ -1569,30 +1554,6 @@ function fn_ltr_sorteo_activo() {
             $('#spinner_lr_num_bil1').hide();
         }
     });
-}
-
-// Función para validar datos mínimos requeridos
-function validarDatosVenta() {
-    const cedula = $('#cliente-cedula').val().trim();
-    const nombres = $('#cliente-nombres').val().trim();
-
-    // ---------- 1️⃣  CONDICIÓN PRIMARIA ----------
-    // Si los dos campos están vacíos, retornamos 0 inmediatamente.
-    if (!cedula && !nombres) {
-        return false;   // <-- ahora devuelve booleano
-    }
-
-    const totalVenta = parseFloat($('#total-venta-valor').text().replace(/[$.]/g, '').replace(',', '.')) || 0;
-    const itemsCount = $('#tbl_ltr tbody tr').length;
-
-    // ---------- 4️⃣  VALIDACIÓN FINAL ----------
-    // La venta es válida solo si:
-    //   • hay cédula y nombres,
-    //   • el total es mayor a 0,
-    //   • existe al menos un ítem en la tabla.
-    const esValida = cedula && nombres && totalVenta > 0 && itemsCount > 0;
-    return !!esValida;   // garantiza que sea booleano (true/false)
-
 }
 
 // Función reutilizable para validar premios por barcode
