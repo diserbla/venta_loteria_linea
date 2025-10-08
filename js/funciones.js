@@ -894,9 +894,20 @@ function grabarVenta(idUsu, ptoVta) {
     // 2️⃣  RECOLECTAR DATOS DEL CLIENTE
     // -------------------------------------------------------------
     var cliente = {
+        // <-- 1️⃣  Cédula (ya existía)
         cedula    : $('#cliente-cedula').val().trim(),
-     };
 
+        // <-- 2️⃣  Nombres y apellidos
+        nombres   : $('#cliente-nombres').val().trim(),
+        apellidos : $('#cliente-apellidos').val().trim(),
+
+        // <-- 3️⃣  Teléfono / celular
+        celular   : $('#cliente-celular').val().trim(),
+
+        // <-- 4️⃣  Dirección y correo electrónico
+        direccion : $('#cliente-direccion').val().trim(),
+        email     : $('#cliente-email').val().trim()
+    };
     // -------------------------------------------------------------
     // 3️⃣  DETALLE DE VENTA (tabla #tbl_ltr)
     // -------------------------------------------------------------
@@ -904,15 +915,29 @@ function grabarVenta(idUsu, ptoVta) {
     $('#tbl_ltr tbody tr').each(function () {
         var $fila = $(this);
         detalleVenta.push({
-            // datos que ya tenías
+            // -----------------------------------------------------------------
+            // 1️⃣  Campos existentes (ejemplo: reservación)
+            // -----------------------------------------------------------------
             reservacion : $fila.attr('data-reservacion') || '',
-            // <-- NUEVO: obtener el valor de la fila (columna 6, índice 5)
-            valor       : $fila.find('td').eq(5).text()
-                            .replace(/[$.]/g, '')   // quitar símbolos de moneda y separadores de miles
-                            .replace(',', '.')      // usar punto decimal
-                            .trim()
-        });
+
+            // -----------------------------------------------------------------
+            // 2️⃣  NUEVO: obtener el valor monetario de la columna 6 (índice 5)
+            // -----------------------------------------------------------------
+            valor : $fila.find('td').eq(5).text()
+                        .replace(/[$.]/g, '')   // eliminar símbolos de moneda y separadores de miles
+                        .replace(',', '.')      // usar punto decimal
+                        .trim(),
+
+            // -----------------------------------------------------------------
+            // 3️⃣  NUEVO: obtener el **valor del incentivo** que está en el
+            //           atributo `data-valor-incentivo` de la fila
+            // -----------------------------------------------------------------
+            valorIncentivo : $fila.attr('data-valor-incentivo') || '0'
+        });    
     });
+
+    // <-- **Console log fuera del ciclo** para inspeccionar el array completo
+    //console.log('Detalle de venta (array completo):', detalleVenta);
 
     // -------------------------------------------------------------
     // 4️⃣  DETALLE DE PREMIOS (tabla #tbl_premios_ltr)
@@ -966,7 +991,7 @@ function grabarVenta(idUsu, ptoVta) {
         success: function (resp) {
             // El backend debe devolver { error: "", mensaje: "" }
 
-            console.log('Respuesta grabar_venta:', resp);
+            //console.log('Respuesta grabar_venta:', resp);
 
             if (resp.error && resp.error.length > 0) {
                 swal('Error al grabar la venta', resp.error, 'error');

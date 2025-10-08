@@ -218,6 +218,18 @@
 				$stmtDet->bindParam(':valor',    $valor_venta, PDO::PARAM_STR);
 				$stmtDet->bindParam(':usr_modif',$id_usu_vendedor, PDO::PARAM_STR);
 				$stmtDet->execute();
+
+				// ---------------------------------------------------------
+				//  ✅  LLAMAR A fn_venta_terceros() cuando la condición se cumple
+				// ---------------------------------------------------------
+				fn_venta_terceros(
+					$db,
+					$id_venta,
+					$venta,
+					$cliente,
+					$pto_vta,
+					$id_usu_vendedor
+				);
 			}
 
 			// --- Insertar registro de premios (código 116) ------------------
@@ -246,7 +258,7 @@
 				)
 			);
 			
-		} catch (PDOException $e) {
+		} catch (Exception $e) {
 			// Si algo falla, revertir todo
 			$db->rollBack();
 
