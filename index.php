@@ -5,7 +5,10 @@
 	if(!session_id()) {session_start();}
 
 	$pto_vta  = isset($_SESSION['pto_vta']) ? $_SESSION['pto_vta'] : null;
-	
+
+	/* 2️⃣  Incluir tus funciones propias */
+	//require_once __DIR__ . '/funciones.php';   // <-- archivo funciones.php en la misma carpeta
+
     include ('../../WebClientPrint.php');
 	
     use Neodynamic\SDK\Web\WebClientPrint;
@@ -26,12 +29,12 @@
 
 	$lottired_evolution_api_support = $relativePath;
 
+	$retorna = imprimir();
+
 	if ((!isset($pto_vta)) || (empty($pto_vta)))
 	{
-		echo "<script type='text/javascript'>window.open('../logout.php','_top','');</script>";
+		//echo "<script type='text/javascript'>window.open('../logout.php','_top','');</script>";
 	}
-	
-	$retorna = imprimir();
 	
 ?>
 
@@ -517,8 +520,10 @@
 	{
 		$retorna = '0';	
 		
+		/*
 		error_log('Error al decodificar JSON en imprimir()', 3,
 					'C:/mercapos/htdocs/formas/pruebas/debug.log');
+		*/
 		
 		if(!session_id()) {session_start();}	
 
@@ -526,6 +531,8 @@
 
 		// Conexión a la base de datos (ruta relativa al proyecto)
     	include __DIR__ . '/../../bd/conexion.php';
+
+		require_once '/../ventas/funciones_lottired.php';
 	
 		// ---------------------------------------------------------
 		// 1️⃣  Obtener la query‑string completa de la URL
@@ -570,6 +577,20 @@
 		$arre_recibidos = json_decode($recibidosJson, true);
 		$arre_totales   = json_decode($totalesJson, true);
 
+		// -----------------------------------------------------------------
+		// 5️⃣  Registrar los tres arreglos en debug.log (para depuración)
+		// -----------------------------------------------------------------
+		$logFile = 'C:/mercapos/htdocs/formas/pruebas/debug.log';
+
+		// Formateamos la salida para que sea legible en el log
+		$logMsg  = "=== DEBUG - ARRAYS RECIBIDOS ===\n";
+		$logMsg .= "Cliente   : " . print_r($arre_cliente, true)   . "\n";
+		$logMsg .= "Recibidos : " . print_r($arre_recibidos, true) . "\n";
+		$logMsg .= "Totales   : " . print_r($arre_totales,   true) . "\n";
+		$logMsg .= "-------------------------------\n";
+
+		// error_log escribe en el archivo indicado (crea el archivo si no existe)
+		error_log($logMsg, 3, $logFile);
 
 		// Si alguna decodificación falla, abortamos.
 		if (json_last_error() !== JSON_ERROR_NONE) {
@@ -588,6 +609,28 @@
 		// Aquí puedes añadir más comandos, por ejemplo:
 		// $cmds .= $esc . 'a0'; // alineación izquierda
 		// $cmds .= "Venta ID: {$arre_recibidos['id_venta']}\n";
+
+		$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente);
+
+		for( $i= 0 ; $i <= 2 ; $i++ )
+		{
+			$cmds .= $newLine;
+		}
+
+		$cmds .= $esc . 'a' . '0x1';  //center titulo												
+		$cmds .= '***TODOS LOS SERVICIOS, UN SOLO PUNTO***';				
+		$cmds .= $newLine;$newLine;
+		//$cmds .= $esc . '!' . '0x00'; //Character font A selected (ESC ! 0)												
+		//$cmds .= $esc . 'a' . '0x1';  //center titulo					
+		$cmds .= "***GRACIAS POR SU COMPRA***";
+		
+		for( $i= 0 ; $i <= 6 ; $i++ )
+		{
+			$cmds .= $newLine;
+		}
+	
+		//corta el papel
+		$cmds .= '0x1D0x560x00';
 
 		// ---------------------------------------------------------
 		// 6️⃣  Preparar el objeto ClientPrintJob
@@ -632,5 +675,124 @@
 		}
 
 		return $retorna;
+	}
+
+	/**
+	 * Genera el encabezado del recibo para impresión ESC/POS.
+	 *
+	 * @param PDO    $db               Conexión a la base de datos.
+	 * @param string $esc              Código ESC (0x1B).
+	 * @param string $newLine          Código LF (0x0A).
+	 * @param array  $arre_recibidos   Datos de la venta (debe contener al menos
+	 *                                 'id_venta', 'pto_vta' y 'id_usu').
+	 * @param array  $arre_cliente    Datos del cliente (nombre, cedula, celular,
+	 *                                 direccion, etc.).
+	 *
+	 * @return string  Cadena de comandos ESC/POS lista para enviarse a la
+	 *                 impresora.
+	 */
+	function generar_encabezado_recibo($db, $esc, $newLine, $arre_recibidos, $arre_cliente)
+	{
+		// -----------------------------------------------------------------
+		// 1️⃣  Obtener datos de la venta (id_venta, punto de venta, vendedor)
+		// -----------------------------------------------------------------
+		$id_venta = isset($arre_recibidos['id_venta']) ? $arre_recibidos['id_venta'] : '';
+		$cod_pto  = isset($arre_recibidos['pto_vta']) ? $arre_recibidos['pto_vta'] : '';
+		$id_usu   = isset($arre_recibidos['id_usu'])  ? $arre_recibidos['id_usu']  : '';
+
+		// Nombre del punto de venta
+		$nom_pto = '';
+		if ($cod_pto !== '') {
+			$sql = "SELECT pto.nom_pto
+					FROM pto_vta pto
+					WHERE pto.cod_pto = :cod_pto";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam(':cod_pto', $cod_pto, PDO::PARAM_STR);
+			$stmt->execute();
+			$nom_pto = $stmt->fetchColumn() ?: '';
+		}
+
+		// Nombre del vendedor
+		$nom_vendedor = '';
+		if ($id_usu !== '') {
+			$sql = "SELECT nom_usu
+					FROM usuarios
+					WHERE id_usu = :id_usu";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam(':id_usu', $id_usu, PDO::PARAM_STR);
+			$stmt->execute();
+			$nom_vendedor = $stmt->fetchColumn() ?: '';
+		}
+
+		// -----------------------------------------------------------------
+		// 2️⃣  Obtener datos del cliente (cliente, cedula, celular, direccion)
+		// -----------------------------------------------------------------
+		$cliente = trim(
+        	(isset($arre_cliente['nombres'])   ? $arre_cliente['nombres']   : '') . ' ' .
+        	(isset($arre_cliente['apellidos']) ? $arre_cliente['apellidos'] : '')
+    	);
+		$cedula    = isset($arre_cliente['cedula'])    ? $arre_cliente['cedula']    : '';
+		$celular   = isset($arre_cliente['celular'])   ? $arre_cliente['celular']   : '';
+		$direccion = isset($arre_cliente['direccion']) ? $arre_cliente['direccion'] : '';
+		// -----------------------------------------------------------------
+		// 3️⃣  Construir el encabezado ESC/POS
+		// -----------------------------------------------------------------
+		$cmds  = '';
+		$cmds .= $esc . '!' . '0x18';               // negrita + doble altura
+		$cmds .= $esc . 'a' . '0x1';                // centrado
+		$cmds .= 'Mercaloterias S.A';
+		$cmds .= $esc . '!' . '0x00';               // fuente normal
+		$cmds .= $newLine;
+		$cmds .= "Nit 805013949-0";
+		$cmds .= $newLine;
+
+		$cmds .= $esc . '!' . '0x18';               // énfasis + doble altura
+		$cmds .= "INGRESOS RECIBIDOS PARA TERCEROS";
+		$cmds .= $esc . '!' . '0x00';
+		$cmds .= $newLine;
+
+		// Alinear a la izquierda para el resto del texto
+		$cmds .= $esc . 'a' . '0x00';
+
+		$cmds .= "Recibo No " . $id_venta . '  Fecha: ' . date('Y-m-d H:i:s');
+		$cmds .= $newLine;
+
+		$cmds .= "Punto: " . $nom_pto;
+		$cmds .= $newLine;
+
+		$cmds .= "Vendedor: " . $nom_vendedor;
+		$cmds .= $newLine . $newLine;
+
+		$cmds .= "Cliente: " . $cliente;
+		$cmds .= $newLine;
+
+		/*
+		if (!empty($cedula)) {
+			$cmds .= "Cédula: " . $cedula;
+			$cmds .= $newLine;
+		}
+
+		if (!empty($celular)) {
+			$cmds .= "Celular: " . $celular;
+			$cmds .= $newLine;
+		}
+
+		if (!empty($direccion)) {
+			$cmds .= $direccion;
+			$cmds .= $newLine;
+		}
+		*/
+
+		$cmds .= $esc . '!' . '0x00';               // reset de estilo
+		$cmds .= $newLine;
+
+		$cmds .= "----------------------------------------------";
+		$cmds .= $newLine;
+		$cmds .= "Descripcion                             Valor";
+		$cmds .= $newLine;
+		$cmds .= "----------------------------------------------";
+		$cmds .= $newLine;
+
+		return $cmds;
 	}
 ?>

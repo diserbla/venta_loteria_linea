@@ -1,5 +1,5 @@
 <?php if(!session_id()) {session_start();}
-       header('Content-Type: application/json');
+    header('Content-Type: application/json');
 	include($_SESSION['bd']."conexion.php");	
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);	
 
@@ -12,7 +12,8 @@
 	
 	if($paso == 'evalua_conexion')
 	{
-		echo 'merca';
+   		echo 'conexión OK';
+    	exit;	
 	}
 
 	if($paso=='valida_premio')
@@ -64,7 +65,8 @@
 		print json_encode($arreglo);
 	}
 
-	if ($paso == 'grabar_venta_ltr') {
+	if ($paso == 'grabar_venta_ltr') 
+	{
 		// ---------- 1️⃣  Recuperar variables enviadas ----------
 		$id_usu   = isset($_POST['id_usu'])   ? $_POST['id_usu']   : null;
 		$pto_vta  = isset($_POST['pto_vta'])  ? $_POST['pto_vta']  : null;
@@ -277,5 +279,7 @@
 		echo json_encode($respuesta);
 		exit;   // detener la ejecución del script
 	}
+
+
 ?>
 
