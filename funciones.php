@@ -251,10 +251,12 @@
 				'mensaje'   => 'Venta grabada con éxito. ID de venta: ' . $id_venta,
 				'recibidos' => array(
 					'id_venta' => $id_venta,
-					'cliente'  => $cliente,
-					'venta'    => $venta,
-					'premios'  => $premios,
-					'totales'  => $totales
+					'id_usu'   => $id_usu,
+					'pto_vta'  => $pto_vta
+					//'cliente'  => $cliente,
+					//'venta'    => $venta,
+					//'premios'  => $premios,
+					//'totales'  => $totales
 				)
 			);
 			

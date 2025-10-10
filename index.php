@@ -6,12 +6,13 @@
 
 	$pto_vta  = isset($_SESSION['pto_vta']) ? $_SESSION['pto_vta'] : null;
 	
-	$fec_desp = date('d/m/Y');
+    include ('../../WebClientPrint.php');
 	
-	$fec_actual = date('d/m/Y');
-	
-	//imprimir(); //esta en la parte inferior de este programa
-	$retorna = '0';
+    use Neodynamic\SDK\Web\WebClientPrint;
+    use Neodynamic\SDK\Web\Utils;
+    use Neodynamic\SDK\Web\DefaultPrinter;
+    use Neodynamic\SDK\Web\InstalledPrinter;
+    use Neodynamic\SDK\Web\ClientPrintJob;
 
 	$lottired_evolution_api_support = $_SESSION['funciones']."lottired_evolution_api_support.php";
 	// Obtener la ruta base desde el servidor y eliminarla de la ruta completa
@@ -28,7 +29,9 @@
 	if ((!isset($pto_vta)) || (empty($pto_vta)))
 	{
 		echo "<script type='text/javascript'>window.open('../logout.php','_top','');</script>";
-	}	
+	}
+	
+	$retorna = imprimir();
 	
 ?>
 
@@ -482,17 +485,152 @@
 							</div>
 						</div>
 					</div>
-					
-					<!-- La tabla de premios que estaba aquí se movió al panel de arriba -->
+					<input type="hidden" name="id_usu" id="id_usu" value="<?php echo $_SESSION['id_usu']?>">	
+					<input type="hidden" name="pto_vta" id="pto_vta" value="<?php echo $pto_vta?>">
 				</div>
 			</div>
 		</div>
-
-		<input type="hidden" name="id_usu" id="id_usu" value="<?php echo $_SESSION['id_usu']?>">	
-		<input type="hidden" name="pto_vta" id="pto_vta" value="<?php echo $pto_vta?>">
 		
+		<?php
+			//Specify the ABSOLUTE URL to the php file that will create the ClientPrintJob object
+			//In this case, this same page
+			echo WebClientPrint::createScript(Utils::getRoot().'/formas/pruebas/index.php');
+		?>
+
 	</body>
 </html>
 <?php
+	}
+?>
+
+<?php
+
+	/**
+	 * Función que procesa la petición de impresión enviada desde el
+	 * cliente mediante WebClientPrint y devuelve el flujo de impresión.
+	 *
+	 * @return string  '1' si la impresión se envió correctamente,
+	 *                 '0' en caso contrario.
+	 */
+
+	function imprimir()
+	{
+		$retorna = '0';	
+		
+		error_log('Error al decodificar JSON en imprimir()', 3,
+					'C:/mercapos/htdocs/formas/pruebas/debug.log');
+		
+		if(!session_id()) {session_start();}	
+
+		//include ('../../bd/conexion.php');
+
+		// Conexión a la base de datos (ruta relativa al proyecto)
+    	include __DIR__ . '/../../bd/conexion.php';
+	
+		// ---------------------------------------------------------
+		// 1️⃣  Obtener la query‑string completa de la URL
+		// ---------------------------------------------------------		
+		$urlParts = parse_url($_SERVER['REQUEST_URI']);
+		
+		// Nombre de la impresora (vacío → usar la predeterminada)
+    	$printerName = '';		
+
+		// ---------------------------------------------------------
+		// 2️⃣  Verificar que exista la cadena de consulta
+		// ---------------------------------------------------------
+		if (!isset($urlParts['query'])) {
+			return $retorna; // nada que imprimir
+		}
+		
+
+   		$rawQuery = $urlParts['query'];
+
+		// ---------------------------------------------------------
+		// 3️⃣  Detectar la señal de WebClientPrint
+		// ---------------------------------------------------------
+		// La constante WebClientPrint::CLIENT_PRINT_JOB debe estar
+		// definida por la librería de impresión que estés usando.
+		if (empty($rawQuery[WebClientPrint::CLIENT_PRINT_JOB])) {
+			return $retorna; // no es una petición de impresión
+		}
+
+		// ---------------------------------------------------------
+		// 4️⃣  Parsear los parámetros enviados desde JavaScript
+		// ---------------------------------------------------------
+		parse_str($rawQuery, $qs);
+
+		// Los datos llegan codificados en URL → decodificamos y
+		// convertimos a arrays asociativos.
+		// Después (compatible con PHP 5.3)
+		$clienteJson   = isset($qs['cliente'])   ? urldecode($qs['cliente'])   : '';
+		$recibidosJson = isset($qs['recibidos']) ? urldecode($qs['recibidos']) : '';
+		$totalesJson   = isset($qs['totales'])   ? urldecode($qs['totales'])   : '';
+		
+		$arre_cliente   = json_decode($clienteJson, true);
+		$arre_recibidos = json_decode($recibidosJson, true);
+		$arre_totales   = json_decode($totalesJson, true);
+
+
+		// Si alguna decodificación falla, abortamos.
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			error_log('Error al decodificar JSON en imprimir()', 3,
+					'C:/mercapos/htdocs/formas/pruebas/debug.log');
+			return $retorna;
+		}
+
+		// ---------------------------------------------------------
+		// 5️⃣  Construir los comandos ESC/POS (ejemplo básico)
+		// ---------------------------------------------------------
+		$esc      = '0x1B'; // ESC byte en notación hexadecimal
+		$newLine  = '0x0A'; // LF byte en notación hexadecimal
+		$cmds     = $esc . '@'; // Reset de la impresora (ESC @)
+
+		// Aquí puedes añadir más comandos, por ejemplo:
+		// $cmds .= $esc . 'a0'; // alineación izquierda
+		// $cmds .= "Venta ID: {$arre_recibidos['id_venta']}\n";
+
+		// ---------------------------------------------------------
+		// 6️⃣  Preparar el objeto ClientPrintJob
+		// ---------------------------------------------------------
+		$cpj = new ClientPrintJob();
+		$cpj->printerCommands   = $cmds;
+		$cpj->formatHexValues   = true;
+
+		// Determinar la impresora a usar:
+		// $useDefaultPrinter debe estar definido en tu entorno.
+		// Si no lo está, asumimos que se usará la predeterminada.
+		$useDefaultPrinter = 'A';//$useDefaultPrinter ?? true;
+
+		if ($useDefaultPrinter || $printerName === 'null') {
+			$cpj->clientPrinter = new DefaultPrinter();
+		} else {
+			$cpj->clientPrinter = new InstalledPrinter($printerName);
+		}
+
+		// ---------------------------------------------------------
+		// 7️⃣  Enviar el trabajo de impresión al cliente
+		// ---------------------------------------------------------
+		try {
+			// Limpiar cualquier salida previa
+			ob_start();
+			ob_clean();
+
+			// Enviar el flujo binario que entiende WebClientPrint
+			echo $cpj->sendToClient();
+
+			// Vaciar el buffer y enviarlo al navegador
+			ob_end_flush();
+
+			// Indicar éxito
+			$retorna = '1';
+		} catch (Exception $e) {
+			// Registrar el error para depuración
+			$logMsg = ">>> ERROR en imprimir(): " . $e->getMessage() . "\n";
+			error_log($logMsg, 3, 'C:/mercapos/htdocs/formas/pruebas/debug.log');
+
+			// Mantener $retorna = '0' (fallo)
+		}
+
+		return $retorna;
 	}
 ?>

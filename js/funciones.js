@@ -993,6 +993,10 @@ function grabarVenta(idUsu, ptoVta) {
 
             //console.log('Respuesta grabar_venta:', resp);
 
+            const recibidos = resp.recibidos || {};
+
+            console.log('ID venta:', recibidos.id_venta);
+
             if (resp.error && resp.error.length > 0) {
                 swal('Error al grabar la venta', resp.error, 'error');
                 return;
@@ -1018,6 +1022,7 @@ function grabarVenta(idUsu, ptoVta) {
                 .then(function () {
                     // Recargar la página o simplemente dejar la UI lista para una nueva venta
                     //location.reload();   // <-- puedes comentar esta línea si no deseas recargar
+                    imprimirTicketVenta(cliente,recibidos,totales);
                 });
         },
         error: function (xhr) {
@@ -1721,4 +1726,28 @@ function fn_valida_premio(barcode) {
     return true;
 }
 
+// -------------------------------------------------------------
+//  Función de impresión (debe ser async y sin redeclarar parámetros)
+// -------------------------------------------------------------
+async function imprimirTicketVenta(cliente, recibidos, totales) {
+    // Convertir a JSON (no volver a declarar con const)
+    const clienteStr   = JSON.stringify(cliente);
+    const recibidosStr = JSON.stringify(recibidos);
+    const totalesStr   = JSON.stringify(totales);
+
+    const params = new URLSearchParams({
+        cliente:   clienteStr,
+        recibidos: recibidosStr,
+        totales:   totalesStr
+    }).toString();
+
+    try {
+        // 1. Enviar solicitud de impresión
+        await jsWebClientPrint.print(params);
+        // console.log('Solicitud de impresión enviada.');
+    } catch (error) {
+        // console.error('Error en el proceso de impresión o recuperación:', error);
+        // swal("Error", "Ocurrió un error durante la impresión.", "error");
+    }
+}
 
