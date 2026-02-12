@@ -1,7 +1,5 @@
 <?php
 
-	//https://listjs.com/examples/pagination/  
-
 	if(!session_id()) {session_start();}
 
 	$pto_vta  = isset($_SESSION['pto_vta']) ? $_SESSION['pto_vta'] : null;
@@ -17,6 +15,7 @@
     use Neodynamic\SDK\Web\InstalledPrinter;
     use Neodynamic\SDK\Web\ClientPrintJob;
 
+	/*
 	$lottired_evolution_api_support = $_SESSION['funciones']."lottired_evolution_api_support.php";
 	// Obtener la ruta base desde el servidor y eliminarla de la ruta completa
 	$basePath = rtrim($_SERVER['DOCUMENT_ROOT'], '/'); // Eliminar cualquier '/' final de la ruta base
@@ -28,6 +27,17 @@
 	}	
 
 	$lottired_evolution_api_support = $relativePath;
+	*/
+
+	if (isset($_SESSION["lr_api_base"])) {
+		unset($_SESSION["lr_api_base"]);
+	}
+
+	//2025-Nov-24 adiciono para lottired
+	$_SESSION["lr_api_base"] = 'https://lottiredapiqa.loteriademedellin.com.co';
+
+	//$_SESSION["lr_api_base"] = 'https://api.loteriademedellin.com.co';
+	//FIN //2025-Nov-24 adiciono para lottired
 
 	$retorna = imprimir();
 
@@ -88,6 +98,13 @@
 						<icon class="fa fa-barcode"></icon> Ventas
 					</a>
 				</li>
+
+				<li>
+					<a href="#reporte" role="tab" data-toggle="tab">
+						<icon class="fa fa-barcode"></icon> Reporte
+					</a>
+				</li>
+
 			</ul>		
 		
 			<!-- Tab panes -->
@@ -348,46 +365,6 @@
 												</tr>
 											</thead>
 											<tbody>
-												<!-- <tr>
-													<td>4700</td>
-													<td>98765</td>
-													<td class="text-center">123</td>
-													<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
-													<td class="text-right">$50.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<tr>
-													<td>3249</td>
-													<td>54321</td>
-													<td class="text-center">050</td>
-													<td style="text-align: left;">SECO $10 MILLONES</td>
-													<td class="text-right">$10.000.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<tr>
-													<td class="text-center">2488</td>
-													<td class="text-center">11223</td>
-													<td class="text-center">088</td>
-													<td style="text-align: left;">APROXIMACION DOS PRIMERAS</td>
-													<td class="text-right">$25.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<tr>
-													<td class="text-center">2998</td>
-													<td class="text-center">33445</td>
-													<td class="text-center">010</td>
-													<td style="text-align: left;">SECO $20 MILLONES</td>
-													<td class="text-right">$20.000.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr>
-												<tr>
-													<td class="text-center">2875</td>
-													<td class="text-center">55667</td>
-													<td class="text-center">045</td>
-													<td style="text-align: left;">APROXIMACION ULTIMA CIFRA</td>
-													<td class="text-right">$50.000</td>
-													<td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-												</tr> -->
 												<!-- Las filas de premios se agregarán aquí dinámicamente -->
 											</tbody>
 										</table>
@@ -405,7 +382,7 @@
 										<div class="form-group">
 											<label for="cliente-cedula" class="col-sm-3 control-label">Cédula</label>
 											<div class="col-sm-9">
-												<input type="text" id="cliente-cedula" class="form-control numeric-input" maxlength="10" value="16640994">
+												<input type="text" id="cliente-cedula" class="form-control numeric-input" maxlength="10" value="">
 											</div>
 										</div>
 										<div class="form-group">
@@ -443,6 +420,7 @@
 												<button type="button" id="btn-grabar-cliente" class="btn btn-primary pull-right">
 													<i class="fa fa-save"></i> Grabar
 												</button>
+												<!-- <button type="button" id="btn-cancelar-cliente" class="btn btn-danger pull-left" onclick="limpiarCliente()"> -->
 												<button type="button" id="btn-cancelar-cliente" class="btn btn-danger pull-left" onclick="limpiarCliente()">
 													<i class="fa fa-times"></i> Cancelar
 												</button>
@@ -475,6 +453,13 @@
 											<label for="ingrese-efectivo">Ingrese Efectivo:</label>
 											<input type="text" class="form-control" id="ingrese-efectivo" placeholder="$0" style="width: 120px;">
 										</div>
+
+										<!-- Nuevo campo añadido justo debajo del anterior -->
+										<div class="fila-resumen" style="padding-top: 10px;">
+											<label for="id_venta">ID Venta:</label>
+											<input type="text" class="form-control" id="id_venta" placeholder="ID" style="width: 120px;">
+										</div>
+
 										<div class="totales-actions" style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: center;">
 											<button type="button" id="btn-cancelar-venta" class="btn btn-danger btn-lg pull-left" style="margin-right: 20px;">
 												<i class="fa fa-times"></i> Cancelar
@@ -491,13 +476,133 @@
 					<input type="hidden" name="id_usu" id="id_usu" value="<?php echo $_SESSION['id_usu']?>">	
 					<input type="hidden" name="pto_vta" id="pto_vta" value="<?php echo $pto_vta?>">
 				</div>
+
+				<div class="tab-pane fade" id="reporte">
+
+					<div class="container-fluid">
+					
+						<form method="" action="" autocomplete="off">
+						
+							<div class="col-lg-12 col-lg-offset-0">
+								<div class="panel panel-primary">
+									<div class="panel-heading text-center"><h4>REPORTE DE VENTAS</h4></div>
+
+									<div class="panel-body">
+										<div class="row">
+											<div class="form-group">
+												
+												<div class="col-md-2 col-lg-2">
+													<label>Punto</label>
+													<div id="list_pto_venta_con">
+														<select id="cboPtoventa_con" name="cboPtoventa_con" class="form-control" style="background-color: #87CEFA;">
+															<option value="<?php echo $pto_vta; ?>">Pto Vta</option>
+														</select>
+													</div>
+												</div>
+												
+												<div class="col-md-4 col-lg-4">
+													<label>Loteria</label>
+													<div class="form-group">
+														<div id="list_loterias">								 								
+															<select id="cboLoterias" name="cboLoterias" class="form-control">
+																<option value="99">Todas</option>
+															</select>
+														</div>																									
+													</div>
+												</div> 												
+												
+												<div class="col-md-2 col-lg-2">
+													<label>Sorteo</label>
+													<input type="text" name="num_sor" id="num_sor" 
+															class="form-control">
+												</div> 																								
+
+												<div class="col-md-4 col-lg-4">
+													<label>Fec. Sorteo</label>
+													<input type="text" name="rango_fechas_sorteo" id="rango_fechas_sorteo" 
+															class="form-control">
+												</div>	
+
+											</div>	
+											
+										</div>	
+
+ 										<div class="row" style = ""> 
+
+											<div class="form-group">
+
+												<div class="col-md-3 col-lg-3">
+													<label>Fec. Venta</label>
+													<input type="text" name="rango_fechas_con" id="rango_fechas_con" 
+															class="form-control">
+												</div>
+
+												<div class="col-md-3 col-lg-3">
+													<label>Fec. Validacion Premio</label>
+													<input type="text" name="rango_fechas_val_pre" id="rango_fechas_val_pre" 
+															class="form-control">
+												</div>													
+												
+												<div class="col-md-3 col-lg-3">
+													<label>Cedula</label>
+													<input type="text" name="cedula" id="cedula" 
+															class="form-control">
+												</div>
+
+												<!-- <div class="col-md-3 col-lg-3 col-lg-offset-3 col-md-offset-3 pull-right"> -->
+												<div class="col-md-3 col-lg-3 pull-right">
+													<label>.</label>												 													
+													<div class="btn-toolbar" role="toolbar">
+														<div class="btn-group" role="group">
+															<button id="consulta_con" class="btn btn-info fa fa-search fa-lg"></button>
+														</div>
+														
+														<div class="btn-group" role="group">
+															<button id="rep_excell" class="btn btn-success fa fa-file-excel-o fa-lg" onclick="generarArchivosExcel()">
+															</button>
+														</div>														
+
+														<div class="btn-group" role="group">
+															<button class="btn btn-danger fa fa-ban fa-lg cancelar" onClick="cancelar()"></button>
+														</div>                          
+													</div>                          
+												</div> 
+
+											</div> 												                                               
+										</div>
+										
+									</div>
+
+									<div id="spinner" align="center" style="display: none;" >								
+										<i class="fa fa-spinner fa-spin" style="font-size:80px" ></i>
+									</div>									
+
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-lg-offset-0">
+								<div class="panel panel-primary">
+									<div class="panel-body">
+										<div id='div_productos'></div>
+									</div>
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+
+				</div>
 			</div>
 		</div>
+
+		<div style='display:none' id='div_detalle'></div>
+		<div style='display:none' id='div_totales'></div>
 		
 		<?php
 			//Specify the ABSOLUTE URL to the php file that will create the ClientPrintJob object
 			//In this case, this same page
-			echo WebClientPrint::createScript(Utils::getRoot().'/formas/pruebas/index.php');
+			echo WebClientPrint::createScript(Utils::getRoot().'/formas/venta_terceros/index.php');
 		?>
 
 	</body>
@@ -532,7 +637,11 @@
 		// Conexión a la base de datos (ruta relativa al proyecto)
     	include __DIR__ . '/../../bd/conexion.php';
 
+		//localhost
 		require_once '/../ventas/funciones_lottired.php';
+		
+		//producion
+		//include __DIR__ . '../ventas/funciones_lottired.php';
 	
 		// ---------------------------------------------------------
 		// 1️⃣  Obtener la query‑string completa de la URL
@@ -577,10 +686,11 @@
 		$arre_recibidos = json_decode($recibidosJson, true);
 		$arre_totales   = json_decode($totalesJson, true);
 
+		/*
 		// -----------------------------------------------------------------
 		// 5️⃣  Registrar los tres arreglos en debug.log (para depuración)
 		// -----------------------------------------------------------------
-		$logFile = 'C:/mercapos/htdocs/formas/pruebas/debug.log';
+		$logFile = 'C:/mercapos/htdocs/formas/venta_terceros/debug.log';
 
 		// Formateamos la salida para que sea legible en el log
 		$logMsg  = "=== DEBUG - ARRAYS RECIBIDOS ===\n";
@@ -591,6 +701,7 @@
 
 		// error_log escribe en el archivo indicado (crea el archivo si no existe)
 		error_log($logMsg, 3, $logFile);
+		*/
 
 		// Si alguna decodificación falla, abortamos.
 		if (json_last_error() !== JSON_ERROR_NONE) {
@@ -598,7 +709,7 @@
 					'C:/mercapos/htdocs/formas/pruebas/debug.log');
 			return $retorna;
 		}
-
+	
 		// ---------------------------------------------------------
 		// 5️⃣  Construir los comandos ESC/POS (ejemplo básico)
 		// ---------------------------------------------------------
@@ -606,16 +717,293 @@
 		$newLine  = '0x0A'; // LF byte en notación hexadecimal
 		$cmds     = $esc . '@'; // Reset de la impresora (ESC @)
 
-		// Aquí puedes añadir más comandos, por ejemplo:
-		// $cmds .= $esc . 'a0'; // alineación izquierda
-		// $cmds .= "Venta ID: {$arre_recibidos['id_venta']}\n";
+		$premios = '0';
+		$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente,$premios);
 
-		$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente);
+		if (is_array($arre_totales)) {
+			// Salto de línea antes de los totales
+			$cmds .= $newLine;
 
-		for( $i= 0 ; $i <= 2 ; $i++ )
-		{
+			// 1️⃣  Separador inicial
+			//$cmds .= str_repeat('-', 46);
+			//$cmds .= $newLine;
+
+			// Agregar título centrado antes de los totales
+			$cmds .= $esc . 'a' . chr(1); // Centrado
+
+			// Cambiar a fuente B y activar negrilla
+			$cmds .= $esc . 'M' . chr(1); // Fuente B
+			$cmds .= $esc . 'E' . chr(1); // Negrilla
+
+			// Aumentar tamaño de letra SOLO para este texto (doble alto)
+			$cmds .= chr(29) . '!' . chr(1); // Doble alto
+			$cmds .= "RESUMEN DE VENTA";
+			$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal
+			$cmds .= $newLine;
+			// Volver a fuente A y desactivar negrilla para el resto
+			$cmds .= $esc . 'M' . chr(0); // Fuente A
+			$cmds .= $esc . 'E' . chr(0); // Negrilla off
+			// Volver a alinear a la izquierda para el resto
+			//$cmds .= $esc . 'a' . chr(0); // Izquierda
+			$cmds .= str_repeat('-', 46);
+			$cmds .= $newLine;
+
+			// 2️⃣  Total de la venta
+			$cmds .= formatear_linea_total("TOTAL VENTA:", $arre_totales['totalVenta']);
+			$cmds .= $newLine;
+
+			// 3️⃣  Total de premios
+			$cmds .= formatear_linea_total("TOTAL PREMIOS:", $arre_totales['totalPremios']);
+			$cmds .= $newLine;
+
+			// 4️⃣  Separador visual
+			$cmds .= str_repeat('-', 46);
+			$cmds .= $newLine;
+
+			// 5️⃣  Valor a pagar
+			$cmds .= formatear_linea_total("VALOR A PAGAR:", $arre_totales['valorPagar']);
+			$cmds .= $newLine;
+
+			// 6️⃣  Efectivo entregado
+			$cmds .= formatear_linea_total("EFECTIVO:", $arre_totales['efectivo']);
+			$cmds .= $newLine;
+
+			// 7️⃣  Cambio (efectivo - valor a pagar)
+			$cambio = $arre_totales['efectivo'] - $arre_totales['valorPagar'];
+			$cmds .= formatear_linea_total("CAMBIO:", $cambio);
+			$cmds .= $newLine;
+
+			// 8️⃣  Separador final
+			$cmds .= str_repeat('-', 46);
 			$cmds .= $newLine;
 		}
+
+		$id_venta = isset($arre_recibidos['id_venta']) ? $arre_recibidos['id_venta'] : 0;
+		
+		$sql = "SELECT mov.*, 
+				mae.nombre_corto AS Loteria,
+				cli.nombres||' '||cli.apellidos AS cliente
+				FROM movlottired mov
+				INNER JOIN maelote mae ON mov.cod_lot = mae.cod_lot
+				LEFT JOIN clientes cli ON mov.cedula = cli.cedula
+				WHERE mov.id_venta = :id_venta OR mov.id_venta_premio = :id_venta";
+
+		$stm = $db->prepare($sql);	
+		$stm->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
+		$stm->execute();
+		$arre = $stm->fetchAll(PDO::FETCH_ASSOC);
+		$stm->closeCursor();
+
+		$esc = chr(27);
+		$newLine = "\n";
+
+		// Filtrar solo los registros donde 'tipo' es igual a 'VENTA'
+		$arre_ventas = array_filter($arre, function($item) {
+			return isset($item['tipo']) && $item['tipo'] === 'VENTA';
+		});
+
+		// Si quieres reindexar el array (opcional)
+		$arre_ventas = array_values($arre_ventas);
+
+		if (!empty($arre_ventas)) {
+			//require_once 'funciones_lottired.php';
+
+			foreach($arre_ventas as $row) 						
+			{
+			
+				$cmds .= $newLine;
+				// Cambiar a fuente B y activar negrilla
+				$cmds .= $esc . 'M' . chr(1); // Fuente B
+				$cmds .= $esc . 'E' . chr(1); // Negrilla
+
+				// Aumentar tamaño de letra SOLO para este texto
+				$cmds .= chr(29) . '!' . chr(1); // Doble alto
+				$cmds .= "VENTA DE LOTERIA EN LINEA";
+				$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal
+				$cmds .= $newLine;
+				// Volver a fuente A y desactivar negrilla para el resto
+				$cmds .= $esc . 'M' . chr(0); // Fuente A
+				$cmds .= $esc . 'E' . chr(0); // Negrilla off
+
+				// Volver a alinear a la izquierda para el resto
+				$cmds .= $esc . 'a' . chr(0); // Izquierda
+				$cmds .= "----------------------------------------------";
+				$cmds .= $newLine;
+				$cmds .= $esc . 'E' . chr(1); // Activar negrilla
+				$cmds .= 'Codigo: '.$row['barcode'].' '.$row['loteria'];
+				$cmds .= $esc . 'E' . chr(0); // Desactivar negrilla
+				$cmds .= $newLine;
+				$cmds .= "----------------------------------------------";
+
+				$cmds .= $newLine;
+				$cmds .= "Sorteo   Numero   Serie   Fracciones     Valor";
+				$cmds .= $newLine;												
+				$cmds .= "----------------------------------------------"; //esta linea mide 33				
+
+				// Llamar a la función fn_consulta_venta_lottired
+				$resultado = fn_consulta_venta_lottired($row['id_venta']); // Asegúrate de que 'id_venta' sea el campo correcto
+
+				// Procesar los datos de la venta retornados por la función
+				$arre_venta = $resultado['arre_venta'];
+	
+				// Verificar que $arre_venta y $arre_venta['soldNumbers'] existan y sean un array
+				if (isset($arre_venta['soldNumbers']) && is_array($arre_venta['soldNumbers'])) {
+					// Filtrar los datos
+
+					$filtered = array_filter($arre_venta['soldNumbers'], function ($item) use ($row) {
+						return isset($item['barcode']) && isset($row['barcode']) && $item['barcode'] === $row['barcode'];
+					});
+
+					// Verificar si hay elementos en el array filtrado
+					if (!empty($filtered)) {
+						// Obtener el primer elemento del array filtrado
+						$firstItem = reset($filtered);
+
+						// Extraer los valores de drawDate y drawJackpot
+						$drawDate = isset($firstItem['drawDate']) ? $firstItem['drawDate'] : null;
+						$drawJackpot = isset($firstItem['drawJackpot']) ? $firstItem['drawJackpot'] : null;
+
+
+						$formattedDate = date('Y-m-d', strtotime($drawDate)); 
+						$formattedJackpot = number_format($drawJackpot, 0, ',', '.');
+					}
+				}								
+
+				$cmds .= $newLine;
+				$cmds .= $row['num_sor'].'      '.$row['num_bil'].'     '.$row['num_ser'].'        '.$row['fracciones'].'         '.number_format($row['vlr_fracciones']);
+				$cmds .= $newLine;
+				$cmds .= $newLine;
+
+				$cmds .= $esc . 'M' . chr(1); // Cambiar a Fuente B
+				$cmds .= $esc . chr(4); // Activar Cursiva (Itálica) - Puede no ser soportado por todas las impresoras
+
+				// Activar negrilla y tamaño más grande para la fecha y premio mayor
+				$cmds .= $esc . 'E' . chr(1); // Activar negrilla
+				//$cmds .= chr(29) . '!' . chr(16); // Ancho normal, doble alto	
+				$cmds .= chr(29) . '!' . chr(1); // Doble altura (GS ! 1)
+				$cmds .= 'Fecha Sorteo: '.$formattedDate.'     Premio Mayor: $'.$formattedJackpot;
+				$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal (GS ! 0)
+				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+
+				$cmds .= $esc . chr(5); // Desactivar Cursiva (Itálica)
+				$cmds .= $esc . 'M' . chr(0); // Volver a Fuente A
+
+				$cmds .= $newLine;
+
+				//numero anexo
+				if (!empty($filtered) && isset($filtered[0]['includesAnnexNumber']) && $filtered[0]['includesAnnexNumber'] === true) {
+					$cmds .= "----------------------------------------------";
+					$cmds .= $newLine;
+					$cmds .= $esc . 'E' . chr(1);
+					$cmds .= "Anexo No: ".$filtered[0]['annexNumber']['number'];
+					$cmds .= $newLine;
+					$cmds .= "Detalle: ".$filtered[0]['annexNumber']['description'];
+					$cmds .= $esc . 'E' . chr(0);
+					$cmds .= $newLine;
+				}
+
+				//promotional
+				if (!empty($filtered) && isset($filtered[0]['promotional']['winner']) && $filtered[0]['promotional']['winner'] === true) {
+					$cmds .= "----------------------------------------------";
+					$cmds .= $newLine;
+					//$cmds .= $esc . 'E' . chr(1); // Activa negrita
+					// Activar estilos y centrado para el título
+					$cmds .= $esc . '!' . chr(24); // Activa doble altura y se asegura que la negrita también esté.
+					$cmds .= $esc . 'a' . chr(1);  // <<<--- AÑADIDO: Activa la alineación centrada
+					$cmds .= "G A N A S T E  P R E M I O";
+					$cmds .= $esc . '!' . chr(0);  // Desactiva doble altura y negrita
+					$cmds .= $newLine;
+					$cmds .= $newLine;
+					$cmds .= $esc . 'E' . chr(1); // Negrilla OFF
+					$cmds .= $esc . 'a' . chr(0);  // <<<--- AÑADIDO: Desactiva el centrado (vuelve a alineación izquierda)
+					//$cmds .= "Premio: ".$filtered[0]['promotional']['prizeDescription'];
+					$cmds .= "Premio: ".$firstItem['promotional']['prizeDescription'][0];
+					$cmds .= $newLine;
+					$cmds .= "Cantidad de Premios: ".$filtered[0]['promotional']['prizeQuantity'];
+					$cmds .= $newLine;
+					if (!empty($filtered[0]['promotional']['replacementLottery'])) {
+						$cmds .= "Loteria Recambio: ".$filtered[0]['promotional']['replacementLottery'];
+						$cmds .= $newLine;
+					}
+					$cmds .= "Contrasena: ".$filtered[0]['promotional']['prizePasswordEncrypt'];
+					$cmds .= $esc . 'E' . chr(0);
+					$cmds .= $newLine;
+				}
+			}
+			$cmds .= "----------------------------------------------";
+			//$cmds .= $newLine;
+		}
+
+		//2025-may-22
+		// Filtrar solo los registros donde 'tipo' es igual a 'PREMIO'
+		$arre_premios = array_filter($arre, function($item) {
+			return isset($item['tipo']) && $item['tipo'] === 'PREMIO';
+		});
+
+		// Si quieres reindexar el array (opcional)
+		$arre_premios = array_values($arre_premios);
+
+		// Llamar a la nueva función para generar los comandos de la sección de premios Lottired
+		$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);						
+
+		//2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
+		if (!empty($arre_premios)) {
+
+			$cmds .= $newLine;
+			$cmds .= $newLine;
+			//$cmds .= $esc . 'a' . '0x1';  // Centrado											
+			$cmds .= '**TODOS LOS SERVICIOS, UN SOLO PUNTO***';			
+			$cmds .= $newLine;$newLine;
+			$cmds .= "***GRACIAS POR SU COMPRA***";
+			
+			for( $i= 0 ; $i <= 4 ; $i++ )
+			{
+				$cmds .= $newLine;
+			}								
+			//corta el papel
+			$cmds .= chr(29) . 'V' . chr(0); // 0x1D 0x56 0x00
+
+			$premios = '1';
+			
+			$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente, $premios);
+			$cmds .= $esc . 'a' . chr(1); // Center align
+			$cmds .= $esc . '!' . '0x18'; // Emphasized + Double-height
+			$cmds .= $newLine;
+			$cmds .= "SOPORTE PARA MERCALOTERIAS";
+			$cmds .= $esc . '!' . '0x00'; // Normal text
+			$cmds .= $newLine;							
+			$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);
+			// Inicio de la sección DATOS DEL CLIENTE
+			$cmds .= $newLine;
+			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+			$cmds .= "DATOS DEL CLIENTE:";
+			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+			$cmds .= $newLine;
+
+			$cmds .= "----------------------------------------------";
+			$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
+			$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
+
+			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+			$cmds .= "NOMBRES...:";
+			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+			$cmds .= $newLine;
+			$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
+
+			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+			$cmds .= "No. CEDULA:";
+			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+			$cmds .= $newLine;
+			$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
+
+			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+			$cmds .= "TELEFONO..:";
+			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+		}
+		//FIN 2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
+
+		$cmds .= $newLine;
+		$cmds .= $newLine;
 
 		$cmds .= $esc . 'a' . '0x1';  //center titulo												
 		$cmds .= '***TODOS LOS SERVICIOS, UN SOLO PUNTO***';				
@@ -623,8 +1011,78 @@
 		//$cmds .= $esc . '!' . '0x00'; //Character font A selected (ESC ! 0)												
 		//$cmds .= $esc . 'a' . '0x1';  //center titulo					
 		$cmds .= "***GRACIAS POR SU COMPRA***";
+
+		// Extraer el celular (si no existe, usar cadena vacía)
+		$celular = isset($arre_cliente['celular']) ? $arre_cliente['celular'] : '';
+
+		if ($celular != '')
+		{
+			// --- INICIO: Almacenar comandos limpios en la base de datos ---
+			
+			// Se trabaja sobre una copia para no alterar la variable $cmds original que va a la impresora.
+			$cleaned_cmds = $cmds;
+
+			// 1. Normalizar saltos de línea (reemplaza '0x0A' y chr(10) por \n).
+			$cleaned_cmds = str_ireplace('0x0A', "\n", $cleaned_cmds);
+			$cleaned_cmds = str_replace(chr(0x0A), "\n", $cleaned_cmds);
+
+			// 2. Definir patrones para eliminar secuencias de control completas (ESC y GS).
+			$esc_pattern = '(?:0x1B|' . preg_quote(chr(0x1B)) . ')';
+			$gs_pattern = '(?:0x1D|' . preg_quote(chr(0x1D)) . ')';
+
+			$patterns_to_remove = array(
+				// Patrón genérico para comandos ESC (como !, a, M, E) seguido de un parámetro.
+				'/' . $esc_pattern . '.{1}/s',
+				
+				// Patrón genérico para comandos GS (como V para cortar) seguido de un parámetro.
+				'/' . $gs_pattern . '.{1,2}/s',
+
+				// Eliminar cualquier otro código hexadecimal en formato de texto que pudiera quedar.
+				'/0x[0-9a-f]{1,2}/i',
+
+				// Eliminar cualquier otro carácter de control no imprimible (excepto el salto de línea).
+				'/[\x00-\x09\x0B-\x1F\x7F]/'
+			);
+
+			// 3. Aplicar la limpieza.
+			$cleaned_cmds = preg_replace($patterns_to_remove, '', $cleaned_cmds);
+
+			if ($cleaned_cmds === null) {
+				// Manejo de error para PHP 5.3 (preg_last_error_msg no existe).
+				$error_code = preg_last_error();
+				error_log("Error en preg_replace al limpiar comandos. Código: " . $error_code . ". Comandos (parcial): " . substr($cmds, 0, 500));
+				$cleaned_cmds = "Error al procesar los comandos de impresión.";
+			}
+
+			try {
+				// Se utiliza la variable limpia ($cleaned_cmds) para la base de datos.
+				$stmt = $db->prepare("
+					UPDATE print_commands_log
+					SET print_command_data = :print_command_data,
+						celular    = :celular_wsp
+					WHERE id_venta = :id_venta
+				");
+				$stmt->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
+				$stmt->bindParam(':print_command_data', $cleaned_cmds, PDO::PARAM_STR);
+				$stmt->bindParam(':celular_wsp', $celular_wsp, PDO::PARAM_STR);
+				$stmt->execute();
+
+				if ($stmt->rowCount() == 0) {
+					$stmt = $db->prepare("
+						INSERT INTO print_commands_log (id_venta, print_command_data, celular)
+						VALUES (:id_venta, :print_command_data, :celular_wsp)
+					");
+					$stmt->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
+					$stmt->bindParam(':print_command_data', $cleaned_cmds, PDO::PARAM_STR);
+					$stmt->bindParam(':celular_wsp', $celular_wsp, PDO::PARAM_STR);
+					$stmt->execute();
+				}
+			} catch (PDOException $e) {
+				error_log("Error al insertar/reemplazar comandos en print_commands_log: " . $e->getMessage());
+			}
+		}					
 		
-		for( $i= 0 ; $i <= 6 ; $i++ )
+		for( $i= 0 ; $i <= 3 ; $i++ )
 		{
 			$cmds .= $newLine;
 		}
@@ -746,10 +1204,12 @@
 		$cmds .= "Nit 805013949-0";
 		$cmds .= $newLine;
 
-		$cmds .= $esc . '!' . '0x18';               // énfasis + doble altura
-		$cmds .= "INGRESOS RECIBIDOS PARA TERCEROS";
-		$cmds .= $esc . '!' . '0x00';
-		$cmds .= $newLine;
+		if ($premios === '0') {
+			$cmds .= $esc . '!' . '0x18';               // énfasis + doble altura
+			$cmds .= "INGRESOS RECIBIDOS PARA TERCEROS";
+			$cmds .= $esc . '!' . '0x00';
+			$cmds .= $newLine;
+		}
 
 		// Alinear a la izquierda para el resto del texto
 		$cmds .= $esc . 'a' . '0x00';
@@ -784,15 +1244,63 @@
 		*/
 
 		$cmds .= $esc . '!' . '0x00';               // reset de estilo
-		$cmds .= $newLine;
-
-		$cmds .= "----------------------------------------------";
-		$cmds .= $newLine;
-		$cmds .= "Descripcion                             Valor";
-		$cmds .= $newLine;
-		$cmds .= "----------------------------------------------";
-		$cmds .= $newLine;
+		//$cmds .= $newLine;
 
 		return $cmds;
+	}
+
+	function generar_seccion_premios_lottired($esc, $newLine, $arre_premios) {
+		$cmds_seccion = '';
+		if (!empty($arre_premios)) {
+			$cmds_seccion .= $newLine;
+			$cmds_seccion .= $esc . 'a' . chr(1); // Centrado
+
+			// Cambiar a fuente B y activar negrilla
+			$cmds_seccion .= $esc . 'M' . chr(1); // Fuente B
+			$cmds_seccion .= $esc . 'E' . chr(1); // Negrilla
+
+			// Aumentar tamaño de letra SOLO para este texto
+			$cmds_seccion .= chr(29) . '!' . chr(1); // Doble alto
+			$cmds_seccion .= "PREMIOS DE LOTERIA EN LINEA";
+			$cmds_seccion .= chr(29) . '!' . chr(0); // Volver a tamaño normal
+
+			$cmds_seccion .= $newLine;
+
+			// Volver a fuente A y desactivar negrilla para el resto
+			$cmds_seccion .= $esc . 'M' . chr(0); // Fuente A
+			$cmds_seccion .= $esc . 'E' . chr(0); // Negrilla off
+
+			// Volver a alinear a la izquierda para el resto
+			$cmds_seccion .= $esc . 'a' . chr(0); // Izquierda
+
+			$cmds_seccion .= "----------------------------------------------";
+			$cmds_seccion .= $newLine;
+			$cmds_seccion .= "Sorteo   Numero   Serie   Fracciones    Premio";
+			$cmds_seccion .= $newLine;
+			$cmds_seccion .= "----------------------------------------------"; //esta linea mide 33
+			$cmds_seccion .= $newLine;
+			foreach ($arre_premios as $row) {
+				$cmds_seccion .= $esc . 'E' . chr(1); // Activar negrilla
+				$cmds_seccion .= 'Codigo: ' . $row['barcode'] . ' ' . $row['loteria'];
+				$cmds_seccion .= $esc . 'E' . chr(0); // Desactivar negrilla
+				$cmds_seccion .= $newLine;
+				$cmds_seccion .= "----------------------------------------------";
+				$cmds_seccion .= $newLine;
+				$cmds_seccion .= $row['num_sor'] . '      ' . $row['num_bil'] . '     ' . $row['num_ser'] . '        ' . $row['fracciones'] . '         ' . number_format($row['vlr_premio']);
+				$cmds_seccion .= $newLine;
+				$cmds_seccion .= $row['nom_pre'];
+				$cmds_seccion .= $newLine;
+				$cmds_seccion .= $newLine;
+			}
+			$cmds_seccion .= "----------------------------------------------";
+		}
+		return $cmds_seccion;
+	}
+
+	// Función auxiliar para formatear líneas de totales con ancho completo
+	function formatear_linea_total($etiqueta, $valor, $ancho_total = 46) {
+		$valor_formateado = number_format($valor, 0, ',', '.');
+		$espacios = $ancho_total - strlen($etiqueta) - strlen($valor_formateado);
+		return $etiqueta . str_repeat(' ', max(1, $espacios)) . $valor_formateado;
 	}
 ?>

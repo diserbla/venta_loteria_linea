@@ -12,10 +12,12 @@ body {
 }
 
 .nav-tabs > li > a {
-    border: 1px solid transparent;
+    border: 1px solid #dee2e6;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     color: #495057;
+    background-color: #f8f9fa;
+    margin-right: 4px;
 }
 
 .nav-tabs > li.active > a,

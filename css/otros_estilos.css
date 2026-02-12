@@ -3,6 +3,10 @@
 .panel-body {
     padding: 0;
 }
+/* Mantener margen interno solo en el tab de reporte */
+#reporte .panel-body {
+    padding: 15px;
+}
 
 .venta-header {
     background-color: #007bff; /* New modern blue */

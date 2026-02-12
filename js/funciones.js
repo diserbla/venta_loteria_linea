@@ -65,7 +65,58 @@ function gestionarScrollTablas() {
     });
 }
 
+function setClienteCamposDisabled(disabled) {
+    $('#cliente-cedula').prop('disabled', disabled);
+    $('#cliente-nombres').prop('disabled', disabled);
+    $('#cliente-apellidos').prop('disabled', disabled);
+    $('#cliente-celular').prop('disabled', disabled);
+    $('#cliente-direccion').prop('disabled', disabled);
+    $('#cliente-email').prop('disabled', disabled);
+}
+
+/*
+function cancelar() {
+    console.log('Cancelando y redirigiendo a index.php');
+    //location.href="index.php";
+}
+*/
+
+function generarArchivosExcel() {
+	var fechaActual = new Date();
+	var anio = fechaActual.getFullYear();
+	var mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+	var dia = String(fechaActual.getDate()).padStart(2, '0');
+	var horas = String(fechaActual.getHours()).padStart(2, '0');
+	var minutos = String(fechaActual.getMinutes()).padStart(2, '0');
+
+	//var fechaHora = "${anio}-${mes}-${dia}_${horas}-${minutos}";
+	var fechaHora = anio + '-' + mes + '-' + dia + '_' + horas + '-' + minutos;
+	var archivo = "reporte_ltr_" + fechaHora + ".xls";
+
+	// Tablas y nombres de hojas
+	var tablas = ['tbl_detalle', 'tbl_totales_venta'];
+	var nombresHojas = ['Detalle de Ventas', 'Ventas_Premios X Sorteo'];
+
+	tablesToExcel(tablas, nombresHojas, archivo, 'Excel');
+}
+
 $(document).ready(function(){
+
+    $('#num_sor').mask('0000');
+
+    $('#cedula').mask('00000000000');
+
+    var date = new Date();
+    var currentMonth = date.getMonth();
+    var currentDate = '01';//date.getDate();
+    var currentYear = date.getFullYear();
+
+    $('[id^="rango_fechas"]').datepick({
+        minDate: new Date(currentYear, currentMonth-12, currentDate),
+        maxDate: new Date(currentYear, currentMonth+1, currentDate),
+        rangeSelect: true, 
+        monthsToShow: 1
+    }); 	
 
     $('#cboLoterias_ltr').click(function(){		
 
@@ -85,8 +136,50 @@ $(document).ready(function(){
         });			
     });
 
-    $('#cboLoterias_ltr').change(function(){		
-        fn_ltr_sorteo_activo();
+   $('#cboLoterias').click(function(){		
+        $.ajax({
+            async:	false, 
+            url: "funciones.php",
+            dataType:"json",
+            data:  { paso: 'cboLoterias'},									
+            success: function(data){
+                $("#list_loterias").html(data.salida);	
+            },	
+            error: function (request, status, error) 
+            {
+                alert(request.responseText);
+            }							
+        });			
+    });
+
+    $('#cboPtoventa_con').click(function(){		
+        fn_ptos_vta(this.id,'list_pto_venta_con');
+    });
+
+    $("#consulta_con").click(function(e) {
+        fn_consulta_ppal(e); 
+        e.preventDefault();	
+    });
+
+	$('#rep_excell').click(function(e){ 
+		swal('SE GENERO EL ARCHIVO EN LA CARPETA DE DESCARGAS !!', "", "success");
+		e.preventDefault();
+	});	
+
+    //$('#cboLoterias_ltr').change(async function(){ // <--- ¡Añadir 'async' aquí!
+    $(document).on('change', '#cboLoterias_ltr', async function () {
+        try {
+            await fn_ltr_sorteo_activo(); // <--- Usar 'await' aquí
+
+            // 2) **Ejecutar la misma limpieza que el botón**
+            limpiarNumero();          // <-- disparo automático
+
+            // Si fn_ltr_sorteo_activo() es exitosa, el código continuaría aquí.
+        } catch (err) {
+            console.warn('Abortado en #cboLoterias_ltr change porque hubo error en sorteo activo:', err);
+            // Aquí puedes añadir lógica adicional si necesitas manejar el error
+            // de forma específica para este evento, por ejemplo, resetear el select.
+        }
     });
 
     $('#modal-loteria-select').click(function(){		
@@ -170,12 +263,7 @@ $(document).ready(function(){
     });
 
     // Limpia los campos de entrada del número
-    $('#limpiar-numero-btn').on('click', function() {
-        $('.number-input-digit').val('');
-        $('#cfr1').focus();
-        $('#div_series_disponibles').hide();
-        $('.datos-sorteo-row').hide();
-    });
+    $('#limpiar-numero-btn').on('click', limpiarNumero);
 
     // Auto-focus en el primer campo de entrada al cargar la página
     $('#cliente-cedula').focus();
@@ -188,9 +276,17 @@ $(document).ready(function(){
     });
 
     // Auto-tab en blur para #cfr1 si tiene valor
-    $('#cfr1').blur(function() {
+
+    $('#cfr1').blur(async function() { // <--- ¡Añadir 'async' aquí!
         if (this.value.length === 1) {
-            fn_ltr_sorteo_activo();
+            try {
+                await fn_ltr_sorteo_activo(); // <--- Usar 'await' aquí
+                // Si fn_ltr_sorteo_activo() es exitosa, el código continuaría aquí.
+            } catch (err) {
+                console.warn('Abortado en #cfr1 blur porque hubo error en sorteo activo:', err);
+                // Aquí puedes añadir lógica adicional si necesitas manejar el error
+                // de forma específica para este evento.
+            }
         }
     });
 
@@ -265,24 +361,14 @@ $(document).ready(function(){
     $('#btn-grabar-cliente').click(function(e) {
         e.preventDefault();
         // Deshabilitar los campos de datos del cliente
-        $('#cliente-cedula').prop('disabled', true);
-        $('#cliente-nombres').prop('disabled', true);
-        $('#cliente-apellidos').prop('disabled', true);
-        $('#cliente-celular').prop('disabled', true);
-        $('#cliente-direccion').prop('disabled', true);
-        $('#cliente-email').prop('disabled', true);
+        setClienteCamposDisabled(true);
         fn_graba_cliente();
     });
 
     // Evento click para el botón cancelar_cliente: habilita los campos de datos del cliente
     $('#btn-cancelar-cliente').click(function(e) {
         e.preventDefault();
-        $('#cliente-cedula').prop('disabled', false);
-        $('#cliente-nombres').prop('disabled', false);
-        $('#cliente-apellidos').prop('disabled', false);
-        $('#cliente-celular').prop('disabled', false);
-        $('#cliente-direccion').prop('disabled', false);
-        $('#cliente-email').prop('disabled', false);
+        setClienteCamposDisabled(false);
         $('#cliente-cedula').focus();
     });
     
@@ -507,43 +593,48 @@ $(document).ready(function(){
     });
 
     // Evento click para el botón genera_numero
-    $('#genera_numero').click(function() {
-        fn_ltr_sorteo_activo();
+    $('#genera_numero').click(async function() {
+        try {
+            await fn_ltr_sorteo_activo();   // <-- Espera a que termine sin error
 
-        var cboLoterias_ltr = $('#cboLoterias_ltr').val();
-        var numFracciones = parseInt($('#current-frac').text()) || 1;
+            const cboLoterias_ltr = $('#cboLoterias_ltr').val();
+            const numFracciones   = parseInt($('#current-frac').text()) || 1;
 
-        $.ajax({
-            async: true,
-            url: "../ventas/funciones.php",
-            dataType: "json",
-            type: "post",
-            data: { paso: "ltr_genera_numero", cod_lot: cboLoterias_ltr, nro_fracciones: numFracciones },
-            beforeSend: function () {
-                $("#spinner").show();
-            },
-            success: function (data) {
-                var error = data.error;
-                var fracciones 			   = data.fracciones;
+            $.ajax({
+                async: true,
+                url: "../ventas/funciones.php",
+                dataType: "json",
+                type: "post",
+                data: { paso: "ltr_genera_numero", cod_lot: cboLoterias_ltr, nro_fracciones: numFracciones },
+                beforeSend: function () {
+                    $("#spinner").show();
+                },
+                success: function (data) {
+                    var error = data.error;
+                    var fracciones 			   = data.fracciones;
 
-                if (error.length > 0) {
-                    swal(error, "", "error");
-                } else {
-                    var arreglo = data.arreglo;
+                    if (error.length > 0) {
+                        swal(error, "", "error");
+                    } else {
+                        var arreglo = data.arreglo;
 
-                    $('#cfr1').val(arreglo.lr_num_bil1);
-                    $('#cfr2').val(arreglo.lr_num_bil2);
-                    $('#cfr3').val(arreglo.lr_num_bil3);
-                    $('#cfr4').val(arreglo.lr_num_bil4);
+                        $('#cfr1').val(arreglo.lr_num_bil1);
+                        $('#cfr2').val(arreglo.lr_num_bil2);
+                        $('#cfr3').val(arreglo.lr_num_bil3);
+                        $('#cfr4').val(arreglo.lr_num_bil4);
 
-                    fn_series_disponibles(cboLoterias_ltr, arreglo.lr_num_bil1, arreglo.lr_num_bil2, arreglo.lr_num_bil3,arreglo.lr_num_bil4, fracciones);
-                    
+                        fn_series_disponibles(cboLoterias_ltr, arreglo.lr_num_bil1, arreglo.lr_num_bil2, arreglo.lr_num_bil3,arreglo.lr_num_bil4, fracciones);
+                        
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
                 }
-            },
-            error: function (request, status, error) {
-                alert(request.responseText);
-            }
-        });
+            });
+        } catch (err) {
+                console.warn('Abortado porque hubo error en sorteo activo:', err);
+                // No se ejecuta el resto del código
+        }
 
     });
 
@@ -558,86 +649,16 @@ $(document).ready(function(){
         } 
     });
 
-    $(document).on("keypress", "#barcode123", function (e) {
+    ///Reimpresion de Factura:
+    $(document).on("keypress", "#id_venta", function (e) {
         if ((e.keyCode == 13) || (e.keyCode == 9)) {
-            var barcode = $('#barcode').val();
-            var clienteCedula = $('#cliente-cedula').val();
-
-            var limpiarYEnfocar = function() {
-                $('#barcode').val('');
-                $('#barcode').focus();
-            };
-
-            // Validar longitud de 11 caracteres
-            if (barcode.length !== 11) {
-                limpiarYEnfocar();
-                e.preventDefault();
-                return;
-            }
-
-            // ✅ VALIDAR QUE LA CEDULA DEL CLIENTE TENGA VALOR
-            if (clienteCedula.length == 0) {
-                swal('DEBE INGRESAR LA INFORMACION  DEL CLIENTE', "", "error")
-                    .then((value) => {
-                        $('#cliente-cedula').focus();
-                    });
-                e.preventDefault();
-                return;
-            }
-
-            $.ajax({
-                url: "../ventas/funciones.php",
-                dataType: "json",
-                type: "post",
-                data: { paso: "busca_premio_ltr", barcode: barcode },
-                success: function (data) {
-                    var error = data.error;
-                    var totalPrizeNetValue = parseFloat(data.totalPrizeNetValue) || 0;
-
-                    if (error.length > 0) {
-                        swal(error, "", "error").then(limpiarYEnfocar);
-                    } else if (totalPrizeNetValue > 300000) {
-                        swal("!!VALOR DEL PREMIO ES MAYOR QUE EL MONTO AUTORIZADO POR FAVOR COMUNIQUESE CON LA OFICINA PRINCIPAL PARA COBRARLO!!", "", "error")
-                            .then(limpiarYEnfocar);
-                    } else {
-                        var arreglo = data.arreglo;
-                        console.log(arreglo);
-
-                        // Formatear el valor del premio como moneda
-                        var valorFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(totalPrizeNetValue || 0);
-
-                        // Recorrer el arreglo (array de premios)
-                        if (Array.isArray(arreglo)) {
-                            arreglo.forEach(function(premio) {
-                                var nuevaFila = `
-                                    <tr data-barcode="${barcode}">
-                                        <td class="text-center">${premio.lotteryDraw || ''}</td>
-                                        <td class="text-center">${premio.numero || ''}</td>
-                                        <td class="text-center">${premio.serie || ''}</td>
-                                        <td style="text-align: left;">${premio.nombre_premio || ''}</td>
-                                        <td class="text-right">${valorFormateado}</td>
-                                        <td class="text-center" style="cursor: pointer;"><i class="fa fa-trash text-danger"></i></td>
-                                    </tr>
-                                `;
-                                $('#tbl_premios_ltr tbody').append(nuevaFila);
-                            });
-                            // Llamar a actualizarTotales después de agregar premios
-                            actualizarTotales();
-                        }
-
-                        swal('Premio agregado', 'El premio ha sido registrado exitosamente.', 'success')
-                            .then(limpiarYEnfocar);
-                    }
-                },
-                error: function (request, status, error) {
-                    alert(request.responseText);
-                    limpiarYEnfocar();
-                }
-            });
+            var id_venta = $('#id_venta').val();
+            //console.log('Reimprimir venta ID: '+id_venta);
+            fn_reimprimir_venta(id_venta);
             e.preventDefault(); 
         } 
     });
-   
+
     // Evento para eliminar filas de la tabla de premios (clic en ícono trash)
     $(document).on('click', '#tbl_premios_ltr .fa-trash', function() {
         var fila = $(this).closest('tr');
@@ -647,8 +668,9 @@ $(document).ready(function(){
     });
 
     // Confirmación de venta con validación de registros en tablas
-    $(document).on('click', '#btn-grabar-venta', function(e) {
+    $(document).on('click', '#btn-grabar-venta', async function(e) {
         e.preventDefault();
+        setClienteCamposDisabled(false);
 
         // -------------------------------------------------------------
         // 1️⃣  VALIDACIÓN BÁSICA DE DATOS DEL CLIENTE
@@ -659,6 +681,33 @@ $(document).ready(function(){
         // Si los dos campos están vacíos, mostrar error inmediatamente
         if (!cedula || !nombres) {
             swal('Datos del cliente incompletos', 'Debe ingresar los datos del cliente y grabarlos', 'warning');
+            return;
+        }
+
+        // Validar existencia del cliente en base de datos antes de continuar
+        try {
+            const respCliente = await $.ajax({
+                url: "funciones.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    paso: "validar_cliente_existe",
+                    cedula: cedula
+                }
+            });
+
+            if (respCliente.error && respCliente.error.length > 0) {
+                swal('Error de validacion', respCliente.error, 'error');
+                return;
+            }
+
+            if (!respCliente.existe) {
+                swal('Cliente no existe', 'Debe registrar/grabar el cliente antes de realizar la venta.', 'warning');
+                $('#cliente-cedula').focus();
+                return;
+            }
+        } catch (xhr) {
+            swal('Error de conexion', xhr.responseText || 'No fue posible validar el cliente.', 'error');
             return;
         }
 
@@ -844,12 +893,13 @@ $(document).ready(function(){
             .prop('disabled', true);
 
         // 5️⃣  Limpiar los datos del cliente y habilitarlos nuevamente
-        $('#cliente-cedula').val('').prop('disabled', false).focus();
-        $('#cliente-nombres').val('').prop('disabled', false);
-        $('#cliente-apellidos').val('').prop('disabled', false);
-        $('#cliente-celular').val('').prop('disabled', false);
-        $('#cliente-direccion').val('').prop('disabled', false);
-        $('#cliente-email').val('').prop('disabled', false);
+        setClienteCamposDisabled(false);
+        $('#cliente-cedula').val('').focus();
+        $('#cliente-nombres').val('');
+        $('#cliente-apellidos').val('');
+        $('#cliente-celular').val('');
+        $('#cliente-direccion').val('');
+        $('#cliente-email').val('');
 
         // 6️⃣  Mensaje informativo
         swal('Venta cancelada', 'Todas las reservas fueron liberadas y los totales reiniciados.', 'info');
@@ -877,6 +927,165 @@ $(document).ready(function(){
     });
 
 });
+
+function fn_consulta_ppal(e){
+    var cboPtoventa	 		 =	$('#cboPtoventa_con').val();
+    var cboLoterias	 		 =	$('#cboLoterias').val();
+    var rango_fechas 		 =	$('#rango_fechas_con').val();	
+    var rango_fechas_sorteo  =	$('#rango_fechas_sorteo').val();	
+    var rango_fechas_val_pre =	$('#rango_fechas_val_pre').val();	
+    var cedula       		 =	$('#cedula').val();	
+    var num_sor       		 =	$('#num_sor').val();
+
+
+    if (((cboPtoventa != '0' && rango_fechas.length > 0) || cedula.length > 0) || (rango_fechas_sorteo.length > 0) || (num_sor.length > 0) || (rango_fechas_val_pre.length > 0))
+    {
+
+           var ajax_data = {
+                "paso"  	  		  : 'consulta_ppal',							
+                "cboPtoventa" 		  : cboPtoventa,
+                "cboLoterias" 		  : cboLoterias,
+                "rango_fechas"		  : rango_fechas,
+                "rango_fechas_sorteo" : rango_fechas_sorteo,
+                "rango_fechas_val_pre": rango_fechas_val_pre,
+				"num_sor" 	  		  : num_sor,
+                "cedula"      		  : cedula,
+            } 
+            
+			$.ajax({
+				//async:	false, 				
+				url 		: "funciones.php", // the url where we want to POST
+				type		: 'post',				
+				dataType 	: "json", 				
+				data 		: ajax_data, // our data object
+				beforeSend: function(){
+					$("#spinner").show();
+				},							
+				success: function(jsonData) 
+				{
+					var error = jsonData.error;
+					
+					if (error.length > 0)
+					{
+						swal(error, "", "error");	
+					}
+					else
+					{
+						//$("#spinner").hide();
+						
+                        $("#div_productos").html(jsonData.productos);
+						$("#div_detalle").html(jsonData.detalle);
+						$("#div_totales").html(jsonData.totales);
+                        //$("#hd_action").val(jsonData.action);
+
+                        // Aplicar TableSorter después de agregar el contenido de la tabla
+                        $("#tbl_productos").tablesorter({
+                            theme: 'blue',
+                            widgets: ["zebra", "filter"],
+                        }).tablesorterPager({
+                            container: $(".pager")
+                        });
+
+                        var $table = $("#tbl_productos").tablesorter({sortList: [[0,0]]})
+
+                        var resort = true,
+                        callback = function(){ console.log('table updated'); };
+                        $table.trigger("update", [ resort, callback ]);  
+    
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					// Es buena idea manejar errores también
+					console.error("Error en AJAX:", textStatus, errorThrown);
+					swal("Error", "Ocurrió un problema al procesar la solicitud.", "error");
+				},
+				complete: function() {
+					// Oculta el spinner aquí para asegurarte de que se oculte
+					// tanto si la petición fue exitosa como si falló.
+					$("#spinner").hide();
+				}				
+				
+			});	
+
+    }
+    
+}
+
+function fn_ptos_vta(cbo_id,list_pto_venta) {
+    
+    $.ajax({
+        async:	false, 
+        url:	"funciones.php",
+        dataType:"json",
+        type	: 'post',
+        data:  { paso: 'cboPtoventa', cbo_id: cbo_id,tipo: list_pto_venta},									
+        success: function(data){
+            $("#"+list_pto_venta).html(data.salida);	
+        },	
+        error: function (request, status, error) 
+        {
+            alert(request.responseText);
+        }							
+    });	
+}
+
+function fn_reimprimir_venta(id_venta) {
+    $.ajax({
+        async: true, 
+        url: "funciones.php",
+        dataType: "json",
+        type: "post",   
+        data: { paso: "reimprimir_venta", id_venta: id_venta },
+
+        /** ---------------------------------------------------------
+         *  SUCCESS
+         *  ---------------------------------------------------------
+         *  La respuesta del servidor tiene la forma:
+         *
+         *  {
+         *      error      : "",               // cadena vacía si todo OK
+         *      mensaje    : "...",            // opcional
+         *      cliente    : { … },            // datos del cliente
+         *      recibidos  : { … },            // id_venta, id_usu, pto_vta
+         *      arre_totales : { … }           // totalVenta, totalPremios, …
+         *  }
+         *
+         *  Los tres objetos se extraen y se envían a imprimirTicketVenta().
+         *  ------------------------------------------------------- */
+
+
+        success: function (response) {
+            var error = response.error;
+
+            if (error && error.length > 0){
+                swal(error, "", "error");
+                return;
+            }
+
+            var cliente   = response.data.cliente;
+            var recibidos = response.data.recibidos;
+            var totales   = response.data.totales;
+
+            /* ---------------------------------------------------------
+               2️⃣  Mensaje de confirmación al usuario
+               --------------------------------------------------------- */
+            swal('Venta reimpresa', 'La venta ha sido reimpresa correctamente.', 'success')
+                .then(function () {
+                    // Limpiar el campo de búsqueda y devolver el foco
+                    $('#id_venta').val('').focus();
+                });
+
+            /* ---------------------------------------------------------
+               3️⃣  Llamar a la rutina de impresión con los datos
+            --------------------------------------------------------- */
+
+            imprimirTicketVenta(cliente, recibidos, totales);
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
+    }); 
+}
 
 /* -----------------------------------------------------------------
    FUNCIÓN: grabarVenta()
@@ -1468,6 +1677,16 @@ function limpiarCliente() {
     $('#cliente-cedula').focus();
 }
 
+// 1️⃣ Función reutilizable que limpia los campos y oculta los bloques
+function limpiarNumero() {
+    $('.number-input-digit').val('');          // Vaciar los 4 dígitos
+    $('#cfr1').focus();                       // Enfocar el primer campo
+    $('#div_series_disponibles').hide();      // Ocultar series
+    $('.datos-sorteo-row').hide();            // Ocultar datos del sorteo
+
+    //console.log('Campos de número limpiados y bloques ocultados.');
+}
+
 function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
     // Validaciones básicas antes del AJAX
     if (!cod_lot || !num_bil || !num_ser) {
@@ -1519,70 +1738,75 @@ function fn_ltr_fracciones_serie_seleccionada(cod_lot, num_bil, num_ser) {
 }
 
 function fn_ltr_sorteo_activo() {
-    var cod_lot = $('#cboLoterias_ltr').val();
+    const cod_lot = $('#cboLoterias_ltr').val();
     //console.log('blur con valor'+cod_lot);
-    $.ajax({
-        url: "../ventas/funciones.php",
-        dataType: "json",
-        type: "post",
-        data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
-        success: function (data) {
-            var error = data.error;
 
-            if (error.length > 0) {
-                swal(error, "", "error");
-            } else {
-                var arreglo = data.arreglo;
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "../ventas/funciones.php",
+            dataType: "json",
+            type: "post",
+            data: { paso: "ltr_sorteo_activo", cod_lot: cod_lot },
+            success: function (data) {
+                var error = data.error;
 
-                //console.log(arreglo);
+                if (error.length > 0) {
+                    swal(error, "", "error");
+                    reject(error);  
+                    return;
+                } else {
+                    var arreglo = data.arreglo;
 
-                // Actualizar el div con datos del sorteo
-                var datosSorteo = $('.datos-sorteo-row');
-                var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
-                var premioMayorFormateado = premioMayorValor + ' Millones';
-                var fechaSorteo = arreglo.fec_sor ? `<span style=\"color:#007bff;font-size:16px;font-weight:bold;margin-left:10px;\">F.Sorteo: ${arreglo.fec_sor}</span>` : '';
+                    //console.log(arreglo);
 
-                var maxFracc = parseInt(arreglo.fracciones);
-                var currentFracc = maxFracc;
+                    // Actualizar el div con datos del sorteo
+                    var datosSorteo = $('.datos-sorteo-row');
+                    var premioMayorValor = Number(arreglo.vlr_premio_mayor / 1000000).toLocaleString('es-CO');
+                    var premioMayorFormateado = premioMayorValor + ' Millones';
+                    var fechaSorteo = arreglo.fec_sor ? `<span style=\"color:#007bff;font-size:16px;font-weight:bold;margin-left:10px;\">F.Sorteo: ${arreglo.fec_sor}</span>` : '';
 
-                var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
-                var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
+                    var maxFracc = parseInt(arreglo.fracciones);
+                    var currentFracc = maxFracc;
 
-                datosSorteo.html(`
-                    <div class=\"adicionar-line\" style=\"text-align: center; margin-bottom: 10px;\">
-                        <button type=\"button\" id=\"btn-adicionar\" style=\"background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">Adicionar</button>
-                    </div>
-                    <div class=\"sorteo-line\">
-                        Sorteo: <strong>${arreglo.num_sor}</strong> ${fechaSorteo} - Mayor: <strong class=\"premio-mayor-valor\">$${premioMayorFormateado}</strong>
-                        <button type=\"button\" id=\"frac-minus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">-</button>
-                        <strong id=\"current-frac\" data-max=\"${maxFracc}\" style=\"margin: 0 5px; color: #ff0000; font-weight: bold;\">${currentFracc}</strong>
-                        <button type=\"button\" id=\"frac-plus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">+</button>
-                    </div>
-                    <div class=\"precios-line\">
-                        <span class=\"precios-item\">Fracciones: <strong>${arreglo.fracciones}</strong></span>
-                        <span class=\"precios-item\">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
-                        <span class=\"precios-item\">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
-                        <span class=\"precios-item incentivo-item\">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
-                    </div>
-                `);
+                    var nuevoBillete = arreglo.vlr_billete + arreglo.incentive_fractionPrice;
+                    var nuevaFraccion = arreglo.vlr_fraccion + arreglo.incentive_fractionPrice;
 
-                // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
-                $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
+                    datosSorteo.html(`
+                        <div class=\"adicionar-line\" style=\"text-align: center; margin-bottom: 10px;\">
+                            <button type=\"button\" id=\"btn-adicionar\" style=\"background-color: #28a745; color: white; border: 1px solid #28a745; border-radius: 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">Adicionar</button>
+                        </div>
+                        <div class=\"sorteo-line\">
+                            Sorteo: <strong>${arreglo.num_sor}</strong> ${fechaSorteo} - Mayor: <strong class=\"premio-mayor-valor\">$${premioMayorFormateado}</strong>
+                            <button type=\"button\" id=\"frac-minus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">-</button>
+                            <strong id=\"current-frac\" data-max=\"${maxFracc}\" style=\"margin: 0 5px; color: #ff0000; font-weight: bold;\">${currentFracc}</strong>
+                            <button type=\"button\" id=\"frac-plus\" style=\"width: 28px; height: 28px; border-radius: 50%; font-size: 14px; margin: 0 5px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\">+</button>
+                        </div>
+                        <div class=\"precios-line\">
+                            <span class=\"precios-item\">Fracciones: <strong>${arreglo.fracciones}</strong></span>
+                            <span class=\"precios-item\">Billete: <strong>$${nuevoBillete.toLocaleString()}</strong></span>
+                            <span class=\"precios-item\">Fracción: <strong>$${nuevaFraccion.toLocaleString()}</strong></span>
+                            <span class=\"precios-item incentivo-item\">Incentivo x Fracción: <strong>$${arreglo.incentive_fractionPrice.toLocaleString()}</strong></span>
+                        </div>
+                    `);
 
-                // Mostrar .datos-sorteo-row después de generar
-                $('.datos-sorteo-row').show();
+                    // Colocar el div datos-sorteo-row debajo de #div_series_disponibles y arriba de .table-container-scroll
+                    $('.datos-sorteo-row').insertAfter('#div_series_disponibles');
 
-                // Opcional: Actualizar totales en la interfaz si es necesario
-                actualizarTotales();
-            }
-        },
-        error: function (request, status, error) {
-            alert(request.responseText);
-        },
-        complete: function() {
-        // Ocultar el spinner cuando la solicitud se complete
-            $('#spinner_lr_num_bil1').hide();
-        }
+                    // Mostrar .datos-sorteo-row después de generar
+                    $('.datos-sorteo-row').show();
+
+                    // Opcional: Actualizar totales en la interfaz si es necesario
+                    actualizarTotales();
+
+                    resolve(data); 
+                }
+            },
+            error: (req) => {
+                alert(req.responseText);
+                reject(req);
+            },
+            complete: () => $('#spinner_lr_num_bil1').hide()
+        });
     });
 }
 
