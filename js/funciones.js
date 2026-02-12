@@ -100,6 +100,20 @@ function generarArchivosExcel() {
 	tablesToExcel(tablas, nombresHojas, archivo, 'Excel');
 }
 
+function manejarErrorAjaxLottired(request) {
+    var responseText = request && request.responseText ? request.responseText : '';
+    var textoPlano = responseText.replace(/<[^>]*>/g, ' ');
+    var textoNormalizado = textoPlano.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    var esErrorAutorizacion = textoNormalizado.indexOf('no se pudo obtener autorizacion') !== -1;
+
+    if (esErrorAutorizacion) {
+        swal('No se pudo obtener la autorizacion de la plataforma LOTTIRED, por favor informe sobre esta inconsistencia', '', 'warning');
+    } else {
+        alert(responseText);
+    }
+}
 $(document).ready(function(){
 
     $('#num_sor').mask('0000');
@@ -131,7 +145,7 @@ $(document).ready(function(){
             },	
             error: function (request, status, error) 
             {
-                alert(request.responseText);
+                manejarErrorAjaxLottired(request);
             }							
         });			
     });
@@ -202,7 +216,7 @@ $(document).ready(function(){
             },	
             error: function (request, status, error) 
             {
-                alert(request.responseText);
+                manejarErrorAjaxLottired(request);
             }							
         });			
     });
@@ -1802,7 +1816,8 @@ function fn_ltr_sorteo_activo() {
                 }
             },
             error: (req) => {
-                alert(req.responseText);
+                manejarErrorAjaxLottired(req);
+
                 reject(req);
             },
             complete: () => $('#spinner_lr_num_bil1').hide()
@@ -1974,4 +1989,7 @@ async function imprimirTicketVenta(cliente, recibidos, totales) {
         // swal("Error", "Ocurrió un error durante la impresión.", "error");
     }
 }
+
+
+
 
