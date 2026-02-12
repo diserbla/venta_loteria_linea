@@ -1,0 +1,33 @@
+# === Logs y Archivos Temporales ===
+# Ignora todos los archivos de registro para evitar bloqueos de checkout
+*.log
+debug.log
+error.log
+
+# === Archivos Comprimidos ===
+# No se deben versionar respaldos manuales o paquetes pesados
+*.rar
+*.zip
+*.7z
+*.tar.gz
+
+# === Metadatos del Sistema Operativo ===
+# Archivos invisibles que generan Windows y macOS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Configuraciones de IDEs / Editores ===
+# Carpetas de configuración personal de VS Code o PHPStorm
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Dependencias de Terceros ===
+# Si usas Composer, no se debe subir la carpeta de librerías
+vendor/
+
+# === Otros ===
+# Archivos de configuración local (ajustar según sea necesario)
+.env
