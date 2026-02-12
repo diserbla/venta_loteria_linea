@@ -134,22 +134,36 @@ $(document).ready(function(){
         monthsToShow: 1
     }); 	
 
-    $('#cboLoterias_ltr').click(function(){		
+    $('#cboLoterias_ltr').click(function(e){
+        e.preventDefault();
+
+        var triggerLoterias = $(this);
+        if (triggerLoterias.prop('disabled')) {
+            return;
+        }
 
         $.ajax({
-            async:	false, 
-            url:	"../ventas/funciones.php",
+            async: true,
+            url: "../ventas/funciones.php",
             dataType:"json",
-            type	: 'post',
-            data:  { paso: 'cboLoterias_ltr'},									
+            type: 'post',
+            data:  { paso: 'cboLoterias_ltr'},
+            beforeSend: function() {
+                triggerLoterias.prop('disabled', true);
+                $('#spinner').show();
+            },
             success: function(data){
-                $("#list_loterias_ltr").html(data.salida);	
-            },	
-            error: function (request, status, error) 
+                $("#list_loterias_ltr").html(data.salida);
+            },
+            error: function (request, status, error)
             {
                 manejarErrorAjaxLottired(request);
-            }							
-        });			
+            },
+            complete: function() {
+                triggerLoterias.prop('disabled', false);
+                $('#spinner').hide();
+            }
+        });
     });
 
    $('#cboLoterias').click(function(){		
@@ -664,13 +678,24 @@ $(document).ready(function(){
         swal('Reservas liberadas', 'Todos los registros han sido cancelados.', 'info');
     });
 
-    // Evento click para el botón genera_numero
-    $('#genera_numero').click(async function() {
+    // Evento click para el bot�n genera_numero
+    $('#genera_numero').click(async function(e) {
+        e.preventDefault();
+
+        var btnGeneraNumero = $(this);
+        if (btnGeneraNumero.prop('disabled')) {
+            return;
+        }
+
+        var htmlOriginalBoton = '<i class="fa fa-random"></i>';
+        btnGeneraNumero.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+        $('#spinner').show();
+
         try {
-            await fn_ltr_sorteo_activo();   // <-- Espera a que termine sin error
+            await fn_ltr_sorteo_activo();
 
             const cboLoterias_ltr = $('#cboLoterias_ltr').val();
-            const numFracciones   = parseInt($('#current-frac').text()) || 1;
+            const numFracciones = parseInt($('#current-frac').text()) || 1;
 
             $.ajax({
                 async: true,
@@ -678,12 +703,9 @@ $(document).ready(function(){
                 dataType: "json",
                 type: "post",
                 data: { paso: "ltr_genera_numero", cod_lot: cboLoterias_ltr, nro_fracciones: numFracciones },
-                beforeSend: function () {
-                    $("#spinner").show();
-                },
-                success: function (data) {
+                success: function(data) {
                     var error = data.error;
-                    var fracciones 			   = data.fracciones;
+                    var fracciones = data.fracciones;
 
                     if (error.length > 0) {
                         swal(error, "", "error");
@@ -695,19 +717,22 @@ $(document).ready(function(){
                         $('#cfr3').val(arreglo.lr_num_bil3);
                         $('#cfr4').val(arreglo.lr_num_bil4);
 
-                        fn_series_disponibles(cboLoterias_ltr, arreglo.lr_num_bil1, arreglo.lr_num_bil2, arreglo.lr_num_bil3,arreglo.lr_num_bil4, fracciones);
-                        
+                        fn_series_disponibles(cboLoterias_ltr, arreglo.lr_num_bil1, arreglo.lr_num_bil2, arreglo.lr_num_bil3, arreglo.lr_num_bil4, fracciones);
                     }
                 },
-                error: function (request, status, error) {
-                    alert(request.responseText);
+                error: function(request, status, error) {
+                    manejarErrorAjaxLottired(request);
+                },
+                complete: function() {
+                    $('#spinner').hide();
+                    btnGeneraNumero.prop('disabled', false).html(htmlOriginalBoton);
                 }
             });
         } catch (err) {
-                console.warn('Abortado porque hubo error en sorteo activo:', err);
-                // No se ejecuta el resto del código
+            console.warn('Abortado porque hubo error en sorteo activo:', err);
+            $('#spinner').hide();
+            btnGeneraNumero.prop('disabled', false).html(htmlOriginalBoton);
         }
-
     });
 
     //premios de loteria
