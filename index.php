@@ -561,9 +561,13 @@
 															<button id="rep_excell" class="btn btn-success fa fa-file-excel-o fa-lg" onclick="generarArchivosExcel()">
 															</button>
 														</div>														
+														
+														<div class="btn-group" role="group">
+															<button id="rep_print" class="btn btn-warning fa fa-print fa-lg" title="Imprimir reporte"></button>
+														</div>
 
 														<div class="btn-group" role="group">
-															<button class="btn btn-danger fa fa-ban fa-lg cancelar" onClick="cancelar()"></button>
+															<button type="button" class="btn btn-danger fa fa-ban fa-lg cancelar" onClick="cancelar(event)"></button>
 														</div>                          
 													</div>                          
 												</div> 
@@ -1304,3 +1308,4 @@
 		return $etiqueta . str_repeat(' ', max(1, $espacios)) . $valor_formateado;
 	}
 ?>
+

@@ -74,12 +74,10 @@ function setClienteCamposDisabled(disabled) {
     $('#cliente-email').prop('disabled', disabled);
 }
 
-/*
-function cancelar() {
-    console.log('Cancelando y redirigiendo a index.php');
-    //location.href="index.php";
+function cancelar(e) {
+    if (e) e.preventDefault();
+    location.href = "index.php";
 }
-*/
 
 function generarArchivosExcel() {
 	var fechaActual = new Date();
@@ -107,13 +105,17 @@ function manejarErrorAjaxLottired(request) {
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '');
     var esErrorAutorizacion = textoNormalizado.indexOf('no se pudo obtener autorizacion') !== -1;
+    var esErrorConexionServicio = textoNormalizado.indexOf('no se pudo conectar con el servicio') !== -1;
 
-    if (esErrorAutorizacion) {
+    if (esErrorConexionServicio) {
+        swal('No se pudo conectar con el servicio, por favor informe sobre esta inconsistencia.', '', 'warning');
+    } else if (esErrorAutorizacion) {
         swal('No se pudo obtener la autorizacion de la plataforma LOTTIRED, por favor informe sobre esta inconsistencia', '', 'warning');
     } else {
         alert(responseText);
     }
 }
+
 $(document).ready(function(){
 
     $('#num_sor').mask('0000');
@@ -179,6 +181,62 @@ $(document).ready(function(){
 		swal('SE GENERO EL ARCHIVO EN LA CARPETA DE DESCARGAS !!', "", "success");
 		e.preventDefault();
 	});	
+
+    $('#rep_print').click(function(e) {
+        e.preventDefault();
+
+        var tabla = $('#tbl_detalle');
+        var filasDatos = tabla.find('tr').filter(function() {
+            return $(this).find('td').length > 0;
+        });
+
+        if (filasDatos.length === 0) {
+            swal('Sin registros', 'La tabla de detalle no tiene registros para procesar.', 'warning');
+            return;
+        }
+
+        var indiceValor = -1;
+        var indiceValidoPremio = -1;
+
+        tabla.find('tr').first().find('th').each(function(index) {
+            var encabezado = $(this).text().trim().toLowerCase();
+            if (encabezado === 'valor') {
+                indiceValor = index;
+            }
+            if (encabezado === 'valido premio') {
+                indiceValidoPremio = index;
+            }
+        });
+
+        if (indiceValor === -1 || indiceValidoPremio === -1) {
+            swal('Columnas no encontradas', 'No fue posible ubicar las columnas Valor y/o Valido Premio en tbl_detalle.', 'error');
+            return;
+        }
+
+        var parseNumero = function(texto) {
+            var limpio = (texto || '').toString().trim()
+                .replace(/\./g, '')
+                .replace(',', '.')
+                .replace(/[^0-9.-]/g, '');
+            var numero = parseFloat(limpio);
+            return isNaN(numero) ? 0 : numero;
+        };
+
+        var sumaValor = 0;
+        var sumaValidoPremio = 0;
+
+        filasDatos.each(function() {
+            var celdas = $(this).find('td');
+            sumaValor += parseNumero(celdas.eq(indiceValor).text());
+            sumaValidoPremio += parseNumero(celdas.eq(indiceValidoPremio).text());
+        });
+
+        console.log('Totales tbl_detalle:', {
+            sumaValor: sumaValor,
+            sumaValidoPremio: sumaValidoPremio,
+            filasProcesadas: filasDatos.length
+        });
+    });
 
     //$('#cboLoterias_ltr').change(async function(){ // <--- ¡Añadir 'async' aquí!
     $(document).on('change', '#cboLoterias_ltr', async function () {
