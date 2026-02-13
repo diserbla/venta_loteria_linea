@@ -199,6 +199,14 @@ $(document).ready(function(){
     $('#rep_print').click(function(e) {
         e.preventDefault();
 
+        var id_usu  = $('#id_usu').val().trim();
+        var pto_vta = $('#pto_vta').val().trim();
+
+        if (!id_usu || !pto_vta) {
+            swal('Falta información', 'No llegaron id_usu o pto_vta.', 'warning');
+            return;
+        }
+ 
         var tabla = $('#tbl_detalle');
         var filasDatos = tabla.find('tr').filter(function() {
             return $(this).find('td').length > 0;
@@ -250,6 +258,10 @@ $(document).ready(function(){
             sumaValidoPremio: sumaValidoPremio,
             filasProcesadas: filasDatos.length
         });
+
+        imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta);
+
+
     });
 
     //$('#cboLoterias_ltr').change(async function(){ // <--- ¡Añadir 'async' aquí!
@@ -678,7 +690,7 @@ $(document).ready(function(){
         swal('Reservas liberadas', 'Todos los registros han sido cancelados.', 'info');
     });
 
-    // Evento click para el bot�n genera_numero
+    // Evento click para el bot�n genera_numero
     $('#genera_numero').click(async function(e) {
         e.preventDefault();
 
@@ -2047,6 +2059,39 @@ function fn_valida_premio(barcode) {
     
     return true;
 }
+
+async function imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta) {
+    const params = new URLSearchParams({
+        total_venta: sumaValor,
+        total_premios: sumaValidoPremio,
+        id_usu: id_usu,
+        pto_vta: pto_vta
+    }).toString();
+
+    try {
+        await jsWebClientPrint.print(params);
+    } catch (error) {
+    }
+}
+
+async function imprimirTicketTotales123(sumaValor, sumaValidoPremio) {
+ 
+   const params = new URLSearchParams({
+        total_venta:  sumaValor,
+        total_premio: sumaValidoPremio
+    }).toString();
+
+    try {
+        // 1. Enviar solicitud de impresión
+        await jsWebClientPrint.print(params);
+        // console.log('Solicitud de impresión enviada.');
+    } catch (error) {
+        // console.error('Error en el proceso de impresión o recuperación:', error);
+        // swal("Error", "Ocurrió un error durante la impresión.", "error");
+    }    
+
+}
+
 
 // -------------------------------------------------------------
 //  Función de impresión (debe ser async y sin redeclarar parámetros)

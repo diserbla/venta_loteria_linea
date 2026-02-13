@@ -686,411 +686,442 @@
 		$recibidosJson = isset($qs['recibidos']) ? urldecode($qs['recibidos']) : '';
 		$totalesJson   = isset($qs['totales'])   ? urldecode($qs['totales'])   : '';
 		
-		$arre_cliente   = json_decode($clienteJson, true);
-		$arre_recibidos = json_decode($recibidosJson, true);
-		$arre_totales   = json_decode($totalesJson, true);
-
-		/*
-		// -----------------------------------------------------------------
-		// 5️⃣  Registrar los tres arreglos en debug.log (para depuración)
-		// -----------------------------------------------------------------
-		$logFile = 'C:/mercapos/htdocs/formas/venta_terceros/debug.log';
-
-		// Formateamos la salida para que sea legible en el log
-		$logMsg  = "=== DEBUG - ARRAYS RECIBIDOS ===\n";
-		$logMsg .= "Cliente   : " . print_r($arre_cliente, true)   . "\n";
-		$logMsg .= "Recibidos : " . print_r($arre_recibidos, true) . "\n";
-		$logMsg .= "Totales   : " . print_r($arre_totales,   true) . "\n";
-		$logMsg .= "-------------------------------\n";
-
-		// error_log escribe en el archivo indicado (crea el archivo si no existe)
-		error_log($logMsg, 3, $logFile);
-		*/
-
-		// Si alguna decodificación falla, abortamos.
-		if (json_last_error() !== JSON_ERROR_NONE) {
-			error_log('Error al decodificar JSON en imprimir()', 3,
-					'C:/mercapos/htdocs/formas/pruebas/debug.log');
-			return $retorna;
-		}
-	
-		// ---------------------------------------------------------
-		// 5️⃣  Construir los comandos ESC/POS (ejemplo básico)
-		// ---------------------------------------------------------
+		//Construir los comandos ESC/POS 
 		$esc      = '0x1B'; // ESC byte en notación hexadecimal
 		$newLine  = '0x0A'; // LF byte en notación hexadecimal
 		$cmds     = $esc . '@'; // Reset de la impresora (ESC @)
 
-		$premios = '0';
-		$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente,$premios);
+		//si se cumple esta condicion es porque vamos a imprirmir totales
+		if (trim($clienteJson) === '' || trim($recibidosJson) === '' || trim($totalesJson) === '') {
 
-		if (is_array($arre_totales)) {
-			// Salto de línea antes de los totales
-			$cmds .= $newLine;
+			$total_venta   = isset($qs['total_venta'])   ? $qs['total_venta']   : 0;
+			$total_premios = isset($qs['total_premios']) ? $qs['total_premios'] : 0;
+			$id_usu        = isset($qs['id_usu'])        ? $qs['id_usu']        : '';
+			$pto_vta       = isset($qs['pto_vta']) ? (int)$qs['pto_vta'] : 0;
 
-			// 1️⃣  Separador inicial
-			//$cmds .= str_repeat('-', 46);
-			//$cmds .= $newLine;
+			error_log(
+				"total_venta: " . $total_venta . "\n" .
+				"total_premios: " . $total_premios . "\n" .
+				"id_usu: " . $id_usu . "\n" .
+				"pto_vta: " . $pto_vta . "\n",
+				3,
+				__DIR__ . '/debug.log'
+			);
 
-			// Agregar título centrado antes de los totales
-			$cmds .= $esc . 'a' . chr(1); // Centrado
+			$cmds .= generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $pto_vta);
 
-			// Cambiar a fuente B y activar negrilla
-			$cmds .= $esc . 'M' . chr(1); // Fuente B
-			$cmds .= $esc . 'E' . chr(1); // Negrilla
+		} else {
 
-			// Aumentar tamaño de letra SOLO para este texto (doble alto)
-			$cmds .= chr(29) . '!' . chr(1); // Doble alto
-			$cmds .= "RESUMEN DE VENTA";
-			$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal
-			$cmds .= $newLine;
-			// Volver a fuente A y desactivar negrilla para el resto
-			$cmds .= $esc . 'M' . chr(0); // Fuente A
-			$cmds .= $esc . 'E' . chr(0); // Negrilla off
-			// Volver a alinear a la izquierda para el resto
-			//$cmds .= $esc . 'a' . chr(0); // Izquierda
-			$cmds .= str_repeat('-', 46);
-			$cmds .= $newLine;
+			$arre_cliente   = json_decode($clienteJson, true);
+			$arre_recibidos = json_decode($recibidosJson, true);
+			$arre_totales   = json_decode($totalesJson, true);
 
-			// 2️⃣  Total de la venta
-			$cmds .= formatear_linea_total("TOTAL VENTA:", $arre_totales['totalVenta']);
-			$cmds .= $newLine;
+			/*
+			// -----------------------------------------------------------------
+			// 5️⃣  Registrar los tres arreglos en debug.log (para depuración)
+			// -----------------------------------------------------------------
+			$logFile = 'C:/mercapos/htdocs/formas/venta_terceros/debug.log';
 
-			// 3️⃣  Total de premios
-			$cmds .= formatear_linea_total("TOTAL PREMIOS:", $arre_totales['totalPremios']);
-			$cmds .= $newLine;
+			// Formateamos la salida para que sea legible en el log
+			$logMsg  = "=== DEBUG - ARRAYS RECIBIDOS ===\n";
+			$logMsg .= "Cliente   : " . print_r($arre_cliente, true)   . "\n";
+			$logMsg .= "Recibidos : " . print_r($arre_recibidos, true) . "\n";
+			$logMsg .= "Totales   : " . print_r($arre_totales,   true) . "\n";
+			$logMsg .= "-------------------------------\n";
 
-			// 4️⃣  Separador visual
-			$cmds .= str_repeat('-', 46);
-			$cmds .= $newLine;
+			// error_log escribe en el archivo indicado (crea el archivo si no existe)
+			error_log($logMsg, 3, $logFile);
+			*/
 
-			// 5️⃣  Valor a pagar
-			$cmds .= formatear_linea_total("VALOR A PAGAR:", $arre_totales['valorPagar']);
-			$cmds .= $newLine;
-
-			// 6️⃣  Efectivo entregado
-			$cmds .= formatear_linea_total("EFECTIVO:", $arre_totales['efectivo']);
-			$cmds .= $newLine;
-
-			// 7️⃣  Cambio (efectivo - valor a pagar)
-			$cambio = $arre_totales['efectivo'] - $arre_totales['valorPagar'];
-			$cmds .= formatear_linea_total("CAMBIO:", $cambio);
-			$cmds .= $newLine;
-
-			// 8️⃣  Separador final
-			$cmds .= str_repeat('-', 46);
-			$cmds .= $newLine;
-		}
-
-		$id_venta = isset($arre_recibidos['id_venta']) ? $arre_recibidos['id_venta'] : 0;
+			// Si alguna decodificación falla, abortamos.
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				error_log('Error al decodificar JSON en imprimir()', 3,
+						'C:/mercapos/htdocs/formas/pruebas/debug.log');
+				return $retorna;
+			}
 		
-		$sql = "SELECT mov.*, 
-				mae.nombre_corto AS Loteria,
-				cli.nombres||' '||cli.apellidos AS cliente
-				FROM movlottired mov
-				INNER JOIN maelote mae ON mov.cod_lot = mae.cod_lot
-				LEFT JOIN clientes cli ON mov.cedula = cli.cedula
-				WHERE mov.id_venta = :id_venta OR mov.id_venta_premio = :id_venta";
+			// ---------------------------------------------------------
+			// 5️⃣  Construir los comandos ESC/POS (ejemplo básico)
+			// ---------------------------------------------------------
 
-		$stm = $db->prepare($sql);	
-		$stm->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
-		$stm->execute();
-		$arre = $stm->fetchAll(PDO::FETCH_ASSOC);
-		$stm->closeCursor();
+			/*
+			$esc      = '0x1B'; // ESC byte en notación hexadecimal
+			$newLine  = '0x0A'; // LF byte en notación hexadecimal
+			$cmds     = $esc . '@'; // Reset de la impresora (ESC @)
+			*/
 
-		$esc = chr(27);
-		$newLine = "\n";
+			$premios = '0';
+			$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente,$premios);
 
-		// Filtrar solo los registros donde 'tipo' es igual a 'VENTA'
-		$arre_ventas = array_filter($arre, function($item) {
-			return isset($item['tipo']) && $item['tipo'] === 'VENTA';
-		});
-
-		// Si quieres reindexar el array (opcional)
-		$arre_ventas = array_values($arre_ventas);
-
-		if (!empty($arre_ventas)) {
-			//require_once 'funciones_lottired.php';
-
-			foreach($arre_ventas as $row) 						
-			{
-			
+			if (is_array($arre_totales)) {
+				// Salto de línea antes de los totales
 				$cmds .= $newLine;
+
+				// 1️⃣  Separador inicial
+				//$cmds .= str_repeat('-', 46);
+				//$cmds .= $newLine;
+
+				// Agregar título centrado antes de los totales
+				$cmds .= $esc . 'a' . chr(1); // Centrado
+
 				// Cambiar a fuente B y activar negrilla
 				$cmds .= $esc . 'M' . chr(1); // Fuente B
 				$cmds .= $esc . 'E' . chr(1); // Negrilla
 
-				// Aumentar tamaño de letra SOLO para este texto
+				// Aumentar tamaño de letra SOLO para este texto (doble alto)
 				$cmds .= chr(29) . '!' . chr(1); // Doble alto
-				$cmds .= "VENTA DE LOTERIA EN LINEA";
+				$cmds .= "RESUMEN DE VENTA";
 				$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal
 				$cmds .= $newLine;
 				// Volver a fuente A y desactivar negrilla para el resto
 				$cmds .= $esc . 'M' . chr(0); // Fuente A
 				$cmds .= $esc . 'E' . chr(0); // Negrilla off
-
 				// Volver a alinear a la izquierda para el resto
-				$cmds .= $esc . 'a' . chr(0); // Izquierda
-				$cmds .= "----------------------------------------------";
-				$cmds .= $newLine;
-				$cmds .= $esc . 'E' . chr(1); // Activar negrilla
-				$cmds .= 'Codigo: '.$row['barcode'].' '.$row['loteria'];
-				$cmds .= $esc . 'E' . chr(0); // Desactivar negrilla
-				$cmds .= $newLine;
-				$cmds .= "----------------------------------------------";
-
-				$cmds .= $newLine;
-				$cmds .= "Sorteo   Numero   Serie   Fracciones     Valor";
-				$cmds .= $newLine;												
-				$cmds .= "----------------------------------------------"; //esta linea mide 33				
-
-				// Llamar a la función fn_consulta_venta_lottired
-				$resultado = fn_consulta_venta_lottired($row['id_venta']); // Asegúrate de que 'id_venta' sea el campo correcto
-
-				// Procesar los datos de la venta retornados por la función
-				$arre_venta = $resultado['arre_venta'];
-	
-				// Verificar que $arre_venta y $arre_venta['soldNumbers'] existan y sean un array
-				if (isset($arre_venta['soldNumbers']) && is_array($arre_venta['soldNumbers'])) {
-					// Filtrar los datos
-
-					$filtered = array_filter($arre_venta['soldNumbers'], function ($item) use ($row) {
-						return isset($item['barcode']) && isset($row['barcode']) && $item['barcode'] === $row['barcode'];
-					});
-
-					// Verificar si hay elementos en el array filtrado
-					if (!empty($filtered)) {
-						// Obtener el primer elemento del array filtrado
-						$firstItem = reset($filtered);
-
-						// Extraer los valores de drawDate y drawJackpot
-						$drawDate = isset($firstItem['drawDate']) ? $firstItem['drawDate'] : null;
-						$drawJackpot = isset($firstItem['drawJackpot']) ? $firstItem['drawJackpot'] : null;
-
-
-						$formattedDate = date('Y-m-d', strtotime($drawDate)); 
-						$formattedJackpot = number_format($drawJackpot, 0, ',', '.');
-					}
-				}								
-
-				$cmds .= $newLine;
-				$cmds .= $row['num_sor'].'      '.$row['num_bil'].'     '.$row['num_ser'].'        '.$row['fracciones'].'         '.number_format($row['vlr_fracciones']);
-				$cmds .= $newLine;
+				//$cmds .= $esc . 'a' . chr(0); // Izquierda
+				$cmds .= str_repeat('-', 46);
 				$cmds .= $newLine;
 
-				$cmds .= $esc . 'M' . chr(1); // Cambiar a Fuente B
-				$cmds .= $esc . chr(4); // Activar Cursiva (Itálica) - Puede no ser soportado por todas las impresoras
-
-				// Activar negrilla y tamaño más grande para la fecha y premio mayor
-				$cmds .= $esc . 'E' . chr(1); // Activar negrilla
-				//$cmds .= chr(29) . '!' . chr(16); // Ancho normal, doble alto	
-				$cmds .= chr(29) . '!' . chr(1); // Doble altura (GS ! 1)
-				$cmds .= 'Fecha Sorteo: '.$formattedDate.'     Premio Mayor: $'.$formattedJackpot;
-				$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal (GS ! 0)
-				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
-
-				$cmds .= $esc . chr(5); // Desactivar Cursiva (Itálica)
-				$cmds .= $esc . 'M' . chr(0); // Volver a Fuente A
-
+				// 2️⃣  Total de la venta
+				$cmds .= formatear_linea_total("TOTAL VENTA:", $arre_totales['totalVenta']);
 				$cmds .= $newLine;
 
-				//numero anexo
-				if (!empty($filtered) && isset($filtered[0]['includesAnnexNumber']) && $filtered[0]['includesAnnexNumber'] === true) {
+				// 3️⃣  Total de premios
+				$cmds .= formatear_linea_total("TOTAL PREMIOS:", $arre_totales['totalPremios']);
+				$cmds .= $newLine;
+
+				// 4️⃣  Separador visual
+				$cmds .= str_repeat('-', 46);
+				$cmds .= $newLine;
+
+				// 5️⃣  Valor a pagar
+				$cmds .= formatear_linea_total("VALOR A PAGAR:", $arre_totales['valorPagar']);
+				$cmds .= $newLine;
+
+				// 6️⃣  Efectivo entregado
+				$cmds .= formatear_linea_total("EFECTIVO:", $arre_totales['efectivo']);
+				$cmds .= $newLine;
+
+				// 7️⃣  Cambio (efectivo - valor a pagar)
+				$cambio = $arre_totales['efectivo'] - $arre_totales['valorPagar'];
+				$cmds .= formatear_linea_total("CAMBIO:", $cambio);
+				$cmds .= $newLine;
+
+				// 8️⃣  Separador final
+				$cmds .= str_repeat('-', 46);
+				$cmds .= $newLine;
+			}
+
+			$id_venta = isset($arre_recibidos['id_venta']) ? $arre_recibidos['id_venta'] : 0;
+			
+			$sql = "SELECT mov.*, 
+					mae.nombre_corto AS Loteria,
+					cli.nombres||' '||cli.apellidos AS cliente
+					FROM movlottired mov
+					INNER JOIN maelote mae ON mov.cod_lot = mae.cod_lot
+					LEFT JOIN clientes cli ON mov.cedula = cli.cedula
+					WHERE mov.id_venta = :id_venta OR mov.id_venta_premio = :id_venta";
+
+			$stm = $db->prepare($sql);	
+			$stm->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
+			$stm->execute();
+			$arre = $stm->fetchAll(PDO::FETCH_ASSOC);
+			$stm->closeCursor();
+
+			$esc = chr(27);
+			$newLine = "\n";
+
+			// Filtrar solo los registros donde 'tipo' es igual a 'VENTA'
+			$arre_ventas = array_filter($arre, function($item) {
+				return isset($item['tipo']) && $item['tipo'] === 'VENTA';
+			});
+
+			// Si quieres reindexar el array (opcional)
+			$arre_ventas = array_values($arre_ventas);
+
+			if (!empty($arre_ventas)) {
+				//require_once 'funciones_lottired.php';
+
+				foreach($arre_ventas as $row) 						
+				{
+				
+					$cmds .= $newLine;
+					// Cambiar a fuente B y activar negrilla
+					$cmds .= $esc . 'M' . chr(1); // Fuente B
+					$cmds .= $esc . 'E' . chr(1); // Negrilla
+
+					// Aumentar tamaño de letra SOLO para este texto
+					$cmds .= chr(29) . '!' . chr(1); // Doble alto
+					$cmds .= "VENTA DE LOTERIA EN LINEA";
+					$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal
+					$cmds .= $newLine;
+					// Volver a fuente A y desactivar negrilla para el resto
+					$cmds .= $esc . 'M' . chr(0); // Fuente A
+					$cmds .= $esc . 'E' . chr(0); // Negrilla off
+
+					// Volver a alinear a la izquierda para el resto
+					$cmds .= $esc . 'a' . chr(0); // Izquierda
 					$cmds .= "----------------------------------------------";
 					$cmds .= $newLine;
-					$cmds .= $esc . 'E' . chr(1);
-					$cmds .= "Anexo No: ".$filtered[0]['annexNumber']['number'];
+					$cmds .= $esc . 'E' . chr(1); // Activar negrilla
+					$cmds .= 'Codigo: '.$row['barcode'].' '.$row['loteria'];
+					$cmds .= $esc . 'E' . chr(0); // Desactivar negrilla
 					$cmds .= $newLine;
-					$cmds .= "Detalle: ".$filtered[0]['annexNumber']['description'];
-					$cmds .= $esc . 'E' . chr(0);
-					$cmds .= $newLine;
-				}
-
-				//promotional
-				if (!empty($filtered) && isset($filtered[0]['promotional']['winner']) && $filtered[0]['promotional']['winner'] === true) {
 					$cmds .= "----------------------------------------------";
+
 					$cmds .= $newLine;
-					//$cmds .= $esc . 'E' . chr(1); // Activa negrita
-					// Activar estilos y centrado para el título
-					$cmds .= $esc . '!' . chr(24); // Activa doble altura y se asegura que la negrita también esté.
-					$cmds .= $esc . 'a' . chr(1);  // <<<--- AÑADIDO: Activa la alineación centrada
-					$cmds .= "G A N A S T E  P R E M I O";
-					$cmds .= $esc . '!' . chr(0);  // Desactiva doble altura y negrita
+					$cmds .= "Sorteo   Numero   Serie   Fracciones     Valor";
+					$cmds .= $newLine;												
+					$cmds .= "----------------------------------------------"; //esta linea mide 33				
+
+					// Llamar a la función fn_consulta_venta_lottired
+					$resultado = fn_consulta_venta_lottired($row['id_venta']); // Asegúrate de que 'id_venta' sea el campo correcto
+
+					// Procesar los datos de la venta retornados por la función
+					$arre_venta = $resultado['arre_venta'];
+		
+					// Verificar que $arre_venta y $arre_venta['soldNumbers'] existan y sean un array
+					if (isset($arre_venta['soldNumbers']) && is_array($arre_venta['soldNumbers'])) {
+						// Filtrar los datos
+
+						$filtered = array_filter($arre_venta['soldNumbers'], function ($item) use ($row) {
+							return isset($item['barcode']) && isset($row['barcode']) && $item['barcode'] === $row['barcode'];
+						});
+
+						// Verificar si hay elementos en el array filtrado
+						if (!empty($filtered)) {
+							// Obtener el primer elemento del array filtrado
+							$firstItem = reset($filtered);
+
+							// Extraer los valores de drawDate y drawJackpot
+							$drawDate = isset($firstItem['drawDate']) ? $firstItem['drawDate'] : null;
+							$drawJackpot = isset($firstItem['drawJackpot']) ? $firstItem['drawJackpot'] : null;
+
+
+							$formattedDate = date('Y-m-d', strtotime($drawDate)); 
+							$formattedJackpot = number_format($drawJackpot, 0, ',', '.');
+						}
+					}								
+
+					$cmds .= $newLine;
+					$cmds .= $row['num_sor'].'      '.$row['num_bil'].'     '.$row['num_ser'].'        '.$row['fracciones'].'         '.number_format($row['vlr_fracciones']);
 					$cmds .= $newLine;
 					$cmds .= $newLine;
-					$cmds .= $esc . 'E' . chr(1); // Negrilla OFF
-					$cmds .= $esc . 'a' . chr(0);  // <<<--- AÑADIDO: Desactiva el centrado (vuelve a alineación izquierda)
-					//$cmds .= "Premio: ".$filtered[0]['promotional']['prizeDescription'];
-					$cmds .= "Premio: ".$firstItem['promotional']['prizeDescription'][0];
+
+					$cmds .= $esc . 'M' . chr(1); // Cambiar a Fuente B
+					$cmds .= $esc . chr(4); // Activar Cursiva (Itálica) - Puede no ser soportado por todas las impresoras
+
+					// Activar negrilla y tamaño más grande para la fecha y premio mayor
+					$cmds .= $esc . 'E' . chr(1); // Activar negrilla
+					//$cmds .= chr(29) . '!' . chr(16); // Ancho normal, doble alto	
+					$cmds .= chr(29) . '!' . chr(1); // Doble altura (GS ! 1)
+					$cmds .= 'Fecha Sorteo: '.$formattedDate.'     Premio Mayor: $'.$formattedJackpot;
+					$cmds .= chr(29) . '!' . chr(0); // Volver a tamaño normal (GS ! 0)
+					$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+
+					$cmds .= $esc . chr(5); // Desactivar Cursiva (Itálica)
+					$cmds .= $esc . 'M' . chr(0); // Volver a Fuente A
+
 					$cmds .= $newLine;
-					$cmds .= "Cantidad de Premios: ".$filtered[0]['promotional']['prizeQuantity'];
-					$cmds .= $newLine;
-					if (!empty($filtered[0]['promotional']['replacementLottery'])) {
-						$cmds .= "Loteria Recambio: ".$filtered[0]['promotional']['replacementLottery'];
+
+					//numero anexo
+					if (!empty($filtered) && isset($filtered[0]['includesAnnexNumber']) && $filtered[0]['includesAnnexNumber'] === true) {
+						$cmds .= "----------------------------------------------";
+						$cmds .= $newLine;
+						$cmds .= $esc . 'E' . chr(1);
+						$cmds .= "Anexo No: ".$filtered[0]['annexNumber']['number'];
+						$cmds .= $newLine;
+						$cmds .= "Detalle: ".$filtered[0]['annexNumber']['description'];
+						$cmds .= $esc . 'E' . chr(0);
 						$cmds .= $newLine;
 					}
-					$cmds .= "Contrasena: ".$filtered[0]['promotional']['prizePasswordEncrypt'];
-					$cmds .= $esc . 'E' . chr(0);
-					$cmds .= $newLine;
+
+					//promotional
+					if (!empty($filtered) && isset($filtered[0]['promotional']['winner']) && $filtered[0]['promotional']['winner'] === true) {
+						$cmds .= "----------------------------------------------";
+						$cmds .= $newLine;
+						//$cmds .= $esc . 'E' . chr(1); // Activa negrita
+						// Activar estilos y centrado para el título
+						$cmds .= $esc . '!' . chr(24); // Activa doble altura y se asegura que la negrita también esté.
+						$cmds .= $esc . 'a' . chr(1);  // <<<--- AÑADIDO: Activa la alineación centrada
+						$cmds .= "G A N A S T E  P R E M I O";
+						$cmds .= $esc . '!' . chr(0);  // Desactiva doble altura y negrita
+						$cmds .= $newLine;
+						$cmds .= $newLine;
+						$cmds .= $esc . 'E' . chr(1); // Negrilla OFF
+						$cmds .= $esc . 'a' . chr(0);  // <<<--- AÑADIDO: Desactiva el centrado (vuelve a alineación izquierda)
+						//$cmds .= "Premio: ".$filtered[0]['promotional']['prizeDescription'];
+						$cmds .= "Premio: ".$firstItem['promotional']['prizeDescription'][0];
+						$cmds .= $newLine;
+						$cmds .= "Cantidad de Premios: ".$filtered[0]['promotional']['prizeQuantity'];
+						$cmds .= $newLine;
+						if (!empty($filtered[0]['promotional']['replacementLottery'])) {
+							$cmds .= "Loteria Recambio: ".$filtered[0]['promotional']['replacementLottery'];
+							$cmds .= $newLine;
+						}
+						$cmds .= "Contrasena: ".$filtered[0]['promotional']['prizePasswordEncrypt'];
+						$cmds .= $esc . 'E' . chr(0);
+						$cmds .= $newLine;
+					}
 				}
+				$cmds .= "----------------------------------------------";
+				//$cmds .= $newLine;
 			}
-			$cmds .= "----------------------------------------------";
-			//$cmds .= $newLine;
-		}
 
-		//2025-may-22
-		// Filtrar solo los registros donde 'tipo' es igual a 'PREMIO'
-		$arre_premios = array_filter($arre, function($item) {
-			return isset($item['tipo']) && $item['tipo'] === 'PREMIO';
-		});
+			//2025-may-22
+			// Filtrar solo los registros donde 'tipo' es igual a 'PREMIO'
+			$arre_premios = array_filter($arre, function($item) {
+				return isset($item['tipo']) && $item['tipo'] === 'PREMIO';
+			});
 
-		// Si quieres reindexar el array (opcional)
-		$arre_premios = array_values($arre_premios);
+			// Si quieres reindexar el array (opcional)
+			$arre_premios = array_values($arre_premios);
 
-		// Llamar a la nueva función para generar los comandos de la sección de premios Lottired
-		$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);						
+			// Llamar a la nueva función para generar los comandos de la sección de premios Lottired
+			$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);						
 
-		//2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
-		if (!empty($arre_premios)) {
+			//2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
+			if (!empty($arre_premios)) {
 
-			$cmds .= $newLine;
-			$cmds .= $newLine;
-			//$cmds .= $esc . 'a' . '0x1';  // Centrado											
-			$cmds .= '**TODOS LOS SERVICIOS, UN SOLO PUNTO***';			
-			$cmds .= $newLine;$newLine;
-			$cmds .= "***GRACIAS POR SU COMPRA***";
-			
-			for( $i= 0 ; $i <= 4 ; $i++ )
-			{
 				$cmds .= $newLine;
-			}								
-			//corta el papel
-			$cmds .= chr(29) . 'V' . chr(0); // 0x1D 0x56 0x00
-
-			$premios = '1';
-			
-			$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente, $premios);
-			$cmds .= $esc . 'a' . chr(1); // Center align
-			$cmds .= $esc . '!' . '0x18'; // Emphasized + Double-height
-			$cmds .= $newLine;
-			$cmds .= "SOPORTE PARA MERCALOTERIAS";
-			$cmds .= $esc . '!' . '0x00'; // Normal text
-			$cmds .= $newLine;							
-			$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);
-			// Inicio de la sección DATOS DEL CLIENTE
-			$cmds .= $newLine;
-			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
-			$cmds .= "DATOS DEL CLIENTE:";
-			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
-			$cmds .= $newLine;
-
-			$cmds .= "----------------------------------------------";
-			$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
-			$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
-
-			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
-			$cmds .= "NOMBRES...:";
-			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
-			$cmds .= $newLine;
-			$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
-
-			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
-			$cmds .= "No. CEDULA:";
-			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
-			$cmds .= $newLine;
-			$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
-
-			$cmds .= $esc . 'E' . chr(1); // Negrilla ON
-			$cmds .= "TELEFONO..:";
-			$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
-		}
-		//FIN 2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
-
-		$cmds .= $newLine;
-		$cmds .= $newLine;
-
-		$cmds .= $esc . 'a' . '0x1';  //center titulo												
-		$cmds .= '***TODOS LOS SERVICIOS, UN SOLO PUNTO***';				
-		$cmds .= $newLine;$newLine;
-		//$cmds .= $esc . '!' . '0x00'; //Character font A selected (ESC ! 0)												
-		//$cmds .= $esc . 'a' . '0x1';  //center titulo					
-		$cmds .= "***GRACIAS POR SU COMPRA***";
-
-		// Extraer el celular (si no existe, usar cadena vacía)
-		$celular = isset($arre_cliente['celular']) ? $arre_cliente['celular'] : '';
-
-		if ($celular != '')
-		{
-			// --- INICIO: Almacenar comandos limpios en la base de datos ---
-			
-			// Se trabaja sobre una copia para no alterar la variable $cmds original que va a la impresora.
-			$cleaned_cmds = $cmds;
-
-			// 1. Normalizar saltos de línea (reemplaza '0x0A' y chr(10) por \n).
-			$cleaned_cmds = str_ireplace('0x0A', "\n", $cleaned_cmds);
-			$cleaned_cmds = str_replace(chr(0x0A), "\n", $cleaned_cmds);
-
-			// 2. Definir patrones para eliminar secuencias de control completas (ESC y GS).
-			$esc_pattern = '(?:0x1B|' . preg_quote(chr(0x1B)) . ')';
-			$gs_pattern = '(?:0x1D|' . preg_quote(chr(0x1D)) . ')';
-
-			$patterns_to_remove = array(
-				// Patrón genérico para comandos ESC (como !, a, M, E) seguido de un parámetro.
-				'/' . $esc_pattern . '.{1}/s',
+				$cmds .= $newLine;
+				//$cmds .= $esc . 'a' . '0x1';  // Centrado											
+				$cmds .= '**TODOS LOS SERVICIOS, UN SOLO PUNTO***';			
+				$cmds .= $newLine;$newLine;
+				$cmds .= "***GRACIAS POR SU COMPRA***";
 				
-				// Patrón genérico para comandos GS (como V para cortar) seguido de un parámetro.
-				'/' . $gs_pattern . '.{1,2}/s',
+				for( $i= 0 ; $i <= 4 ; $i++ )
+				{
+					$cmds .= $newLine;
+				}								
+				//corta el papel
+				$cmds .= chr(29) . 'V' . chr(0); // 0x1D 0x56 0x00
 
-				// Eliminar cualquier otro código hexadecimal en formato de texto que pudiera quedar.
-				'/0x[0-9a-f]{1,2}/i',
+				$premios = '1';
+				
+				$cmds .= generar_encabezado_recibo($db,$esc, $newLine, $arre_recibidos, $arre_cliente, $premios);
+				$cmds .= $esc . 'a' . chr(1); // Center align
+				$cmds .= $esc . '!' . '0x18'; // Emphasized + Double-height
+				$cmds .= $newLine;
+				$cmds .= "SOPORTE PARA MERCALOTERIAS";
+				$cmds .= $esc . '!' . '0x00'; // Normal text
+				$cmds .= $newLine;							
+				$cmds .= generar_seccion_premios_lottired($esc, $newLine, $arre_premios);
+				// Inicio de la sección DATOS DEL CLIENTE
+				$cmds .= $newLine;
+				$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+				$cmds .= "DATOS DEL CLIENTE:";
+				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+				$cmds .= $newLine;
 
-				// Eliminar cualquier otro carácter de control no imprimible (excepto el salto de línea).
-				'/[\x00-\x09\x0B-\x1F\x7F]/'
-			);
+				$cmds .= "----------------------------------------------";
+				$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
+				$cmds .= $newLine; // Corresponde a <tr><td>.</td></tr>
 
-			// 3. Aplicar la limpieza.
-			$cleaned_cmds = preg_replace($patterns_to_remove, '', $cleaned_cmds);
+				$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+				$cmds .= "NOMBRES...:";
+				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+				$cmds .= $newLine;
+				$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
 
-			if ($cleaned_cmds === null) {
-				// Manejo de error para PHP 5.3 (preg_last_error_msg no existe).
-				$error_code = preg_last_error();
-				error_log("Error en preg_replace al limpiar comandos. Código: " . $error_code . ". Comandos (parcial): " . substr($cmds, 0, 500));
-				$cleaned_cmds = "Error al procesar los comandos de impresión.";
+				$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+				$cmds .= "No. CEDULA:";
+				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
+				$cmds .= $newLine;
+				$cmds .= $newLine; $cmds .= $newLine; // Espacio para que el cliente escriba
+
+				$cmds .= $esc . 'E' . chr(1); // Negrilla ON
+				$cmds .= "TELEFONO..:";
+				$cmds .= $esc . 'E' . chr(0); // Negrilla OFF
 			}
+			//FIN 2025-may-22 si existen premios lottired, entonces se imprime el tiquete para enviar a la oficina
 
-			try {
-				// Se utiliza la variable limpia ($cleaned_cmds) para la base de datos.
-				$stmt = $db->prepare("
-					UPDATE print_commands_log
-					SET print_command_data = :print_command_data,
-						celular    = :celular_wsp
-					WHERE id_venta = :id_venta
-				");
-				$stmt->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
-				$stmt->bindParam(':print_command_data', $cleaned_cmds, PDO::PARAM_STR);
-				$stmt->bindParam(':celular_wsp', $celular_wsp, PDO::PARAM_STR);
-				$stmt->execute();
+			$cmds .= $newLine;
+			$cmds .= $newLine;
 
-				if ($stmt->rowCount() == 0) {
+			$cmds .= $esc . 'a' . '0x1';  //center titulo												
+			$cmds .= '***TODOS LOS SERVICIOS, UN SOLO PUNTO***';				
+			$cmds .= $newLine;$newLine;
+			//$cmds .= $esc . '!' . '0x00'; //Character font A selected (ESC ! 0)												
+			//$cmds .= $esc . 'a' . '0x1';  //center titulo					
+			$cmds .= "***GRACIAS POR SU COMPRA***";
+
+			// Extraer el celular (si no existe, usar cadena vacía)
+			$celular = isset($arre_cliente['celular']) ? $arre_cliente['celular'] : '';
+
+			if ($celular != '')
+			{
+				// --- INICIO: Almacenar comandos limpios en la base de datos ---
+				
+				// Se trabaja sobre una copia para no alterar la variable $cmds original que va a la impresora.
+				$cleaned_cmds = $cmds;
+
+				// 1. Normalizar saltos de línea (reemplaza '0x0A' y chr(10) por \n).
+				$cleaned_cmds = str_ireplace('0x0A', "\n", $cleaned_cmds);
+				$cleaned_cmds = str_replace(chr(0x0A), "\n", $cleaned_cmds);
+
+				// 2. Definir patrones para eliminar secuencias de control completas (ESC y GS).
+				$esc_pattern = '(?:0x1B|' . preg_quote(chr(0x1B)) . ')';
+				$gs_pattern = '(?:0x1D|' . preg_quote(chr(0x1D)) . ')';
+
+				$patterns_to_remove = array(
+					// Patrón genérico para comandos ESC (como !, a, M, E) seguido de un parámetro.
+					'/' . $esc_pattern . '.{1}/s',
+					
+					// Patrón genérico para comandos GS (como V para cortar) seguido de un parámetro.
+					'/' . $gs_pattern . '.{1,2}/s',
+
+					// Eliminar cualquier otro código hexadecimal en formato de texto que pudiera quedar.
+					'/0x[0-9a-f]{1,2}/i',
+
+					// Eliminar cualquier otro carácter de control no imprimible (excepto el salto de línea).
+					'/[\x00-\x09\x0B-\x1F\x7F]/'
+				);
+
+				// 3. Aplicar la limpieza.
+				$cleaned_cmds = preg_replace($patterns_to_remove, '', $cleaned_cmds);
+
+				if ($cleaned_cmds === null) {
+					// Manejo de error para PHP 5.3 (preg_last_error_msg no existe).
+					$error_code = preg_last_error();
+					error_log("Error en preg_replace al limpiar comandos. Código: " . $error_code . ". Comandos (parcial): " . substr($cmds, 0, 500));
+					$cleaned_cmds = "Error al procesar los comandos de impresión.";
+				}
+
+				try {
+					// Se utiliza la variable limpia ($cleaned_cmds) para la base de datos.
 					$stmt = $db->prepare("
-						INSERT INTO print_commands_log (id_venta, print_command_data, celular)
-						VALUES (:id_venta, :print_command_data, :celular_wsp)
+						UPDATE print_commands_log
+						SET print_command_data = :print_command_data,
+							celular    = :celular_wsp
+						WHERE id_venta = :id_venta
 					");
 					$stmt->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
 					$stmt->bindParam(':print_command_data', $cleaned_cmds, PDO::PARAM_STR);
 					$stmt->bindParam(':celular_wsp', $celular_wsp, PDO::PARAM_STR);
 					$stmt->execute();
+
+					if ($stmt->rowCount() == 0) {
+						$stmt = $db->prepare("
+							INSERT INTO print_commands_log (id_venta, print_command_data, celular)
+							VALUES (:id_venta, :print_command_data, :celular_wsp)
+						");
+						$stmt->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
+						$stmt->bindParam(':print_command_data', $cleaned_cmds, PDO::PARAM_STR);
+						$stmt->bindParam(':celular_wsp', $celular_wsp, PDO::PARAM_STR);
+						$stmt->execute();
+					}
+				} catch (PDOException $e) {
+					error_log("Error al insertar/reemplazar comandos en print_commands_log: " . $e->getMessage());
 				}
-			} catch (PDOException $e) {
-				error_log("Error al insertar/reemplazar comandos en print_commands_log: " . $e->getMessage());
+			}					
+			
+			for( $i= 0 ; $i <= 3 ; $i++ )
+			{
+				$cmds .= $newLine;
 			}
-		}					
-		
-		for( $i= 0 ; $i <= 3 ; $i++ )
-		{
-			$cmds .= $newLine;
+			
 		}
-	
+
 		//corta el papel
 		$cmds .= '0x1D0x560x00';
 
@@ -1306,6 +1337,40 @@
 		$valor_formateado = number_format($valor, 0, ',', '.');
 		$espacios = $ancho_total - strlen($etiqueta) - strlen($valor_formateado);
 		return $etiqueta . str_repeat(' ', max(1, $espacios)) . $valor_formateado;
+	}
+
+	function generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $cod_pto) {
+
+		$nom_pto = '';
+		if ($cod_pto !== '') {
+			$sql = "SELECT pto.nom_pto
+					FROM pto_vta pto
+					WHERE pto.cod_pto = :cod_pto";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam(':cod_pto', $cod_pto, PDO::PARAM_STR);
+			$stmt->execute();
+			$nom_pto = $stmt->fetchColumn() ?: '';
+		}
+
+		// Nombre del vendedor
+		$nom_vendedor = '';
+		if ($id_usu !== '') {
+			$sql = "SELECT nom_usu
+					FROM usuarios
+					WHERE id_usu = :id_usu";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam(':id_usu', $id_usu, PDO::PARAM_STR);
+			$stmt->execute();
+			$nom_vendedor = $stmt->fetchColumn() ?: '';
+		}
+
+		error_log(
+			"nom_pto: " . $nom_pto . "\n" .
+			"nom_vendedor: " . $nom_vendedor . "\n" ,
+			3,
+			__DIR__ . '/debug.log'
+		);
+
 	}
 ?>
 
