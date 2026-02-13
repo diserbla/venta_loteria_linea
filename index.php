@@ -1364,12 +1364,7 @@
 			$nom_vendedor = $stmt->fetchColumn() ?: '';
 		}
 
-		error_log(
-			"nom_pto: " . $nom_pto . "\n" .
-			"nom_vendedor: " . $nom_vendedor . "\n" ,
-			3,
-			__DIR__ . '/debug.log'
-		);
+
 
 	}
 ?>
