@@ -1367,6 +1367,23 @@
 			$nom_vendedor = $stmt->fetchColumn() ?: '';
 		}
 
+		$fecha_desde = '';
+		$fecha_hasta = '';
+		if (!empty($rango_fechas_con)) {
+			$partes_rango = explode(' / ', $rango_fechas_con, 2);
+			$fecha_desde = isset($partes_rango[0]) ? trim($partes_rango[0]) : '';
+			$fecha_hasta = isset($partes_rango[1]) ? trim($partes_rango[1]) : $fecha_desde;
+		}
+
+		error_log(
+			"rango_fechas: " . $rango_fechas_con . "\n" .
+			"fecha_desde: " . $fecha_desde . "\n" .
+			"fecha_hasta: " . $fecha_hasta . "\n" ,
+			3,
+			__DIR__ . '/debug.log'
+		);
+
+
 		$cmds  = '';
 		$cmds .= $esc . '!' . '0x18';               // negrita + doble altura
 		$cmds .= $esc . 'a' . '0x1';                // centrado
@@ -1390,6 +1407,10 @@
         $cmds .= $newLine;
         $cmds .= 'Hora: ' . date('H:i:s'); // Adiciona la hora actual
         $cmds .= $newLine;
+		$cmds .= 'Desde: ' . $fecha_desde;
+		$cmds .= $newLine;
+		$cmds .= 'Hasta: ' . $fecha_hasta;
+		$cmds .= $newLine;
 
 		for( $i= 0 ; $i <= 8 ; $i++ ){
 			$cmds .= $newLine;

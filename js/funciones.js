@@ -2071,6 +2071,8 @@ async function imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vt
         rango_fechas_con: rango_fechas_con
     }).toString();
 
+    console.log(rango_fechas_con);
+
     try {
         await jsWebClientPrint.print(params);
     } catch (error) {
