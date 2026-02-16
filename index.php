@@ -1374,7 +1374,7 @@
 		$cmds .= $newLine;
 		$cmds .= "----------------------------------------------";
 		$cmds .= $newLine;
-		$cmds .= $esc . '!' . '0x18';               // énfasis + doble altura
+		$cmds .= $esc . '!' . '0x08';               // énfasis + doble altura
 		$cmds .= "**CONSULTA VENTAS**";
 		$cmds .= $newLine;
 		$cmds .= 'Punto: ' . $nom_pto;
