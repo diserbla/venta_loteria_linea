@@ -1364,7 +1364,25 @@
 			$nom_vendedor = $stmt->fetchColumn() ?: '';
 		}
 
-
+		$cmds  = '';
+		$cmds .= $esc . '!' . '0x18';               // negrita + doble altura
+		$cmds .= $esc . 'a' . '0x1';                // centrado
+		$cmds .= 'Mercaloterias S.A';
+		$cmds .= $esc . '!' . '0x00';               // fuente normal
+		$cmds .= $newLine;
+		$cmds .= "Nit 805013949-0";
+		$cmds .= $newLine;
+		$cmds .= "----------------------------------------------";
+		$cmds .= $newLine;
+		$cmds .= $esc . '!' . '0x18';               // énfasis + doble altura
+		$cmds .= "**CONSULTA VENTAS**";
+		$cmds .= $newLine;
+		$cmds .= 'Punto: ' . $nom_pto;
+		$cmds .= $newLine;
+		$cmds .= 'Vendedor: ' . $nom_vendedor;
+		$cmds .= $newLine;
+		$cmds .= $esc . '!' . '0x00';
+		$cmds .= $newLine;		
 
 	}
 ?>
