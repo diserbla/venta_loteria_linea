@@ -698,7 +698,7 @@
 			$total_premios    = isset($qs['total_premios']) ? $qs['total_premios'] : 0;
 			$id_usu           = isset($qs['id_usu'])        ? $qs['id_usu']        : '';
 			$pto_vta          = isset($qs['pto_vta']) ? (int)$qs['pto_vta'] : 0;
-			$rango_fechas_con = isset($qs['rango_fechas_con']) ? $qs['rango_fechas_con'] : '';
+			$rango_fechas_con = isset($qs['rango_fechas_con']) ? urldecode($qs['rango_fechas_con']) : '';
 
 			/*
 			error_log(
@@ -1370,11 +1370,12 @@
 		$fecha_desde = '';
 		$fecha_hasta = '';
 		if (!empty($rango_fechas_con)) {
-			$partes_rango = explode(' / ', $rango_fechas_con, 2);
+			$partes_rango = explode(' - ', $rango_fechas_con, 2);
 			$fecha_desde = isset($partes_rango[0]) ? trim($partes_rango[0]) : '';
 			$fecha_hasta = isset($partes_rango[1]) ? trim($partes_rango[1]) : $fecha_desde;
 		}
 
+		/*
 		error_log(
 			"rango_fechas: " . $rango_fechas_con . "\n" .
 			"fecha_desde: " . $fecha_desde . "\n" .
@@ -1382,7 +1383,7 @@
 			3,
 			__DIR__ . '/debug.log'
 		);
-
+		*/
 
 		$cmds  = '';
 		$cmds .= $esc . '!' . '0x18';               // negrita + doble altura
@@ -1395,7 +1396,7 @@
 		$cmds .= "----------------------------------------------";
 		$cmds .= $newLine;
 		$cmds .= $esc . '!' . '0x08';               // énfasis + doble altura
-		$cmds .= "**CONSULTA VENTAS**";
+		$cmds .= "LIQUIDACIÓN DE VENTA - LOTERÍA EN LÍNEA";
 		$cmds .= $newLine;
 		$cmds .= 'Punto: ' . $nom_pto;
 		$cmds .= $newLine;
@@ -1412,7 +1413,7 @@
 		$cmds .= 'Hasta: ' . $fecha_hasta;
 		$cmds .= $newLine;
 
-		for( $i= 0 ; $i <= 8 ; $i++ ){
+		for( $i= 0 ; $i <= 4 ; $i++ ){
 			$cmds .= $newLine;
 		}
 
