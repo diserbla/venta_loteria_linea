@@ -694,11 +694,13 @@
 		//si se cumple esta condicion es porque vamos a imprirmir totales
 		if (trim($clienteJson) === '' || trim($recibidosJson) === '' || trim($totalesJson) === '') {
 
-			$total_venta   = isset($qs['total_venta'])   ? $qs['total_venta']   : 0;
-			$total_premios = isset($qs['total_premios']) ? $qs['total_premios'] : 0;
-			$id_usu        = isset($qs['id_usu'])        ? $qs['id_usu']        : '';
-			$pto_vta       = isset($qs['pto_vta']) ? (int)$qs['pto_vta'] : 0;
+			$total_venta      = isset($qs['total_venta'])   ? $qs['total_venta']   : 0;
+			$total_premios    = isset($qs['total_premios']) ? $qs['total_premios'] : 0;
+			$id_usu           = isset($qs['id_usu'])        ? $qs['id_usu']        : '';
+			$pto_vta          = isset($qs['pto_vta']) ? (int)$qs['pto_vta'] : 0;
+			$rango_fechas_con = isset($qs['rango_fechas_con']) ? $qs['rango_fechas_con'] : '';
 
+			/*
 			error_log(
 				"total_venta: " . $total_venta . "\n" .
 				"total_premios: " . $total_premios . "\n" .
@@ -707,8 +709,9 @@
 				3,
 				__DIR__ . '/debug.log'
 			);
+			*/
 
-			$cmds .= generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $pto_vta);
+			$cmds .= generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $pto_vta,$rango_fechas_con);
 
 		} else {
 
@@ -1382,7 +1385,19 @@
 		$cmds .= 'Vendedor: ' . $nom_vendedor;
 		$cmds .= $newLine;
 		$cmds .= $esc . '!' . '0x00';
-		$cmds .= $newLine;		
+        $cmds .= $newLine;
+        $cmds .= 'Fecha: ' . date('d-m-Y'); // Adiciona la fecha actual
+        $cmds .= $newLine;
+        $cmds .= 'Hora: ' . date('H:i:s'); // Adiciona la hora actual
+        $cmds .= $newLine;
+
+		for( $i= 0 ; $i <= 8 ; $i++ ){
+			$cmds .= $newLine;
+		}
+
+
+
+		return $cmds;
 
 	}
 ?>

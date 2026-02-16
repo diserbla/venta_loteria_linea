@@ -202,6 +202,8 @@ $(document).ready(function(){
         var id_usu  = $('#id_usu').val().trim();
         var pto_vta = $('#pto_vta').val().trim();
 
+        rango_fechas_con = $('#rango_fechas_con').val().trim();
+
         if (!id_usu || !pto_vta) {
             swal('Falta información', 'No llegaron id_usu o pto_vta.', 'warning');
             return;
@@ -259,7 +261,7 @@ $(document).ready(function(){
             filasProcesadas: filasDatos.length
         });
 
-        imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta);
+        imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta,rango_fechas_con);
 
 
     });
@@ -2060,12 +2062,13 @@ function fn_valida_premio(barcode) {
     return true;
 }
 
-async function imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta) {
+async function imprimirTicketTotales(sumaValor, sumaValidoPremio, id_usu, pto_vta,rango_fechas_con) {
     const params = new URLSearchParams({
         total_venta: sumaValor,
         total_premios: sumaValidoPremio,
         id_usu: id_usu,
-        pto_vta: pto_vta
+        pto_vta: pto_vta,
+        rango_fechas_con: rango_fechas_con
     }).toString();
 
     try {
