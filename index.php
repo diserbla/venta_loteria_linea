@@ -1409,7 +1409,32 @@
 		$cmds .= 'Desde: ' . $fecha_desde . '  Hasta: ' . $fecha_hasta;
 		$cmds .= $newLine;
 		$cmds .= $newLine;
-		
+
+		$venta_val = is_numeric($total_venta) ? (float)$total_venta : (float)preg_replace('/[^\d\-]/', '', $total_venta);
+		$premios_val = is_numeric($total_premios) ? (float)$total_premios : (float)preg_replace('/[^\d\-]/', '', $total_premios);
+		$comision = round($venta_val * 0.20);
+		$subtotal_neto = $venta_val - $comision;
+		$total_consignar = $subtotal_neto - $premios_val;
+
+		$ancho_total = 46;
+		$cmds .= formatear_linea_total('(+) TOTAL VENTAS: $ ', $venta_val, $ancho_total);
+		$cmds .= $newLine;
+		$cmds .= $newLine;
+		$cmds .= formatear_linea_total('(-) COMISION(20%): $ ', $comision, $ancho_total);
+		$cmds .= $newLine;
+		$cmds .= $newLine;
+		$cmds .= formatear_linea_total('(=) SUB-TOTAL VENTA NETA: $ ', $subtotal_neto, $ancho_total);
+		$cmds .= $newLine;
+		$cmds .= $newLine;
+		$cmds .= formatear_linea_total('(-) PREMIOS PAGADOS: $ ', $premios_val, $ancho_total);
+		$cmds .= $newLine;
+		$cmds .= $newLine;
+		$cmds .= '--------------------------------------';
+		$cmds .= $newLine;
+		$cmds .= $newLine;
+		$cmds .= formatear_linea_total('(=) TOTAL A CONSIGNAR: $ ', $total_consignar, $ancho_total);
+		$cmds .= $newLine;
+		$cmds .= $newLine;
 
 		for( $i= 0 ; $i <= 4 ; $i++ ){
 			$cmds .= $newLine;
