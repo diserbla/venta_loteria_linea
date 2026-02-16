@@ -1342,7 +1342,7 @@
 		return $etiqueta . str_repeat(' ', max(1, $espacios)) . $valor_formateado;
 	}
 
-	function generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $cod_pto) {
+	function generar_reporte_totales($db, $esc, $newLine, $total_venta, $total_premios, $id_usu, $cod_pto,$rango_fechas_con) {
 
 		$nom_pto = '';
 		if ($cod_pto !== '') {
