@@ -1393,10 +1393,12 @@
 		$cmds .= $newLine;
 		$cmds .= "Nit 805013949-0";
 		$cmds .= $newLine;
+		$cmds .= 'Fec. Generacion: ' . date('d-m-Y') . ' ' . date('H:i:s');
+		$cmds .= $newLine;
 		$cmds .= "----------------------------------------------";
 		$cmds .= $newLine;
-		$cmds .= $esc . '!' . '0x08';               // énfasis + doble altura
-		$cmds .= "LIQUIDACIÓN DE VENTA - LOTERÍA EN LÍNEA";
+		$cmds .= $esc . '!' . '0x08';               // Ã©nfasis + doble altura
+		$cmds .= 'LIQUIDACION DE VENTA - LOTERIA EN LINEA';
 		$cmds .= $newLine;
 		$cmds .= 'Punto: ' . $nom_pto;
 		$cmds .= $newLine;
@@ -1404,14 +1406,10 @@
 		$cmds .= $newLine;
 		$cmds .= $esc . '!' . '0x00';
         $cmds .= $newLine;
-        $cmds .= 'Fecha: ' . date('d-m-Y'); // Adiciona la fecha actual
-        $cmds .= $newLine;
-        $cmds .= 'Hora: ' . date('H:i:s'); // Adiciona la hora actual
-        $cmds .= $newLine;
-		$cmds .= 'Desde: ' . $fecha_desde;
+		$cmds .= 'Desde: ' . $fecha_desde . '  Hasta: ' . $fecha_hasta;
 		$cmds .= $newLine;
-		$cmds .= 'Hasta: ' . $fecha_hasta;
 		$cmds .= $newLine;
+		
 
 		for( $i= 0 ; $i <= 4 ; $i++ ){
 			$cmds .= $newLine;
