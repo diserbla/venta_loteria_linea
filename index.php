@@ -628,12 +628,7 @@
 	function imprimir()
 	{
 		$retorna = '0';	
-		
-		/*
-		error_log('Error al decodificar JSON en imprimir()', 3,
-					'C:/mercapos/htdocs/formas/pruebas/debug.log');
-		*/
-		
+	
 		if(!session_id()) {session_start();}	
 
 		//include ('../../bd/conexion.php');
@@ -642,10 +637,10 @@
     	include __DIR__ . '/../../bd/conexion.php';
 
 		//localhost
-		require_once '/../ventas/funciones_lottired.php';
+		//require_once '/../ventas/funciones_lottired.php';
 		
 		//producion
-		//include __DIR__ . '../ventas/funciones_lottired.php';
+		include '/../ventas/funciones_lottired.php';
 	
 		// ---------------------------------------------------------
 		// 1️⃣  Obtener la query‑string completa de la URL
@@ -719,12 +714,13 @@
 			$arre_recibidos = json_decode($recibidosJson, true);
 			$arre_totales   = json_decode($totalesJson, true);
 
-			/*
+
 			// -----------------------------------------------------------------
 			// 5️⃣  Registrar los tres arreglos en debug.log (para depuración)
 			// -----------------------------------------------------------------
-			$logFile = 'C:/mercapos/htdocs/formas/venta_terceros/debug.log';
+			//$logFile = 'C:/mercapos/htdocs/formas/venta_terceros/debug.log';
 
+			/*
 			// Formateamos la salida para que sea legible en el log
 			$logMsg  = "=== DEBUG - ARRAYS RECIBIDOS ===\n";
 			$logMsg .= "Cliente   : " . print_r($arre_cliente, true)   . "\n";
@@ -732,8 +728,11 @@
 			$logMsg .= "Totales   : " . print_r($arre_totales,   true) . "\n";
 			$logMsg .= "-------------------------------\n";
 
-			// error_log escribe en el archivo indicado (crea el archivo si no existe)
-			error_log($logMsg, 3, $logFile);
+			error_log(
+				$logMsg,
+				3,
+				__DIR__ . '/debug.log'
+			);
 			*/
 
 			// Si alguna decodificación falla, abortamos.
@@ -823,7 +822,7 @@
 					INNER JOIN maelote mae ON mov.cod_lot = mae.cod_lot
 					LEFT JOIN clientes cli ON mov.cedula = cli.cedula
 					WHERE mov.id_venta = :id_venta OR mov.id_venta_premio = :id_venta";
-
+					
 			$stm = $db->prepare($sql);	
 			$stm->bindParam(':id_venta', $id_venta, PDO::PARAM_INT);
 			$stm->execute();
@@ -840,6 +839,16 @@
 
 			// Si quieres reindexar el array (opcional)
 			$arre_ventas = array_values($arre_ventas);
+			
+			/*
+			$logMsg = "Recibidos : " . print_r($arre_ventas, true) . "\n";			
+			
+			error_log(
+				$logMsg,
+				3,
+				__DIR__ . '/debug.log'
+			);
+			*/
 
 			if (!empty($arre_ventas)) {
 				//require_once 'funciones_lottired.php';
@@ -883,7 +892,7 @@
 
 					// Procesar los datos de la venta retornados por la función
 					$arre_venta = $resultado['arre_venta'];
-		
+	
 					// Verificar que $arre_venta y $arre_venta['soldNumbers'] existan y sean un array
 					if (isset($arre_venta['soldNumbers']) && is_array($arre_venta['soldNumbers'])) {
 						// Filtrar los datos

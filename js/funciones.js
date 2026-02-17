@@ -227,7 +227,7 @@ $(document).ready(function(){
             if (encabezado === 'valor') {
                 indiceValor = index;
             }
-            if (encabezado === 'valido premio') {
+            if (encabezado === 'valor premio') {
                 indiceValidoPremio = index;
             }
         });
@@ -251,8 +251,11 @@ $(document).ready(function(){
 
         filasDatos.each(function() {
             var celdas = $(this).find('td');
-            sumaValor += parseNumero(celdas.eq(indiceValor).text());
-            sumaValidoPremio += parseNumero(celdas.eq(indiceValidoPremio).text());
+            var valorValidoPremio = parseNumero(celdas.eq(indiceValidoPremio).text());
+            if (valorValidoPremio === 0) {
+                sumaValor += parseNumero(celdas.eq(indiceValor).text());
+            }
+            sumaValidoPremio += valorValidoPremio;
         });
 
         console.log('Totales tbl_detalle:', {
