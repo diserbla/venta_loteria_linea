@@ -852,6 +852,8 @@
 					$cmds .= $esc . 'M' . chr(1); // Fuente B
 					$cmds .= $esc . 'E' . chr(1); // Negrilla
 
+					//Centrado  
+					$cmds .= $esc . 'a' . '0x1'; 
 					// Aumentar tamaño de letra SOLO para este texto
 					$cmds .= chr(29) . '!' . chr(1); // Doble alto
 					$cmds .= "VENTA DE LOTERIA EN LINEA";
@@ -1435,12 +1437,11 @@
 		$cmds .= formatear_linea_total('(=) TOTAL A CONSIGNAR: $ ', $total_consignar, $ancho_total);
 		$cmds .= $newLine;
 		$cmds .= $newLine;
+		$cmds .= '**TODOS LOS SERVICIOS, UN SOLO PUNTO***';			
 
 		for( $i= 0 ; $i <= 4 ; $i++ ){
 			$cmds .= $newLine;
 		}
-
-
 
 		return $cmds;
 
