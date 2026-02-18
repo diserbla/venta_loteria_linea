@@ -640,7 +640,7 @@
 		//require_once '/../ventas/funciones_lottired.php';
 		
 		//producion
-		include '/../ventas/funciones_lottired.php';
+		include '../ventas/funciones_lottired.php';
 	
 		// ---------------------------------------------------------
 		// 1️⃣  Obtener la query‑string completa de la URL
