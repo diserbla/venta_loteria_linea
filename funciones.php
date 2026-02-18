@@ -252,14 +252,20 @@
 				// ---------------------------------------------------------
 				//  ✅  LLAMAR A fn_venta_terceros() cuando la condición se cumple
 				// ---------------------------------------------------------
-				fn_venta_terceros(
-					$db,
-					$id_venta,
-					$venta,
-					$cliente,
-					$pto_vta,
-					$id_usu_vendedor
-				);
+				$reserva = 	fn_venta_terceros(
+								$db,
+								$id_venta,
+								$venta,
+								$cliente,
+								$pto_vta,
+								$id_usu_vendedor
+							);
+
+				$error = $reserva['error'];	
+
+				if (!empty($error)) {
+					throw new Exception("Error en fn_venta_terceros: " . $error);
+				}
 			}
 
 			// --- Insertar registro de premios (código 116) ------------------
